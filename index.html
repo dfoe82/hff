@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Haushalt">
+<meta name="apple-mobile-web-app-title" content="Hanna Fritzie">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#eef2f1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f1514" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
-<title>Haushaltsplaner</title>
+<title>Hanna Fritzie</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -58,7 +58,7 @@ h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.1
 /* Kopf */
 header.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding-block:18px 14px}
 .brand{display:flex;align-items:baseline;gap:10px;margin-right:auto}
-.brand h1{font-size:1.45rem;font-weight:700;letter-spacing:-.02em}
+.brand h1{font-size:1.45rem;font-weight:700;letter-spacing:-.02em;white-space:nowrap}
 .sync{font-size:.75rem;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .sync i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
 .sync.on i{background:var(--pos)}
@@ -215,6 +215,21 @@ td.per.now b{color:var(--accent)}
 #backupBtn.due{border-color:var(--warn);color:var(--warn)}
 #backupBtn.due::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--warn)}
 @media (max-width:700px){header.top{flex-wrap:nowrap}}
+/* Hausaufgaben */
+.hw{display:grid;grid-template-columns:auto minmax(0,1fr);gap:3px 12px;align-items:center;padding:11px 14px;border-top:1px solid var(--line);position:relative}
+.hw::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:4px;border-radius:0 3px 3px 0;background:var(--c)}
+.hw .check{grid-row:span 2}
+.hw.done .check{background:var(--pos);border-color:var(--pos)}
+.hw.done .check svg{opacity:1;color:var(--surface)}
+.hw .body{border:0;background:transparent;padding:0;text-align:left;display:flex;gap:8px;align-items:baseline;min-width:0}
+.hw .subj{font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--ink);white-space:nowrap;flex:none}
+.hw .txt{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.hw.done .txt{text-decoration:line-through;color:var(--muted);font-weight:500}
+.hw .meta{grid-column:2;font-size:.78rem;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.hw .meta .over{color:var(--neg);font-weight:600}
+.hw .meta .tod{color:var(--accent);font-weight:600}
+.hw .meta .kid{font-weight:600;color:var(--ink)}
+.hw-next{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -223,11 +238,12 @@ td.per.now b{color:var(--accent)}
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><h1>Haushaltsplaner</h1><span class="sync" id="sync"><i></i><span>Lädt …</span></span></div>
+    <div class="brand"><h1>Hanna Fritzie</h1><span class="sync" id="sync"><i></i><span>Lädt …</span></span></div>
     <button class="btn sm" id="backupBtn" type="button" aria-label="Daten sichern">Sichern</button>
     <nav class="tabs" role="tablist" aria-label="Bereiche">
       <button role="tab" data-tab="finanzen" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg>Finanzen</button>
       <button role="tab" data-tab="stundenplan" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M9 9.5v11M15 9.5v11M8 2.5v4M16 2.5v4"/></svg>Stundenplan</button>
+      <button role="tab" data-tab="hausaufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H19v-5"/><path d="M9 8h6M9 11.5h4"/></svg>Hausaufgaben</button>
       <button role="tab" data-tab="aufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l2 2 3.5-3.5M4 15.5l2 2 3.5-3.5M13 7h7M13 16h7"/></svg>Aufgaben</button>
     </nav>
   </header>
@@ -266,18 +282,19 @@ const daysBetween = (a,b) => Math.round((new Date(b+'T12:00:00') - new Date(a+'T
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
 /* ---------- Zustand ---------- */
-const KEYS = ['finance','schedule','tasks'];
+const KEYS = ['finance','schedule','tasks','homework'];
 const DEF = {
   finance: { start:{bank:0,cash:0}, tx:[] },
   schedule: { plans:[], active:null },
-  tasks: { items:[] }
+  tasks: { items:[] },
+  homework: { items:[] }
 };
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='tasks'){ d.items = Array.isArray(v.items)?v.items:[]; }
+  if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
 const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.start.bank!==0 || v.start.cash!==0)
@@ -296,7 +313,9 @@ const ui = {
   month: now.getFullYear()+'-'+pad(now.getMonth()+1),
   acct: 'all',
   day: Math.min(Math.max((now.getDay()+6)%7,0),5),
-  taskFilter: 'offen'
+  taskFilter: 'offen',
+  hwFilter: 'offen',
+  hwPlan: 'all'
 };
 if (ui.day > 4 && now.getDay()===0) ui.day = 0;
 
@@ -325,10 +344,10 @@ function updateBackupHint(){
   const any = KEYS.some(k => hasContent(k, S[k]));
   btn.classList.toggle('due', any && changed > last && Date.now() - last > 7*864e5);
 }
-function backupData(){ return {app:'haushaltsplaner', version:1, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks}; }
+function backupData(){ return {app:'haushaltsplaner', version:1, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework}; }
 async function exportBackup(){
   const json = JSON.stringify(backupData(), null, 2);
-  const name = 'haushaltsplaner-sicherung-'+today()+'.json';
+  const name = 'hanna-fritzie-sicherung-'+today()+'.json';
   const file = new File([json], name, {type:'application/json'});
   try {
     if (navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
@@ -345,7 +364,7 @@ function importBackup(file){
   const r = new FileReader();
   r.onload = () => {
     let d; try { d = JSON.parse(r.result); } catch(e){ toast('Die Datei ist keine gültige Sicherung.'); return; }
-    if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei stammt nicht aus dem Haushaltsplaner.'); return; }
+    if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei stammt nicht aus Hanna Fritzie.'); return; }
     KEYS.forEach(k => { S[k] = normalize(k, d[k]); save(k); });
     lsSet('lastBackup', Date.now()); updateBackupHint();
     if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt');
@@ -354,13 +373,14 @@ function importBackup(file){
 }
 function backupDialog(){
   const last = +(lsGet('lastBackup')||0);
-  const n = S.finance.tx.length, t = S.tasks.items.length, p = S.schedule.plans.length;
+  const n = S.finance.tx.length, t = S.tasks.items.length, p = S.schedule.plans.length, h = S.homework.items.length;
   const form = openDlg(`
     <h3>Daten sichern</h3>
     <p class="hint">Alles wird nur in diesem Browser auf diesem Gerät gespeichert. Leerst du die Browserdaten oder wechselst das Gerät, ist es weg. Exportiere deshalb regelmäßig eine Sicherung, z. B. in iCloud Drive.</p>
-    <div class="stats" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+    <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <div><span class="label">Buchungen</span><span class="v">${n}</span></div>
       <div><span class="label">Pläne</span><span class="v">${p}</span></div>
+      <div><span class="label">Hausaufgaben</span><span class="v">${h}</span></div>
       <div><span class="label">Aufgaben</span><span class="v">${t}</span></div>
     </div>
     <p style="margin:0;color:var(--muted);font-size:.88rem">Letzte Sicherung: <b>${last ? new Date(last).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) : 'noch keine'}</b></p>
@@ -403,6 +423,7 @@ function render(){
   const m = $('#main');
   if (ui.tab==='finanzen') m.innerHTML = renderFinance();
   else if (ui.tab==='stundenplan') m.innerHTML = renderSchedule();
+  else if (ui.tab==='hausaufgaben') m.innerHTML = renderHomework();
   else m.innerHTML = renderTasks();
 }
 
@@ -830,6 +851,125 @@ function sampleTasks(){
   save('tasks'); render(); toast('Beispielaufgaben eingefügt');
 }
 
+/* =========================================================
+   HAUSAUFGABEN
+   ========================================================= */
+const planName = id => S.schedule.plans.find(p => p.id===id)?.name || '';
+function nextLesson(planId, subject){
+  const P = S.schedule.plans.find(p => p.id===planId); const s = String(subject||'').trim().toLowerCase();
+  if (!P || !s) return null;
+  const d = new Date();
+  for (let i=1; i<=21; i++){
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate()+i);
+    const wd = (x.getDay()+6)%7; if (wd > (P.saturday?5:4)) continue;
+    for (let p=0; p<P.periods.length; p++){ const c = P.cells[wd+'-'+p]; if (c && c.subject && c.subject.trim().toLowerCase()===s) return iso(x); }
+  }
+  return null;
+}
+function hwDueLabel(x){
+  if (!x.due) return x.done ? '' : '<span>Ohne Termin</span>';
+  const n = daysBetween(today(), x.due);
+  if (x.done) return `<span>bis ${fmtShort(x.due)}</span>`;
+  if (n<0) return `<span class="over">${n===-1?'war gestern fällig':'seit '+(-n)+' Tagen überfällig'}</span>`;
+  if (n===0) return '<span class="tod">heute fällig</span>';
+  if (n===1) return '<span class="tod">bis morgen</span>';
+  return `<span>bis ${fmtDay(x.due)}</span>`;
+}
+function hwRow(x, showKid){
+  return `<div class="hw ${x.done?'done':''}" style="--c:${x.subject?subjColor(x.subject):'var(--muted)'}">
+    <button class="check" data-act="hw-toggle" data-id="${esc(x.id)}" aria-label="${x.done?'Als offen markieren':'Als erledigt markieren'}: ${esc(x.subject)} ${esc(x.text)}">${CHECK}</button>
+    <button class="body" data-act="hw-edit" data-id="${esc(x.id)}">${x.subject?`<span class="subj">${esc(x.subject)}</span>`:''}<span class="txt">${esc(x.text || 'Hausaufgabe')}</span></button>
+    <span class="meta">${hwDueLabel(x)}${showKid && x.plan && planName(x.plan) ? `<span class="kid">${esc(planName(x.plan))}</span>` : ''}${x.note?`<span>${esc(x.note)}</span>`:''}</span>
+  </div>`;
+}
+function renderHomework(){
+  const plans = S.schedule.plans;
+  if (ui.hwPlan !== 'all' && !plans.some(p => p.id===ui.hwPlan)) ui.hwPlan = 'all';
+  const all = S.homework.items.filter(x => ui.hwPlan==='all' || x.plan===ui.hwPlan || !x.plan);
+  const open = all.filter(x=>!x.done), done = all.filter(x=>x.done);
+  const t0 = today();
+  let html = `<div class="sec-head"><h2>Hausaufgaben</h2>
+    <div class="chips">${[['offen','Offen',open.length],['erledigt','Erledigt',done.length]].map(([k,l,n])=>`<button class="chip" data-act="hw-filter" data-k="${k}" aria-pressed="${ui.hwFilter===k}">${l} <span class="num" style="opacity:.7">${n}</span></button>`).join('')}</div>
+    <button class="btn primary" data-act="hw-new">+ Hausaufgabe</button></div>`;
+  if (plans.length > 1) html += `<div class="chips" style="margin-bottom:12px"><button class="chip" data-act="hw-kid" data-id="all" aria-pressed="${ui.hwPlan==='all'}">Alle</button>${plans.map(p=>`<button class="chip" data-act="hw-kid" data-id="${esc(p.id)}" aria-pressed="${ui.hwPlan===p.id}">${esc(p.name)}</button>`).join('')}</div>`;
+  html += '<div class="panel" style="overflow:hidden">';
+  if (!S.homework.items.length){
+    return html + `<div class="empty"><strong>Keine Hausaufgaben eingetragen</strong>
+      Trag Fach, Aufgabe und Abgabetermin ein. ${plans.length ? 'Mit „Nächste Stunde“ wird der Termin aus dem Stundenplan übernommen.' : 'Mit einem Stundenplan kann der Termin automatisch auf die nächste Stunde des Fachs gesetzt werden.'}
+      <div class="row"><button class="btn primary" data-act="hw-new">+ Erste Hausaufgabe</button><button class="btn" data-act="hw-sample">Beispiele einfügen</button></div></div></div>`;
+  }
+  const showKid = plans.length > 1 && ui.hwPlan==='all';
+  const groups = [];
+  if (ui.hwFilter==='erledigt') groups.push(['Erledigt', done.slice().sort((a,b)=>(b.doneAt||0)-(a.doneAt||0)), '']);
+  else {
+    const list = open.slice().sort((a,b) => (a.due||'9999').localeCompare(b.due||'9999') || String(a.subject).localeCompare(String(b.subject)));
+    const tm = (() => { const d = new Date(); d.setDate(d.getDate()+1); return iso(d); })();
+    groups.push(['Überfällig', list.filter(x=>x.due && x.due<t0), 'over']);
+    groups.push(['Heute', list.filter(x=>x.due===t0), '']);
+    groups.push(['Für morgen', list.filter(x=>x.due===tm), '']);
+    groups.push(['Später', list.filter(x=>x.due && x.due>tm), '']);
+    groups.push(['Ohne Termin', list.filter(x=>!x.due), '']);
+  }
+  let any = false;
+  groups.forEach(([name,list,cls]) => { if (!list.length) return; any = true;
+    html += `<div class="group-h ${cls}">${name} <small>${list.length}</small></div>` + list.map(x => hwRow(x, showKid)).join(''); });
+  if (!any) html += `<div class="empty"><strong>${ui.hwFilter==='erledigt'?'Noch nichts erledigt':'Alles erledigt'}</strong>${ui.hwFilter==='offen'?'Keine offenen Hausaufgaben.':''}</div>`;
+  if (ui.hwFilter==='erledigt' && done.length) html += `<div style="padding:12px 14px;border-top:1px solid var(--line)"><button class="btn danger sm" data-act="hw-cleardone">Erledigte löschen</button></div>`;
+  return html + '</div>';
+}
+function hwDialog(x){
+  const isNew = !x;
+  const plans = S.schedule.plans;
+  x = x ? clone(x) : {subject:'', text:'', due:'', note:'', plan: ui.hwPlan!=='all' ? ui.hwPlan : (plans.length===1 ? plans[0].id : '')};
+  const subjOf = pid => [...new Set((pid ? plans.filter(p=>p.id===pid) : plans).flatMap(p => Object.values(p.cells).map(c=>c.subject)).concat(S.homework.items.map(h=>h.subject)).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  const form = openDlg(`
+    <h3>${isNew?'Neue Hausaufgabe':'Hausaufgabe bearbeiten'}</h3>
+    ${plans.length ? `<label class="field"><span>Für</span><select name="plan" id="hw-plan"><option value="">– kein Stundenplan –</option>${plans.map(p=>`<option value="${esc(p.id)}" ${x.plan===p.id?'selected':''}>${esc(p.name)}</option>`).join('')}</select></label>` : ''}
+    <label class="field"><span>Fach</span><input name="subject" list="hwsubj" value="${esc(x.subject)}" placeholder="z. B. Mathe" autofocus id="hw-subject"><datalist id="hwsubj"></datalist></label>
+    <label class="field"><span>Aufgabe</span><textarea name="text" placeholder="z. B. Buch S. 42, Nr. 3–5" id="hw-text">${esc(x.text)}</textarea></label>
+    <label class="field"><span>Abgeben bis</span><input type="date" name="due" value="${esc(x.due)}" id="hw-due"></label>
+    <div class="hw-next" id="hw-next" hidden></div>
+    <label class="field"><span>Notiz</span><input name="note" value="${esc(x.note)}" placeholder="z. B. Arbeitsblatt in der Mappe" id="hw-note"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions">${isNew?'':'<button type="button" class="btn danger" id="hw-del">Löschen</button>'}<span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const subject = f.subject.value.trim(), text = f.text.value.trim();
+      if (!subject && !text){ f.querySelector('#f-err').textContent = 'Bitte Fach oder Aufgabe eintragen.'; f.subject.focus(); return false; }
+      const rec = {id: x.id || newId(), created: x.created || Date.now(), subject, text, due: f.due.value, note: f.note.value.trim(),
+        plan: f.plan ? f.plan.value : '', done: !!x.done, doneAt: x.doneAt || null};
+      const i = S.homework.items.findIndex(h => h.id===rec.id);
+      if (i>=0) S.homework.items[i] = rec; else S.homework.items.push(rec);
+      if (ui.hwFilter==='erledigt' && !rec.done) ui.hwFilter = 'offen';
+      save('homework'); toast(isNew?'Hausaufgabe gespeichert':'Änderung gespeichert');
+    });
+  let autoDate = isNew;
+  const box = form.querySelector('#hw-next');
+  const refresh = () => {
+    const pid = form.plan ? form.plan.value : '';
+    form.querySelector('#hwsubj').innerHTML = subjOf(pid).map(s=>`<option value="${esc(s)}">`).join('');
+    const nd = nextLesson(pid, form.subject.value);
+    if (!nd){ box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = `<span>Nächste Stunde ${esc(form.subject.value.trim())}: <b>${fmtDay(nd)}</b></span>${form.due.value===nd?'':'<button type="button" class="btn sm" id="hw-use">Übernehmen</button>'}`;
+    if (autoDate && !form.due.value){ form.due.value = nd; box.querySelector('#hw-use')?.remove(); }
+    box.querySelector('#hw-use')?.addEventListener('click', () => { form.due.value = nd; refresh(); });
+  };
+  form.subject.addEventListener('input', () => { if (autoDate) form.due.value = ''; refresh(); });
+  form.due.addEventListener('input', () => { autoDate = false; refresh(); });
+  if (form.plan) form.plan.addEventListener('change', () => { if (autoDate) form.due.value = ''; refresh(); });
+  refresh();
+  const del = form.querySelector('#hw-del');
+  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.homework.items = S.homework.items.filter(h=>h.id!==x.id); save('homework'); closeDlg(); toast('Hausaufgabe gelöscht'); });
+}
+function sampleHomework(){
+  const d = n => { const x = new Date(); x.setDate(x.getDate()+n); return iso(x); };
+  const pid = ui.hwPlan!=='all' ? ui.hwPlan : (S.schedule.plans[0]?.id || '');
+  const mk = (subject,text,due,note) => ({id:newId(), created:Date.now(), subject, text:'Beispiel: '+text, due: nextLesson(pid, subject) || due, note:note||'', plan:pid, done:false, doneAt:null});
+  S.homework.items.push(mk('Mathe','Buch S. 42, Nr. 3–5',d(1)), mk('Englisch','Vokabeln Unit 2 lernen',d(2),'Test am Freitag'),
+    mk('Deutsch','Aufsatz zu Ende schreiben',d(3)), mk('Bio','Arbeitsblatt Pflanzenzelle',d(5)));
+  save('homework'); render(); toast('Beispiele eingefügt');
+}
+
 /* ---------- Ereignisse ---------- */
 $('#main').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
@@ -851,6 +991,13 @@ $('#main').addEventListener('click', e => {
   else if (a==='edittask'){ const x = S.tasks.items.find(i=>i.id===b.dataset.id); if (x) taskDialog(x); }
   else if (a==='cleardone'){ if (!armed(b,'Alle erledigten löschen?')) return; S.tasks.items = S.tasks.items.filter(i=>!i.done); save('tasks'); render(); toast('Erledigte gelöscht'); }
   else if (a==='sample-tasks') sampleTasks();
+  else if (a==='hw-new') hwDialog();
+  else if (a==='hw-edit'){ const x = S.homework.items.find(i=>i.id===b.dataset.id); if (x) hwDialog(x); }
+  else if (a==='hw-toggle'){ const x = S.homework.items.find(i=>i.id===b.dataset.id); if (x){ x.done = !x.done; x.doneAt = x.done?Date.now():null; save('homework'); render(); if (x.done) toast('Erledigt'); } }
+  else if (a==='hw-filter'){ ui.hwFilter = b.dataset.k; render(); }
+  else if (a==='hw-kid'){ ui.hwPlan = b.dataset.id; render(); }
+  else if (a==='hw-sample') sampleHomework();
+  else if (a==='hw-cleardone'){ if (!armed(b,'Alle erledigten löschen?')) return; S.homework.items = S.homework.items.filter(i=>!i.done); save('homework'); render(); toast('Erledigte gelöscht'); }
 });
 $('#main').addEventListener('submit', e => {
   if (e.target.id !== 'quick') return;

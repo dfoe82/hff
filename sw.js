@@ -1,5 +1,5 @@
-// Haushaltsplaner – macht die App offline verfügbar (nur wenn über http/https geöffnet)
-const CACHE = 'haushaltsplaner-v1';
+// Hanna Fritzie – macht die App offline verfügbar (nur wenn über http/https geöffnet)
+const CACHE = 'hanna-fritzie-v3';
 const FILES = ['./', './index.html', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
