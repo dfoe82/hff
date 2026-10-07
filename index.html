@@ -95,6 +95,8 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 
 /* Finanzen */
 .accounts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.accounts.one{grid-template-columns:1fr}
+
 .acct{padding:16px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;min-width:0;text-align:left;cursor:pointer}
 .acct[aria-pressed="true"]{border-color:currentColor;box-shadow:inset 0 0 0 1px currentColor}
 .acct .label{display:flex;align-items:center;gap:7px}
@@ -106,6 +108,8 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .bal.neg{color:var(--neg)!important}
 @media (max-width:560px){.accounts{grid-template-columns:1fr 1fr}.acct.total{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between}.acct .bal{font-size:1.2rem}}
 
+.accounts.one .acct.total{cursor:default;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px}
+.accounts.one .acct .bal{font-size:1.9rem}
 .monthbar{display:flex;align-items:center;gap:8px}
 .monthbar .m{font-family:var(--f-display);font-weight:700;font-size:1.05rem;min-width:9.5em;text-align:center}
 .fin-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:16px;align-items:start}
@@ -289,9 +293,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.1.0';
+const APP_VERSION = '1.2.0';
 const APP_BUILD = '2026-10-07';
 const CHANGELOG = [
+  ['1.2.0', '07.10.2026', ['Neue Einstellung: Bankkonto und Bargeld zu einem Konto zusammenlegen']],
   ['1.1.0', '07.10.2026', ['App heißt jetzt „Organizer“', 'Beispieldaten entfernt']],
   ['1.0.0', '07.10.2026', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
 ];
@@ -302,19 +307,19 @@ const DEF = {
   schedule: { plans:[], active:null },
   tasks: { items:[] },
   homework: { items:[] },
-  settings: { appName:'' }
+  settings: { appName:'', combined:false }
 };
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
 const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.start.bank!==0 || v.start.cash!==0)
-  : key==='schedule' ? v.plans.length>0 : key==='settings' ? !!v.appName : v.items.length>0;
+  : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined) : v.items.length>0;
 
 const LS = 'haushaltsplaner.v1.';
 const lsGet = k => { try { const v = localStorage.getItem(LS+k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
@@ -436,6 +441,8 @@ function armed(btn, label){
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => { ui.tab = b.dataset.tab; lsSet('tab', ui.tab); render(); window.scrollTo(0,0); }));
 /* ---------- Einstellungen: Name & Version ---------- */
 const appName = () => (S.settings && S.settings.appName) || DEFAULT_NAME;
+const isCombined = () => !!(S.settings && S.settings.combined);
+const isTransfer = t => t.type==='einzahlung' || t.type==='auszahlung';
 function applyName(){
   const n = appName();
   const h = document.getElementById('appTitle'); if (h && h.textContent !== n) h.textContent = n;
@@ -447,6 +454,7 @@ function settingsDialog(){
     <h3>Einstellungen</h3>
     <label class="field"><span>Name der App</span><input name="appName" value="${esc(appName())}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
     <p class="hint" style="margin:0">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="combined" id="set-combined" ${isCombined()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
     <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
@@ -455,7 +463,8 @@ function settingsDialog(){
     </div>`, f => {
       const n = f.appName.value.trim().replace(/\s+/g,' ');
       S.settings.appName = (n && n !== DEFAULT_NAME) ? n : '';
-      save('settings'); applyName(); toast('Name gespeichert');
+      S.settings.combined = f.combined.checked;
+      save('settings'); applyName(); toast('Einstellungen gespeichert');
     });
 }
 
@@ -496,6 +505,8 @@ function touches(t, acct){ if (acct==='all') return true; const e = effect(t); r
 
 function renderFinance(){
   const F = S.finance;
+  const one = isCombined();
+  if (one) ui.acct = 'all';
   const all = sortTx(F.tx);
   const bal = {bank:F.start.bank, cash:F.start.cash};
   const running = {};
@@ -503,7 +514,7 @@ function renderFinance(){
   const total = bal.bank + bal.cash;
 
   const [y,m] = ui.month.split('-').map(Number);
-  const monthTx = all.filter(t => t.date.startsWith(ui.month) && touches(t, ui.acct));
+  const monthTx = all.filter(t => t.date.startsWith(ui.month) && touches(t, ui.acct) && !(one && isTransfer(t)));
   let inc=0, exp=0, tin=0, tout=0; const cats = {};
   monthTx.forEach(t => {
     if (t.type==='einnahme') inc += t.amount;
@@ -522,11 +533,13 @@ function renderFinance(){
     </button>`;
 
   let html = `
-  <section class="accounts" aria-label="Kontostände">
+  ${one ? `<section class="accounts one" aria-label="Kontostand">
+    <div class="acct total"><span class="label"><i></i>Kontostand</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">Bank und Bargeld zusammen</span></div>
+  </section>` : `<section class="accounts" aria-label="Kontostände">
     ${acctCard('bank','bank','Bankkonto',bal.bank, ui.acct==='bank'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('cash','cash','Bargeld',bal.cash, ui.acct==='cash'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('all','total','Gesamt',total, ui.acct==='all'?'Alle Konten':'Alle anzeigen')}
-  </section>
+  </section>`}
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -534,7 +547,7 @@ function renderFinance(){
       <button class="icon-btn" data-act="month" data-d="1" aria-label="Nächster Monat">›</button>
     </div>
     <span style="margin-right:auto"></span>
-    <button class="btn ghost sm" data-act="start">Anfangsbestände</button>
+    <button class="btn ghost sm" data-act="start">${one?'Anfangsbestand':'Anfangsbestände'}</button>
     <button class="btn primary" data-act="newtx">+ Buchung</button>
   </div>
   <div class="fin-grid">
@@ -544,7 +557,7 @@ function renderFinance(){
         <div><span class="label">Einnahmen</span><span class="v amt pos">${euro(inc)}</span></div>
         <div><span class="label">Ausgaben</span><span class="v amt neg">${euro(exp)}</span></div>
         <div><span class="label">Bilanz</span><span class="v ${inc-exp<0?'amt neg':''}">${euro(inc-exp)}</span></div>
-        <div><span class="label">Ein- / Auszahlung</span><span class="v" style="font-size:.9rem">${euro(tin)} / ${euro(tout)}</span></div>
+        ${one ? `<div><span class="label">Buchungen</span><span class="v">${monthTx.length}</span></div>` : `<div><span class="label">Ein- / Auszahlung</span><span class="v" style="font-size:.9rem">${euro(tin)} / ${euro(tout)}</span></div>`}
       </div>
       <div class="panel cats">
         <span class="label">Ausgaben nach Kategorie</span>
@@ -557,11 +570,12 @@ function renderFinance(){
 function renderLedger(list, running){
   if (!S.finance.tx.length){
     return `<div class="empty"><strong>Noch keine Buchungen</strong>
-      Trag Einnahmen und Ausgaben für dein Bankkonto und dein Bargeld ein. Einzahlungen und Abhebungen verschieben Geld zwischen beiden.
+      ${isCombined() ? 'Trag deine Einnahmen und Ausgaben ein. Unter „Anfangsbestand“ legst du fest, mit welchem Betrag du startest.' : 'Trag Einnahmen und Ausgaben für dein Bankkonto und dein Bargeld ein. Einzahlungen und Abhebungen verschieben Geld zwischen beiden.'}
       <div class="row"><button class="btn primary" data-act="newtx">+ Erste Buchung</button></div></div>`;
   }
   if (!list.length) return `<div class="empty"><strong>Keine Buchungen in diesem Monat</strong>${ui.acct!=='all'?'Filter: '+ACCT[ui.acct]+'. ':''}<div class="row"><button class="btn primary" data-act="newtx">+ Buchung</button></div></div>`;
   const desc = list.slice().reverse();
+  const one = isCombined();
   let html = '', cur = '';
   desc.forEach(t => {
     if (t.date !== cur){
@@ -579,16 +593,16 @@ function renderLedger(list, running){
       const v = effect(t)[ui.acct];
       amtCls = v>=0?'pos':'neg'; amtTxt = (v>=0?'+':'−')+euro(Math.abs(v));
     }
-    const acctTag = (T.cls==='transfer')
+    const acctTag = one ? '' : (T.cls==='transfer')
       ? `<span class="tag ${t.type==='einzahlung'?'cash':'bank'}"><i></i>${t.type==='einzahlung'?'Bargeld':'Bank'}</span>→<span class="tag ${t.type==='einzahlung'?'bank':'cash'}"><i></i>${t.type==='einzahlung'?'Bank':'Bargeld'}</span>`
       : `<span class="tag ${t.account}"><i></i>${t.account==='cash'?'Bargeld':'Bank'}</span>`;
     const title = t.text || (T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
-    const run = ui.acct!=='all' && running[t.id] ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : '';
+    const run = !running[t.id] ? '' : one ? `<span class="run">${euro(running[t.id].bank + running[t.id].cash)}</span>` : ui.acct!=='all' ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : '';
     html += `<button class="tx" data-act="edittx" data-id="${esc(t.id)}">
       <span class="ico ${T.cls}" aria-hidden="true">${T.sym}</span>
       <span class="t">${esc(title)}</span>
       <span class="amt ${amtCls}">${amtTxt}</span>
-      <span class="meta">${acctTag}${t.cat?'<span>· '+esc(t.cat)+'</span>':''}<span>· ${T.label}</span></span>
+      <span class="meta">${acctTag}${t.cat?(one?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat ? '' : '· '}${T.label}</span></span>
       ${run}
     </button>`;
   });
@@ -600,11 +614,13 @@ function txDialog(t){
   t = t ? clone(t) : {type:'ausgabe', account:'bank', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:'', cat:''};
   if (isNew && ui.acct!=='all') t.account = ui.acct;
   const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
-  const typeRadios = Object.entries(TYPES).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
+  const one = isCombined();
+  if (one && isTransfer(t)) t.type = 'ausgabe';
+  const typeRadios = Object.entries(TYPES).filter(([k]) => !one || !isTransfer({type:k})).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
   const form = openDlg(`
     <h3>${isNew?'Neue Buchung':'Buchung bearbeiten'}</h3>
     <div class="seg" role="radiogroup" aria-label="Art" style="grid-template-columns:repeat(2,1fr);grid-auto-flow:row">${typeRadios}</div>
-    <div class="field" id="f-acct"><span>Konto</span>
+    <div class="field" id="f-acct" ${one?'hidden':''}><span>Konto</span>
       <div class="seg"><label><input type="radio" name="account" value="bank" ${t.account!=='cash'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash" ${t.account==='cash'?'checked':''}><span>Bargeld</span></label></div>
     </div>
     <p class="hint" id="f-hint" hidden></p>
@@ -627,7 +643,7 @@ function txDialog(t){
       if (!f.date.value){ f.querySelector('#f-err').textContent = 'Bitte ein Datum wählen.'; return false; }
       const type = f.type.value;
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type, amount, date: f.date.value, text: f.text.value.trim(), cat: (type==='einnahme'||type==='ausgabe') ? f.cat.value.trim() : '' };
-      if (type==='einnahme'||type==='ausgabe') rec.account = f.account.value;
+      if (type==='einnahme'||type==='ausgabe') rec.account = one ? (t.account || 'bank') : f.account.value;
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
       ui.month = rec.date.slice(0,7);
@@ -635,7 +651,7 @@ function txDialog(t){
     });
   const sync2 = () => {
     const type = form.type.value, tr = type==='einzahlung'||type==='auszahlung';
-    form.querySelector('#f-acct').hidden = tr; form.querySelector('#f-cat').hidden = tr;
+    form.querySelector('#f-acct').hidden = tr || one; form.querySelector('#f-cat').hidden = tr;
     const h = form.querySelector('#f-hint'); h.hidden = !tr;
     if (tr) h.textContent = type==='einzahlung' ? 'Bargeld wird aufs Bankkonto eingezahlt: Bargeld sinkt, Bankkonto steigt.' : 'Geld wird vom Bankkonto abgehoben: Bankkonto sinkt, Bargeld steigt.';
   };
@@ -644,6 +660,19 @@ function txDialog(t){
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
 }
 function startDialog(){
+  if (isCombined()){
+    openDlg(`
+    <h3>Anfangsbestand</h3>
+    <p class="hint">Der Betrag, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.</p>
+    <label class="field"><span>Kontostand am Start (€)</span><input class="amount-in" name="total" inputmode="decimal" value="${amtInput(S.finance.start.bank + S.finance.start.cash)}" placeholder="0,00" autofocus id="st-total"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const v = f.total.value.trim() ? parseAmt(f.total.value) : 0;
+      if (isNaN(v)){ f.querySelector('#f-err').textContent = 'Bitte einen Betrag wie 1250,00 eingeben (minus für Dispo).'; return false; }
+      S.finance.start.bank = v - S.finance.start.cash; save('finance'); toast('Anfangsbestand gespeichert');
+    });
+    return;
+  }
   openDlg(`
     <h3>Anfangsbestände</h3>
     <p class="hint">Der Stand, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.</p>
