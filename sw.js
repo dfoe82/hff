@@ -1,5 +1,5 @@
-// Hanna Fritzie – macht die App offline verfügbar (nur wenn über http/https geöffnet)
-const CACHE = 'hanna-fritzie-v3';
+// Organizer – macht die App offline verfügbar (nur wenn über http/https geöffnet)
+const CACHE = 'organizer-1.1.0'; // bei jeder neuen Version anpassen
 const FILES = ['./', './index.html', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {

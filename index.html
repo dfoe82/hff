@@ -5,13 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Hanna Fritzie">
+<meta name="apple-mobile-web-app-title" content="Organizer">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="theme-color" content="#eef2f1" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#0f1514" media="(prefers-color-scheme: dark)">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="icon" type="image/png" href="apple-touch-icon.png">
-<title>Hanna Fritzie</title>
+<title>Organizer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
@@ -212,6 +212,11 @@ td.per.now b{color:var(--accent)}
 .prio.normal{visibility:hidden}
 
 #backupBtn{order:3}
+.brand{min-width:0}
+@media (max-width:480px){.brand .sync > span{display:none}.brand h1{font-size:1.25rem}}
+.brand h1{overflow:hidden;text-overflow:ellipsis}
+#settingsBtn{color:var(--muted)}
+#settingsBtn{order:4}
 #backupBtn.due{border-color:var(--warn);color:var(--warn)}
 #backupBtn.due::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--warn)}
 @media (max-width:700px){header.top{flex-wrap:nowrap}}
@@ -238,7 +243,8 @@ td.per.now b{color:var(--accent)}
 <body>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><h1>Hanna Fritzie</h1><span class="sync" id="sync"><i></i><span>Lädt …</span></span></div>
+    <div class="brand"><h1 id="appTitle">Organizer</h1><span class="sync" id="sync"><i></i><span>Lädt …</span></span></div>
+    <button class="icon-btn" id="settingsBtn" type="button" aria-label="Einstellungen" title="Einstellungen"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn sm" id="backupBtn" type="button" aria-label="Daten sichern">Sichern</button>
     <nav class="tabs" role="tablist" aria-label="Bereiche">
       <button role="tab" data-tab="finanzen" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg>Finanzen</button>
@@ -282,23 +288,33 @@ const daysBetween = (a,b) => Math.round((new Date(b+'T12:00:00') - new Date(a+'T
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
 
 /* ---------- Zustand ---------- */
-const KEYS = ['finance','schedule','tasks','homework'];
+/* ---------- Version ---------- */
+const APP_VERSION = '1.1.0';
+const APP_BUILD = '2026-10-07';
+const CHANGELOG = [
+  ['1.1.0', '07.10.2026', ['App heißt jetzt „Organizer“', 'Beispieldaten entfernt']],
+  ['1.0.0', '07.10.2026', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
+];
+const DEFAULT_NAME = 'Organizer';
+const KEYS = ['finance','schedule','tasks','homework','settings'];
 const DEF = {
   finance: { start:{bank:0,cash:0}, tx:[] },
   schedule: { plans:[], active:null },
   tasks: { items:[] },
-  homework: { items:[] }
+  homework: { items:[] },
+  settings: { appName:'' }
 };
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
 const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.start.bank!==0 || v.start.cash!==0)
-  : key==='schedule' ? v.plans.length>0 : v.items.length>0;
+  : key==='schedule' ? v.plans.length>0 : key==='settings' ? !!v.appName : v.items.length>0;
 
 const LS = 'haushaltsplaner.v1.';
 const lsGet = k => { try { const v = localStorage.getItem(LS+k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
@@ -328,7 +344,7 @@ function save(key){
   updateBackupHint();
 }
 function setSync(on, text){
-  const el = $('#sync'); el.classList.toggle('on', on); el.querySelector('span').textContent = text;
+  const el = $('#sync'); el.classList.toggle('on', on); el.querySelector('span').textContent = text; el.title = text;
 }
 function initLocal(){
   try { localStorage.setItem(LS+'probe','1'); localStorage.removeItem(LS+'probe'); setSync(true,'Lokal gespeichert'); }
@@ -344,10 +360,10 @@ function updateBackupHint(){
   const any = KEYS.some(k => hasContent(k, S[k]));
   btn.classList.toggle('due', any && changed > last && Date.now() - last > 7*864e5);
 }
-function backupData(){ return {app:'haushaltsplaner', version:1, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework}; }
+function backupData(){ return {app:'haushaltsplaner', version:1, appVersion:APP_VERSION, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework, settings:S.settings}; }
 async function exportBackup(){
   const json = JSON.stringify(backupData(), null, 2);
-  const name = 'hanna-fritzie-sicherung-'+today()+'.json';
+  const name = (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung-'+today()+'.json';
   const file = new File([json], name, {type:'application/json'});
   try {
     if (navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
@@ -364,8 +380,8 @@ function importBackup(file){
   const r = new FileReader();
   r.onload = () => {
     let d; try { d = JSON.parse(r.result); } catch(e){ toast('Die Datei ist keine gültige Sicherung.'); return; }
-    if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei stammt nicht aus Hanna Fritzie.'); return; }
-    KEYS.forEach(k => { S[k] = normalize(k, d[k]); save(k); });
+    if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei ist keine Sicherung dieser App.'); return; }
+    KEYS.forEach(k => { if (k==='settings' && !d[k]) return; S[k] = normalize(k, d[k]); save(k); });
     lsSet('lastBackup', Date.now()); updateBackupHint();
     if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt');
   };
@@ -418,7 +434,33 @@ function armed(btn, label){
 
 /* ---------- Navigation ---------- */
 document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('click', () => { ui.tab = b.dataset.tab; lsSet('tab', ui.tab); render(); window.scrollTo(0,0); }));
+/* ---------- Einstellungen: Name & Version ---------- */
+const appName = () => (S.settings && S.settings.appName) || DEFAULT_NAME;
+function applyName(){
+  const n = appName();
+  const h = document.getElementById('appTitle'); if (h && h.textContent !== n) h.textContent = n;
+  if (document.title !== n) document.title = n;
+  const m = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (m) m.setAttribute('content', n);
+}
+function settingsDialog(){
+  const form = openDlg(`
+    <h3>Einstellungen</h3>
+    <label class="field"><span>Name der App</span><input name="appName" value="${esc(appName())}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
+    <p class="hint" style="margin:0">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
+    <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="label">Version</span><span class="num" style="font-weight:600">${APP_VERSION} <span style="color:var(--muted);font-weight:400">· ${new Date(APP_BUILD+'T12:00:00').toLocaleDateString('de-DE')}</span></span></div>
+      ${CHANGELOG.map(([v,d,items]) => `<div style="font-size:.86rem"><b class="num">${v}</b> <span style="color:var(--muted)">${d}</span><ul style="margin:4px 0 0;padding-left:18px;color:var(--muted)">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}
+    </div>`, f => {
+      const n = f.appName.value.trim().replace(/\s+/g,' ');
+      S.settings.appName = (n && n !== DEFAULT_NAME) ? n : '';
+      save('settings'); applyName(); toast('Name gespeichert');
+    });
+}
+
 function render(){
+  applyName();
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab===ui.tab)));
   const m = $('#main');
   if (ui.tab==='finanzen') m.innerHTML = renderFinance();
@@ -516,7 +558,7 @@ function renderLedger(list, running){
   if (!S.finance.tx.length){
     return `<div class="empty"><strong>Noch keine Buchungen</strong>
       Trag Einnahmen und Ausgaben für dein Bankkonto und dein Bargeld ein. Einzahlungen und Abhebungen verschieben Geld zwischen beiden.
-      <div class="row"><button class="btn primary" data-act="newtx">+ Erste Buchung</button><button class="btn" data-act="sample-fin">Beispieldaten einfügen</button></div></div>`;
+      <div class="row"><button class="btn primary" data-act="newtx">+ Erste Buchung</button></div></div>`;
   }
   if (!list.length) return `<div class="empty"><strong>Keine Buchungen in diesem Monat</strong>${ui.acct!=='all'?'Filter: '+ACCT[ui.acct]+'. ':''}<div class="row"><button class="btn primary" data-act="newtx">+ Buchung</button></div></div>`;
   const desc = list.slice().reverse();
@@ -616,24 +658,6 @@ function startDialog(){
       S.finance.start = {bank:b, cash:c}; save('finance'); toast('Anfangsbestände gespeichert');
     });
 }
-function sampleFinance(){
-  const ym = ui.month, d = n => ym+'-'+pad(n);
-  const mk = (day,type,amount,text,cat,account) => ({id:newId(), created:Date.now()+day, type, amount, date:d(day), text:'Beispiel: '+text, cat:cat||'', ...(account?{account}:{})});
-  S.finance.start = {bank:184000, cash:12000};
-  S.finance.tx.push(
-    mk(1,'einnahme',285000,'Gehalt','Gehalt','bank'),
-    mk(1,'ausgabe',98000,'Miete','Wohnen','bank'),
-    mk(2,'auszahlung',15000,'Geldautomat'),
-    mk(3,'ausgabe',8640,'Wocheneinkauf','Lebensmittel','bank'),
-    mk(4,'ausgabe',1250,'Bäcker','Lebensmittel','cash'),
-    mk(5,'einnahme',25500,'Kindergeld','Kindergeld','bank'),
-    mk(6,'ausgabe',6200,'Tanken','Auto & Tanken','bank'),
-    mk(6,'ausgabe',2400,'Schwimmbad','Freizeit','cash'),
-    mk(7,'einnahme',4000,'Flohmarkt','Sonstiges','cash'),
-    mk(8,'einzahlung',5000,'Bargeld eingezahlt')
-  );
-  save('finance'); render(); toast('Beispieldaten eingefügt – Einträge mit „Beispiel:“ kannst du löschen');
-}
 
 /* =========================================================
    STUNDENPLAN
@@ -649,7 +673,7 @@ function renderSchedule(){
     return `<div class="sec-head"><h2>Stundenplan</h2></div>
     <div class="panel empty"><strong>Noch kein Stundenplan</strong>
       Lege einen Plan an, z. B. für jedes Kind einen eigenen. Danach tippst du auf ein Feld und trägst Fach und Raum ein.
-      <div class="row"><button class="btn primary" data-act="newplan">+ Stundenplan anlegen</button><button class="btn" data-act="sample-tt">Beispielplan einfügen</button></div></div>`;
+      <div class="row"><button class="btn primary" data-act="newplan">+ Stundenplan anlegen</button></div></div>`;
   }
   const P = activePlan();
   const nDays = P.saturday ? 6 : 5;
@@ -746,20 +770,6 @@ function cellDialog(d,p){
   const clr = form.querySelector('#cclr');
   if (clr) clr.addEventListener('click', () => { delete P.cells[key]; save('schedule'); closeDlg(); });
 }
-function sampleSchedule(){
-  const plan = {id:newId(), name:'Beispiel 5b', saturday:false, periods:clone(DEFAULT_PERIODS), cells:{}};
-  const grid = [
-    ['Deutsch','Mathe','Englisch','Mathe','Sport'],
-    ['Deutsch','Mathe','Englisch','Bio','Sport'],
-    ['Englisch','Deutsch','Mathe','Deutsch','Kunst'],
-    ['Erdkunde','Musik','Bio','Englisch','Kunst'],
-    ['Mathe','Religion','Geschichte','Religion',''],
-    ['','Sport','','','']
-  ];
-  const rooms = {Sport:'Halle',Kunst:'K1',Musik:'M2',Bio:'N3'};
-  grid.forEach((row,p) => row.forEach((s,d) => { if (s) plan.cells[d+'-'+p] = {subject:s, room:rooms[s]||'204', teacher:'', note:''}; }));
-  S.schedule.plans.push(plan); S.schedule.active = plan.id; save('schedule'); render(); toast('Beispielplan eingefügt');
-}
 
 /* =========================================================
    AUFGABEN
@@ -782,8 +792,7 @@ function renderTasks(){
   <div class="panel" style="margin-top:12px;overflow:hidden">`;
 
   if (!items.length){
-    html += `<div class="empty"><strong>Keine Aufgaben</strong>Tipp oben einen Titel ein und drück auf Hinzufügen. Ein Datum ist optional.
-      <div class="row"><button class="btn" data-act="sample-tasks">Beispielaufgaben einfügen</button></div></div></div>`;
+    html += `<div class="empty"><strong>Keine Aufgaben</strong>Tipp oben einen Titel ein und drück auf Hinzufügen. Ein Datum ist optional.</div></div>`;
     return html;
   }
   const sortOpen = l => l.slice().sort((a,b) => (a.due||'9999') < (b.due||'9999') ? -1 : (a.due||'9999') > (b.due||'9999') ? 1 : prioRank[a.prio||'normal'] - prioRank[b.prio||'normal']);
@@ -843,13 +852,6 @@ function taskDialog(x){
   const del = form.querySelector('#tdel');
   del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.tasks.items = S.tasks.items.filter(i=>i.id!==x.id); save('tasks'); closeDlg(); toast('Aufgabe gelöscht'); });
 }
-function sampleTasks(){
-  const d = n => { const x = new Date(); x.setDate(x.getDate()+n); return iso(x); };
-  const mk = (title,due,prio,note) => ({id:newId(), created:Date.now(), title:'Beispiel: '+title, due, prio, note:note||'', done:false});
-  S.tasks.items.push(mk('Kfz-Versicherung vergleichen',d(-2),'hoch'), mk('Elternbrief unterschreiben',d(0),'hoch','Mappe im Ranzen'),
-    mk('Getränke für Samstag kaufen',d(2),'normal'), mk('Winterreifen-Termin machen',d(9),'normal'), mk('Fotos sortieren','', 'niedrig'));
-  save('tasks'); render(); toast('Beispielaufgaben eingefügt');
-}
 
 /* =========================================================
    HAUSAUFGABEN
@@ -896,7 +898,7 @@ function renderHomework(){
   if (!S.homework.items.length){
     return html + `<div class="empty"><strong>Keine Hausaufgaben eingetragen</strong>
       Trag Fach, Aufgabe und Abgabetermin ein. ${plans.length ? 'Mit „Nächste Stunde“ wird der Termin aus dem Stundenplan übernommen.' : 'Mit einem Stundenplan kann der Termin automatisch auf die nächste Stunde des Fachs gesetzt werden.'}
-      <div class="row"><button class="btn primary" data-act="hw-new">+ Erste Hausaufgabe</button><button class="btn" data-act="hw-sample">Beispiele einfügen</button></div></div></div>`;
+      <div class="row"><button class="btn primary" data-act="hw-new">+ Erste Hausaufgabe</button></div></div></div>`;
   }
   const showKid = plans.length > 1 && ui.hwPlan==='all';
   const groups = [];
@@ -961,16 +963,9 @@ function hwDialog(x){
   const del = form.querySelector('#hw-del');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.homework.items = S.homework.items.filter(h=>h.id!==x.id); save('homework'); closeDlg(); toast('Hausaufgabe gelöscht'); });
 }
-function sampleHomework(){
-  const d = n => { const x = new Date(); x.setDate(x.getDate()+n); return iso(x); };
-  const pid = ui.hwPlan!=='all' ? ui.hwPlan : (S.schedule.plans[0]?.id || '');
-  const mk = (subject,text,due,note) => ({id:newId(), created:Date.now(), subject, text:'Beispiel: '+text, due: nextLesson(pid, subject) || due, note:note||'', plan:pid, done:false, doneAt:null});
-  S.homework.items.push(mk('Mathe','Buch S. 42, Nr. 3–5',d(1)), mk('Englisch','Vokabeln Unit 2 lernen',d(2),'Test am Freitag'),
-    mk('Deutsch','Aufsatz zu Ende schreiben',d(3)), mk('Bio','Arbeitsblatt Pflanzenzelle',d(5)));
-  save('homework'); render(); toast('Beispiele eingefügt');
-}
 
 /* ---------- Ereignisse ---------- */
+document.getElementById('settingsBtn').addEventListener('click', settingsDialog);
 $('#main').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const a = b.dataset.act;
@@ -979,24 +974,20 @@ $('#main').addEventListener('click', e => {
   else if (a==='newtx') txDialog();
   else if (a==='edittx') txDialog(S.finance.tx.find(t=>t.id===b.dataset.id));
   else if (a==='start') startDialog();
-  else if (a==='sample-fin') sampleFinance();
   else if (a==='newplan') planDialog();
   else if (a==='editplan') planDialog(activePlan());
   else if (a==='plan'){ S.schedule.active = b.dataset.id; save('schedule'); render(); }
   else if (a==='cell') cellDialog(+b.dataset.d, +b.dataset.p);
   else if (a==='day'){ ui.day = +b.dataset.d; render(); }
-  else if (a==='sample-tt') sampleSchedule();
   else if (a==='tf'){ ui.taskFilter = b.dataset.k; render(); }
   else if (a==='toggle'){ const x = S.tasks.items.find(i=>i.id===b.dataset.id); if (x){ x.done = !x.done; x.doneAt = x.done?Date.now():null; save('tasks'); render(); if (x.done) toast('Erledigt'); } }
   else if (a==='edittask'){ const x = S.tasks.items.find(i=>i.id===b.dataset.id); if (x) taskDialog(x); }
   else if (a==='cleardone'){ if (!armed(b,'Alle erledigten löschen?')) return; S.tasks.items = S.tasks.items.filter(i=>!i.done); save('tasks'); render(); toast('Erledigte gelöscht'); }
-  else if (a==='sample-tasks') sampleTasks();
   else if (a==='hw-new') hwDialog();
   else if (a==='hw-edit'){ const x = S.homework.items.find(i=>i.id===b.dataset.id); if (x) hwDialog(x); }
   else if (a==='hw-toggle'){ const x = S.homework.items.find(i=>i.id===b.dataset.id); if (x){ x.done = !x.done; x.doneAt = x.done?Date.now():null; save('homework'); render(); if (x.done) toast('Erledigt'); } }
   else if (a==='hw-filter'){ ui.hwFilter = b.dataset.k; render(); }
   else if (a==='hw-kid'){ ui.hwPlan = b.dataset.id; render(); }
-  else if (a==='hw-sample') sampleHomework();
   else if (a==='hw-cleardone'){ if (!armed(b,'Alle erledigten löschen?')) return; S.homework.items = S.homework.items.filter(i=>!i.done); save('homework'); render(); toast('Erledigte gelöscht'); }
 });
 $('#main').addEventListener('submit', e => {
