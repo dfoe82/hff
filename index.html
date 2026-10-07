@@ -20,7 +20,7 @@
 :root{
   --bg:#eef2f1; --surface:#ffffff; --sunk:#e4eae8; --ink:#16201e; --muted:#5a6966; --line:#d6dfdc;
   --accent:#0d6b61; --accent-ink:#ffffff;
-  --bank:#2b5c9c; --cash:#9a6a0c; --pos:#25764a; --neg:#b0373a; --warn:#a85d00;
+  --bank:#2b5c9c; --cash:#9a6a0c; --save:#7a4fc0; --pos:#25764a; --neg:#b0373a; --warn:#a85d00;
   --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --f-body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
   --f-num:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -30,14 +30,14 @@
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#0f1514; --surface:#18201e; --sunk:#131a19; --ink:#e4ebe9; --muted:#93a29e; --line:#2a3532;
   --accent:#43b6a7; --accent-ink:#06201c;
-  --bank:#78a6e6; --cash:#e2ad4c; --pos:#5fc78c; --neg:#f07b7b; --warn:#f0a24a;
+  --bank:#78a6e6; --cash:#e2ad4c; --save:#b893f0; --pos:#5fc78c; --neg:#f07b7b; --warn:#f0a24a;
   --shadow:0 1px 2px rgb(0 0 0 / .4);
   --s0:#ef6d66; --s1:#6fa0f0; --s2:#5cc785; --s3:#e6b04a; --s4:#b088ea; --s5:#4fc4c0; --s6:#ec85a8; --s7:#a8b85a;
   color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#0f1514; --surface:#18201e; --sunk:#131a19; --ink:#e4ebe9; --muted:#93a29e; --line:#2a3532;
   --accent:#43b6a7; --accent-ink:#06201c;
-  --bank:#78a6e6; --cash:#e2ad4c; --pos:#5fc78c; --neg:#f07b7b; --warn:#f0a24a;
+  --bank:#78a6e6; --cash:#e2ad4c; --save:#b893f0; --pos:#5fc78c; --neg:#f07b7b; --warn:#f0a24a;
   --shadow:0 1px 2px rgb(0 0 0 / .4);
   --s0:#ef6d66; --s1:#6fa0f0; --s2:#5cc785; --s3:#e6b04a; --s4:#b088ea; --s5:#4fc4c0; --s6:#ec85a8; --s7:#a8b85a;
   color-scheme:dark}
@@ -101,11 +101,18 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .acct[aria-pressed="true"]{border-color:currentColor;box-shadow:inset 0 0 0 1px currentColor}
 .acct .label{display:flex;align-items:center;gap:7px}
 .acct .label i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.acct.bank{color:var(--bank)} .acct.cash{color:var(--cash)} .acct.total{color:var(--ink)}
+.acct.bank{color:var(--bank)} .acct.cash{color:var(--cash)} .acct.total{color:var(--ink)} .acct.save{color:var(--save)}
+.acct.save .label i{background:var(--save);transform:rotate(45deg) scale(.85)}
+.accounts.has-save{grid-template-columns:repeat(4,minmax(0,1fr))}
+.accounts.one.has-save{grid-template-columns:repeat(2,minmax(0,1fr))}
+.accounts.one.has-save .acct.total{cursor:pointer}
+.accounts.one.has-save .acct .bal{font-size:1.45rem}
 .acct.bank .label i{background:var(--bank)} .acct.cash .label i{background:var(--cash);border-radius:50%} .acct.total .label i{background:var(--ink)}
 .acct .bal{font-family:var(--f-num);font-weight:600;font-size:1.45rem;color:var(--ink);overflow-wrap:anywhere}
 .acct .sub{font-size:.8rem;color:var(--muted)}
 .bal.neg{color:var(--neg)!important}
+@media (max-width:860px){.accounts.has-save{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.accounts.has-save .acct.save,.accounts.has-save .acct.total{grid-column:auto;flex-direction:column;align-items:flex-start;justify-content:flex-start}.accounts.one.has-save .acct .bal{font-size:1.2rem}}
 @media (max-width:560px){.accounts{grid-template-columns:1fr 1fr}.acct.total{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between}.acct .bal{font-size:1.2rem}}
 
 .accounts.one .acct.total{cursor:default;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:4px}
@@ -118,6 +125,13 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .stats > div{background:var(--surface);padding:12px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .stats .v{font-family:var(--f-num);font-weight:600;font-size:1.05rem}
 .cats{padding:14px;display:flex;flex-direction:column;gap:10px}
+.rec-list{display:flex;flex-direction:column}
+.rec-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:1px 10px;align-items:baseline;padding:8px 0;border:0;border-top:1px solid var(--line);background:transparent;text-align:left;width:100%}
+.rec-row:first-child{border-top:0}
+.rec-row b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rec-row small{grid-column:1/-1;color:var(--muted);font-size:.78rem}
+.rec-row.paused{opacity:.55}
+.rec-tag{color:var(--accent);font-weight:700}
 .cat-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 10px;font-size:.88rem}
 .cat-row .bar{grid-column:1/-1;height:6px;background:var(--sunk);border-radius:3px;overflow:hidden}
 .cat-row .bar i{display:block;height:100%;background:var(--neg);opacity:.75;border-radius:3px}
@@ -132,6 +146,10 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .tx .ico{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:1rem;background:var(--sunk);color:var(--muted);grid-row:span 2}
 .tx .ico.einnahme{color:var(--pos);background:color-mix(in srgb,var(--pos) 14%,transparent)}
 .tx .ico.ausgabe{color:var(--neg);background:color-mix(in srgb,var(--neg) 12%,transparent)}
+.tx .ico.sparen{color:var(--save);background:color-mix(in srgb,var(--save) 15%,transparent)}
+.tag.save{color:var(--save)} .tag.save i{transform:rotate(45deg) scale(.85)}
+.save-v{color:var(--save)}
+.save-btn{color:var(--save);border-color:color-mix(in srgb,var(--save) 45%,var(--line))}
 .tx .ico.transfer{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .tx .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tx .meta{font-size:.78rem;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;grid-column:2}
@@ -152,7 +170,9 @@ dialog::backdrop{background:rgb(10 20 18 / .45)}
 .field > span{font-size:.8rem;font-weight:600;color:var(--muted)}
 .field input,.field select,.field textarea{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;width:100%;min-width:0;font-size:16px}
 .field textarea{resize:vertical;min-height:70px}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.row2 > *{min-width:0}
+.field input[type=date]{-webkit-appearance:none;appearance:none;min-height:44px}
 .seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;background:var(--sunk);border-radius:10px;padding:3px;gap:3px}
 .seg label{position:relative}
 .seg input{position:absolute;opacity:0;inset:0}
@@ -295,20 +315,21 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.3.1';
+const APP_VERSION = '1.5.0';
 const SECTIONS = [['finanzen','Finanzen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
-const APP_BUILD = '2026-10-07';
 const CHANGELOG = [
-  ['1.3.1', '07.10.2026', ['Neues App-Symbol: Ringbuch mit Registern und Checkliste']],
-  ['1.3.0', '07.10.2026', ['Bereiche (Finanzen, Stundenplan, Hausaufgaben, Aufgaben) einzeln ein- und ausschaltbar']],
-  ['1.2.0', '07.10.2026', ['Neue Einstellung: Bankkonto und Bargeld zu einem Konto zusammenlegen']],
-  ['1.1.0', '07.10.2026', ['App heißt jetzt „Organizer“', 'Beispieldaten entfernt']],
-  ['1.0.0', '07.10.2026', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
+  ['1.5.0', '07.10.2026, 22:00 Uhr', ['Option „Sparen“: Geld aufs Sparen legen und wieder auszahlen, Sparstand als eigene Karte', 'Versionshistorie zeigt die Uhrzeit']],
+  ['1.4.0', '07.10.2026, 21:57 Uhr', ['Regelmäßige Einnahmen und Ausgaben (monatlich, wöchentlich, jährlich), die automatisch gebucht werden']],
+  ['1.3.1', '07.10.2026, 21:49 Uhr', ['Neues App-Symbol: Ringbuch mit Registern und Checkliste']],
+  ['1.3.0', '07.10.2026, 21:46 Uhr', ['Bereiche (Finanzen, Stundenplan, Hausaufgaben, Aufgaben) einzeln ein- und ausschaltbar']],
+  ['1.2.0', '07.10.2026, 21:40 Uhr', ['Neue Einstellung: Bankkonto und Bargeld zu einem Konto zusammenlegen']],
+  ['1.1.0', '07.10.2026, 07:55 Uhr', ['App heißt jetzt „Organizer“', 'Beispieldaten entfernt']],
+  ['1.0.0', '07.10.2026, 07:52 Uhr', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
 ];
 const DEFAULT_NAME = 'Organizer';
 const KEYS = ['finance','schedule','tasks','homework','settings'];
 const DEF = {
-  finance: { start:{bank:0,cash:0}, tx:[] },
+  finance: { start:{bank:0,cash:0,save:0}, tx:[], recurring:[] },
   schedule: { plans:[], active:null },
   tasks: { items:[] },
   homework: { items:[] },
@@ -317,14 +338,14 @@ const DEF = {
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
-  if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; }
+  if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0, save:+(v.start?.save)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; d.recurring = Array.isArray(v.recurring)?v.recurring:[]; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.savings = !!v.savings; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
-const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.start.bank!==0 || v.start.cash!==0)
-  : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined || v.hidden.length>0) : v.items.length>0;
+const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.recurring.length>0 || v.start.bank!==0 || v.start.cash!==0 || v.start.save!==0)
+  : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined || v.savings || v.hidden.length>0) : v.items.length>0;
 
 const LS = 'haushaltsplaner.v1.';
 const lsGet = k => { try { const v = localStorage.getItem(LS+k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
@@ -456,6 +477,8 @@ function applySections(){
   document.body.classList.toggle('single', vis.length < 2);
 }
 const isTransfer = t => t.type==='einzahlung' || t.type==='auszahlung';
+const isSave = t => t.type==='sparen' || t.type==='entsparen';
+const savingsOn = () => !!(S.settings && S.settings.savings);
 function applyName(){
   const n = appName();
   const h = document.getElementById('appTitle'); if (h && h.textContent !== n) h.textContent = n;
@@ -472,11 +495,12 @@ function settingsDialog(){
       ${SECTIONS.map(([k,l]) => `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="sec" value="${k}" id="set-sec-${k}" ${isVisible(k)?'checked':''} style="width:18px;height:18px;flex:none">${l}</label>`).join('')}
       <span style="font-size:.85rem;color:var(--muted)">Ausgeblendete Bereiche behalten ihre Daten. Mindestens ein Bereich bleibt sichtbar.</span>
     </fieldset>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="savings" id="set-savings" ${savingsOn()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Sparen anzeigen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Zeigt im Bereich Finanzen den Knopf „Sparen“ und den Sparstand. Gespartes Geld wird vom Konto abgezogen und kann wieder ausgezahlt werden.</span></span></label>
     <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px" id="set-combined-row"><input type="checkbox" name="combined" id="set-combined" ${isCombined()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
     <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="label">Version</span><span class="num" style="font-weight:600">${APP_VERSION} <span style="color:var(--muted);font-weight:400">· ${new Date(APP_BUILD+'T12:00:00').toLocaleDateString('de-DE')}</span></span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="label">Version</span><span class="num" style="font-weight:600">${APP_VERSION} <span style="color:var(--muted);font-weight:400">· ${CHANGELOG[0][1]}</span></span></div>
       ${CHANGELOG.map(([v,d,items]) => `<div style="font-size:.86rem"><b class="num">${v}</b> <span style="color:var(--muted)">${d}</span><ul style="margin:4px 0 0;padding-left:18px;color:var(--muted)">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}
     </div>`, f => {
       const n = f.appName.value.trim().replace(/\s+/g,' ');
@@ -485,11 +509,14 @@ function settingsDialog(){
       if (!shown.length){ f.querySelector('#f-err').textContent = 'Bitte mindestens einen Bereich auswählen.'; return false; }
       S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => !shown.includes(k));
       S.settings.combined = f.combined.checked;
+      S.settings.savings = f.savings.checked;
       save('settings'); applyName(); toast('Einstellungen gespeichert');
     });
 }
 
 function render(){
+  const made = runRecurring();
+  if (made){ save('finance'); toast(made===1 ? '1 regelmäßige Buchung eingetragen' : made+' regelmäßige Buchungen eingetragen'); }
   applyName();
   applySections();
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab===ui.tab)));
@@ -507,20 +534,27 @@ const TYPES = {
   einnahme:  {label:'Einnahme',  sym:'+', cls:'einnahme'},
   ausgabe:   {label:'Ausgabe',   sym:'−', cls:'ausgabe'},
   einzahlung:{label:'Einzahlung',sym:'⇢', cls:'transfer', note:'Bargeld → Bank'},
-  auszahlung:{label:'Auszahlung',sym:'⇠', cls:'transfer', note:'Bank → Bargeld'}
+  auszahlung:{label:'Auszahlung',sym:'⇠', cls:'transfer', note:'Bank → Bargeld'},
+  sparen:    {label:'Sparen',    sym:'↓', cls:'sparen'},
+  entsparen: {label:'Vom Sparen',sym:'↑', cls:'sparen'}
 };
-const ACCT = {bank:'Bankkonto', cash:'Bargeld'};
+const ACCT = {bank:'Bankkonto', cash:'Bargeld', save:'Sparen'};
 const DEFAULT_CATS = ['Lebensmittel','Haushalt','Wohnen','Auto & Tanken','Kinder','Freizeit','Gesundheit','Versicherungen','Kleidung','Geschenke','Gehalt','Kindergeld','Sonstiges'];
 
 function effect(t){
-  const a = t.amount||0;
+  const a = t.amount||0, c = t.account==='cash';
   switch(t.type){
-    case 'einnahme': return t.account==='cash' ? {bank:0,cash:a} : {bank:a,cash:0};
-    case 'ausgabe':  return t.account==='cash' ? {bank:0,cash:-a} : {bank:-a,cash:0};
-    case 'einzahlung': return {bank:a,cash:-a};
-    case 'auszahlung': return {bank:-a,cash:a};
+    case 'einnahme': return c ? {bank:0,cash:a,save:0} : {bank:a,cash:0,save:0};
+    case 'ausgabe':  return c ? {bank:0,cash:-a,save:0} : {bank:-a,cash:0,save:0};
+    case 'einzahlung': return {bank:a,cash:-a,save:0};
+    case 'auszahlung': return {bank:-a,cash:a,save:0};
+    case 'sparen':    return c ? {bank:0,cash:-a,save:a} : {bank:-a,cash:0,save:a};
+    case 'entsparen': return c ? {bank:0,cash:a,save:-a} : {bank:a,cash:0,save:-a};
   }
-  return {bank:0,cash:0};
+  return {bank:0,cash:0,save:0};
+}
+function savingsBalance(excludeId){
+  return S.finance.tx.reduce((sum, t) => t.id===excludeId ? sum : sum + effect(t).save, S.finance.start.save || 0);
 }
 const sortTx = list => list.slice().sort((x,y) => x.date===y.date ? (x.created||0)-(y.created||0) : (x.date<y.date?-1:1));
 function touches(t, acct){ if (acct==='all') return true; const e = effect(t); return e[acct] !== 0; }
@@ -528,21 +562,25 @@ function touches(t, acct){ if (acct==='all') return true; const e = effect(t); r
 function renderFinance(){
   const F = S.finance;
   const one = isCombined();
-  if (one) ui.acct = 'all';
+  const sv = savingsOn();
+  if (ui.acct==='save' && !sv) ui.acct = 'all';
+  if (one && ui.acct!=='save') ui.acct = 'all';
   const all = sortTx(F.tx);
-  const bal = {bank:F.start.bank, cash:F.start.cash};
+  const bal = {bank:F.start.bank, cash:F.start.cash, save:F.start.save||0};
   const running = {};
-  all.forEach(t => { const e = effect(t); bal.bank += e.bank; bal.cash += e.cash; running[t.id] = {bank:bal.bank, cash:bal.cash}; });
+  all.forEach(t => { const e = effect(t); bal.bank += e.bank; bal.cash += e.cash; bal.save += e.save; running[t.id] = {bank:bal.bank, cash:bal.cash, save:bal.save}; });
   const total = bal.bank + bal.cash;
 
   const [y,m] = ui.month.split('-').map(Number);
   const monthTx = all.filter(t => t.date.startsWith(ui.month) && touches(t, ui.acct) && !(one && isTransfer(t)));
-  let inc=0, exp=0, tin=0, tout=0; const cats = {};
+  let inc=0, exp=0, tin=0, tout=0, sIn=0, sOut=0; const cats = {};
   monthTx.forEach(t => {
     if (t.type==='einnahme') inc += t.amount;
     if (t.type==='ausgabe'){ exp += t.amount; const c = t.cat || 'Ohne Kategorie'; cats[c] = (cats[c]||0) + t.amount; }
     if (t.type==='einzahlung') tin += t.amount;
     if (t.type==='auszahlung') tout += t.amount;
+    if (t.type==='sparen') sIn += t.amount;
+    if (t.type==='entsparen') sOut += t.amount;
   });
   const catList = Object.entries(cats).sort((a,b)=>b[1]-a[1]).slice(0,7);
   const catMax = catList[0]?.[1] || 1;
@@ -555,12 +593,14 @@ function renderFinance(){
     </button>`;
 
   let html = `
-  ${one ? `<section class="accounts one" aria-label="Kontostand">
-    <div class="acct total"><span class="label"><i></i>Kontostand</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">Bank und Bargeld zusammen</span></div>
-  </section>` : `<section class="accounts" aria-label="Kontostände">
+  ${one ? `<section class="accounts one ${sv?'has-save':''}" aria-label="Kontostand">
+    ${sv ? acctCard('all','total','Kontostand',total, ui.acct==='all'?'ohne Sparen':'Alle anzeigen') + acctCard('save','save','Sparen',bal.save, ui.acct==='save'?'Filter aktiv':'Antippen zum Filtern')
+         : `<div class="acct total"><span class="label"><i></i>Kontostand</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">Bank und Bargeld zusammen</span></div>`}
+  </section>` : `<section class="accounts ${sv?'has-save':''}" aria-label="Kontostände">
     ${acctCard('bank','bank','Bankkonto',bal.bank, ui.acct==='bank'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('cash','cash','Bargeld',bal.cash, ui.acct==='cash'?'Filter aktiv':'Antippen zum Filtern')}
-    ${acctCard('all','total','Gesamt',total, ui.acct==='all'?'Alle Konten':'Alle anzeigen')}
+    ${sv ? acctCard('save','save','Sparen',bal.save, ui.acct==='save'?'Filter aktiv':'Antippen zum Filtern') : ''}
+    ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'Bank und Bargeld, ohne Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
   </section>`}
   <div class="sec-head">
     <div class="monthbar">
@@ -570,6 +610,7 @@ function renderFinance(){
     </div>
     <span style="margin-right:auto"></span>
     <button class="btn ghost sm" data-act="start">${one?'Anfangsbestand':'Anfangsbestände'}</button>
+    ${sv ? '<button class="btn save-btn" data-act="save">Sparen</button>' : ''}
     <button class="btn primary" data-act="newtx">+ Buchung</button>
   </div>
   <div class="fin-grid">
@@ -580,7 +621,9 @@ function renderFinance(){
         <div><span class="label">Ausgaben</span><span class="v amt neg">${euro(exp)}</span></div>
         <div><span class="label">Bilanz</span><span class="v ${inc-exp<0?'amt neg':''}">${euro(inc-exp)}</span></div>
         ${one ? `<div><span class="label">Buchungen</span><span class="v">${monthTx.length}</span></div>` : `<div><span class="label">Ein- / Auszahlung</span><span class="v" style="font-size:.9rem">${euro(tin)} / ${euro(tout)}</span></div>`}
+        ${sv ? `<div><span class="label">Aufs Sparen</span><span class="v save-v">${euro(sIn)}</span></div><div><span class="label">Vom Sparen</span><span class="v">${euro(sOut)}</span></div>` : ''}
       </div>
+      ${renderRecurringPanel()}
       <div class="panel cats">
         <span class="label">Ausgaben nach Kategorie</span>
         ${catList.length ? catList.map(([c,v]) => `<div class="cat-row"><span>${esc(c)}</span><span class="num">${euro(v)}</span><div class="bar"><i style="width:${Math.max(3,v/catMax*100)}%"></i></div></div>`).join('') : '<span style="color:var(--muted);font-size:.88rem">Keine Ausgaben in diesem Monat.</span>'}
@@ -610,21 +653,26 @@ function renderLedger(list, running){
     if (ui.acct==='all'){
       if (t.type==='einnahme'){ amtCls='pos'; amtTxt='+'+euro(t.amount); }
       else if (t.type==='ausgabe'){ amtCls='neg'; amtTxt='−'+euro(t.amount); }
+      else if (t.type==='sparen'){ amtCls='neu'; amtTxt='−'+euro(t.amount); }
+      else if (t.type==='entsparen'){ amtCls='neu'; amtTxt='+'+euro(t.amount); }
       else { amtCls='neu'; amtTxt=euro(t.amount); }
     } else {
       const v = effect(t)[ui.acct];
       amtCls = v>=0?'pos':'neg'; amtTxt = (v>=0?'+':'−')+euro(Math.abs(v));
     }
-    const acctTag = one ? '' : (T.cls==='transfer')
+    const accName = t.account==='cash' ? 'Bargeld' : 'Bank', accCls = t.account==='cash' ? 'cash' : 'bank';
+    const saveTag = '<span class="tag save"><i></i>Sparen</span>';
+    const acctTag = isSave(t) ? (one ? saveTag : t.type==='sparen' ? `<span class="tag ${accCls}"><i></i>${accName}</span>→${saveTag}` : `${saveTag}→<span class="tag ${accCls}"><i></i>${accName}</span>`)
+      : one ? '' : (T.cls==='transfer')
       ? `<span class="tag ${t.type==='einzahlung'?'cash':'bank'}"><i></i>${t.type==='einzahlung'?'Bargeld':'Bank'}</span>→<span class="tag ${t.type==='einzahlung'?'bank':'cash'}"><i></i>${t.type==='einzahlung'?'Bank':'Bargeld'}</span>`
       : `<span class="tag ${t.account}"><i></i>${t.account==='cash'?'Bargeld':'Bank'}</span>`;
-    const title = t.text || (T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
-    const run = !running[t.id] ? '' : one ? `<span class="run">${euro(running[t.id].bank + running[t.id].cash)}</span>` : ui.acct!=='all' ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : '';
+    const title = t.text || (t.type==='sparen' ? 'Aufs Sparen gelegt' : t.type==='entsparen' ? 'Vom Sparen genommen' : T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
+    const run = !running[t.id] ? '' : ui.acct!=='all' ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : one ? `<span class="run">${euro(running[t.id].bank + running[t.id].cash)}</span>` : '';
     html += `<button class="tx" data-act="edittx" data-id="${esc(t.id)}">
       <span class="ico ${T.cls}" aria-hidden="true">${T.sym}</span>
       <span class="t">${esc(title)}</span>
       <span class="amt ${amtCls}">${amtTxt}</span>
-      <span class="meta">${acctTag}${t.cat?(one?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat ? '' : '· '}${T.label}</span></span>
+      <span class="meta">${t.rec?'<span class="rec-tag" title="Regelmäßige Buchung">↻</span>':''}${acctTag}${t.cat?(one&&!isSave(t)?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat && !isSave(t) ? '' : '· '}${T.label}</span></span>
       ${run}
     </button>`;
   });
@@ -638,7 +686,7 @@ function txDialog(t){
   const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
   const one = isCombined();
   if (one && isTransfer(t)) t.type = 'ausgabe';
-  const typeRadios = Object.entries(TYPES).filter(([k]) => !one || !isTransfer({type:k})).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
+  const typeRadios = Object.entries(TYPES).filter(([k]) => !isSave({type:k}) && (!one || !isTransfer({type:k}))).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
   const form = openDlg(`
     <h3>${isNew?'Neue Buchung':'Buchung bearbeiten'}</h3>
     <div class="seg" role="radiogroup" aria-label="Art" style="grid-template-columns:repeat(2,1fr);grid-auto-flow:row">${typeRadios}</div>
@@ -681,17 +729,60 @@ function txDialog(t){
   const del = form.querySelector('[data-act=del]');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
 }
+function saveDialog(t){
+  const isNew = !t, one = isCombined();
+  t = t ? clone(t) : {type:'sparen', account:'bank', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
+  if (isNew && (ui.acct==='bank' || ui.acct==='cash')) t.account = ui.acct;
+  const avail = savingsBalance(t.id);
+  const form = openDlg(`
+    <h3>${isNew ? 'Sparen' : 'Spar-Buchung bearbeiten'}</h3>
+    <div class="seg" role="radiogroup" aria-label="Art">
+      <label><input type="radio" name="type" value="sparen" ${t.type==='sparen'?'checked':''}><span>Aufs Sparen legen</span></label>
+      <label><input type="radio" name="type" value="entsparen" ${t.type==='entsparen'?'checked':''}><span>Vom Sparen auszahlen</span></label>
+    </div>
+    <p class="hint" style="margin:0">Aktuell gespart: <b class="num">${euro(avail)}</b></p>
+    <div class="field" ${one?'hidden':''}><span id="sv-acct-label">Abbuchen von</span>
+      <div class="seg"><label><input type="radio" name="account" value="bank" ${t.account!=='cash'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash" ${t.account==='cash'?'checked':''}><span>Bargeld</span></label></div>
+    </div>
+    <div class="row2">
+      <label class="field"><span>Betrag (€)</span><input class="amount-in" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(t.amount)}" autofocus id="sv-amount"></label>
+      <label class="field"><span>Datum</span><input type="date" name="date" value="${esc(t.date)}" id="sv-date"></label>
+    </div>
+    <label class="field"><span>Wofür (optional)</span><input name="text" value="${esc(t.text)}" placeholder="z. B. Urlaub, Notgroschen" id="sv-text"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions">${isNew?'':'<button type="button" class="btn danger" id="sv-del">Löschen</button>'}<span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const amount = parseAmt(f.amount.value), err = f.querySelector('#f-err');
+      if (!(amount > 0)){ err.textContent = 'Bitte einen Betrag größer als 0 eingeben, z. B. 50,00.'; f.amount.focus(); return false; }
+      if (!f.date.value){ err.textContent = 'Bitte ein Datum wählen.'; return false; }
+      const type = f.type.value;
+      if (type==='entsparen' && amount > avail){ err.textContent = `Auf dem Sparen sind nur ${euro(avail)}. Bitte einen kleineren Betrag eingeben.`; f.amount.focus(); return false; }
+      const rec = {id: t.id || newId(), created: t.created || Date.now(), type, amount, date: f.date.value, text: f.text.value.trim(), cat:'', account: one ? (t.account || 'bank') : f.account.value};
+      if (t.rec) rec.rec = t.rec;
+      const i = S.finance.tx.findIndex(x => x.id===rec.id);
+      if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
+      ui.month = rec.date.slice(0,7);
+      save('finance'); toast(type==='sparen' ? euro(amount)+' aufs Sparen gelegt' : euro(amount)+' vom Sparen ausgezahlt');
+    });
+  const lbl = () => { form.querySelector('#sv-acct-label').textContent = form.type.value==='sparen' ? 'Abbuchen von' : 'Gutschreiben auf'; };
+  form.querySelectorAll('input[name=type]').forEach(r => r.addEventListener('change', lbl)); lbl();
+  const del = form.querySelector('#sv-del');
+  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
+}
 function startDialog(){
   if (isCombined()){
     openDlg(`
     <h3>Anfangsbestand</h3>
     <p class="hint">Der Betrag, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.</p>
     <label class="field"><span>Kontostand am Start (€)</span><input class="amount-in" name="total" inputmode="decimal" value="${amtInput(S.finance.start.bank + S.finance.start.cash)}" placeholder="0,00" autofocus id="st-total"></label>
+    ${savingsOn() ? `<label class="field"><span>Bereits gespart (€)</span><input class="amount-in" name="save" inputmode="decimal" value="${amtInput(S.finance.start.save||0)}" placeholder="0,00" id="st-save"></label>` : ''}
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const v = f.total.value.trim() ? parseAmt(f.total.value) : 0;
       if (isNaN(v)){ f.querySelector('#f-err').textContent = 'Bitte einen Betrag wie 1250,00 eingeben (minus für Dispo).'; return false; }
-      S.finance.start.bank = v - S.finance.start.cash; save('finance'); toast('Anfangsbestand gespeichert');
+      const sv = f.save ? (f.save.value.trim() ? parseAmt(f.save.value) : 0) : (S.finance.start.save||0);
+      if (isNaN(sv)){ f.querySelector('#f-err').textContent = 'Bitte beim Sparen einen Betrag wie 500,00 eingeben.'; return false; }
+      S.finance.start.bank = v - S.finance.start.cash; S.finance.start.save = sv; save('finance'); toast('Anfangsbestand gespeichert');
     });
     return;
   }
@@ -702,12 +793,135 @@ function startDialog(){
       <label class="field"><span>Bankkonto (€)</span><input class="amount-in" name="bank" inputmode="decimal" value="${amtInput(S.finance.start.bank)}" placeholder="0,00" id="st-bank"></label>
       <label class="field"><span>Bargeld (€)</span><input class="amount-in" name="cash" inputmode="decimal" value="${amtInput(S.finance.start.cash)}" placeholder="0,00" id="st-cash"></label>
     </div>
+    ${savingsOn() ? `<label class="field"><span>Bereits gespart (€)</span><input class="amount-in" name="save" inputmode="decimal" value="${amtInput(S.finance.start.save||0)}" placeholder="0,00" id="st-save"></label>` : ''}
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const b = f.bank.value.trim() ? parseAmt(f.bank.value) : 0, c = f.cash.value.trim() ? parseAmt(f.cash.value) : 0;
       if (isNaN(b)||isNaN(c)){ f.querySelector('#f-err').textContent = 'Bitte Beträge wie 1250,00 eingeben (minus für Dispo).'; return false; }
-      S.finance.start = {bank:b, cash:c}; save('finance'); toast('Anfangsbestände gespeichert');
+      const sv = f.save ? (f.save.value.trim() ? parseAmt(f.save.value) : 0) : (S.finance.start.save||0);
+      if (isNaN(sv)){ f.querySelector('#f-err').textContent = 'Bitte beim Sparen einen Betrag wie 500,00 eingeben.'; return false; }
+      S.finance.start = {bank:b, cash:c, save:sv}; save('finance'); toast('Anfangsbestände gespeichert');
     });
+}
+
+/* ---------- Regelmäßige Buchungen ---------- */
+const WEEKDAYS = ['Sonntag','Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag'];
+const RHYTHM = {monthly:'Monatlich', weekly:'Wöchentlich', yearly:'Jährlich'};
+const parseIso = x => { const [y,m,d] = x.split('-').map(Number); return new Date(y, m-1, d); };
+const dim = (y,m) => new Date(y, m, 0).getDate();
+function occAfter(r, after){
+  if (!r.start) return null;
+  const st = parseIso(r.start), sy = st.getFullYear(), sm = st.getMonth()+1, sd = st.getDate();
+  const ok = dt => dt >= r.start && (!after || dt > after);
+  let res = null;
+  if (r.rhythm === 'weekly'){
+    const k = after && after >= r.start ? Math.floor(daysBetween(r.start, after)/7) + 1 : 0;
+    res = iso(new Date(sy, sm-1, sd + 7*k));
+  } else if (r.rhythm === 'yearly'){
+    const fromY = after ? Math.max(sy, parseIso(after).getFullYear()) : sy;
+    for (let y = fromY; y < fromY + 3; y++){ const dt = iso(new Date(y, sm-1, Math.min(sd, dim(y, sm)))); if (ok(dt)){ res = dt; break; } }
+  } else {
+    const a = after ? parseIso(after) : st;
+    let i = Math.max(0, (a.getFullYear()-sy)*12 + (a.getMonth()+1-sm));
+    for (let n = 0; n < 3; n++, i++){
+      const b = new Date(sy, sm-1+i, 1), y = b.getFullYear(), m = b.getMonth()+1;
+      const dt = iso(new Date(y, m-1, Math.min(r.day || sd, dim(y, m))));
+      if (ok(dt)){ res = dt; break; }
+    }
+  }
+  if (res && r.end && res > r.end) return null;
+  return res;
+}
+function runRecurring(){
+  const F = S.finance; if (!F.recurring || !F.recurring.length) return 0;
+  const t0 = today(); let made = 0;
+  F.recurring.forEach(r => {
+    if (r.paused) return;
+    let next = occAfter(r, r.last || null), guard = 0;
+    while (next && next <= t0 && guard++ < 400){
+      F.tx.push({id:newId(), created:Date.now()+made, type:r.type, amount:r.amount, date:next, text:r.text, cat:r.cat||'', account:r.account||'bank', rec:r.id});
+      r.last = next; made++;
+      next = occAfter(r, next);
+    }
+  });
+  return made;
+}
+function recSummary(r){
+  const st = r.start ? parseIso(r.start) : new Date();
+  if (r.rhythm === 'weekly') return 'Jeden ' + WEEKDAYS[st.getDay()];
+  if (r.rhythm === 'yearly') return 'Jährlich am ' + st.getDate() + '. ' + MONTHS[st.getMonth()];
+  return 'Monatlich am ' + (r.day || st.getDate()) + '.';
+}
+function renderRecurringPanel(){
+  const list = (S.finance.recurring || []).slice().sort((a,b) => (a.paused?1:0)-(b.paused?1:0) || String(occAfter(a,a.last||null)||'9999').localeCompare(String(occAfter(b,b.last||null)||'9999')));
+  const one = isCombined();
+  return `<div class="panel cats">
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">Regelmäßige Buchungen</span><button class="btn sm" data-act="rec-new">+ Neu</button></div>
+    ${list.length ? `<div class="rec-list">${list.map(r => {
+      const next = r.paused ? null : occAfter(r, r.last || null);
+      const sign = r.type==='einnahme' ? '+' : r.type==='sparen' ? '→ ' : '−';
+      const info = [recSummary(r), r.paused ? 'pausiert' : next ? 'nächste: ' + fmtShort(next) + (next.slice(0,4)!==today().slice(0,4) ? ' ' + next.slice(0,4) : '') : 'beendet', one ? '' : (r.account==='cash'?'Bargeld':'Bank')].filter(Boolean).join(' · ');
+      return `<button class="rec-row ${r.paused||!next?'paused':''}" data-act="rec-edit" data-id="${esc(r.id)}"><b>${esc(r.text)}</b><span class="num amt ${r.type==='einnahme'?'pos':r.type==='sparen'?'save-v':'neg'}">${sign}${euro(r.amount)}</span><small>${esc(info)}</small></button>`;
+    }).join('')}</div>` : '<span style="color:var(--muted);font-size:.88rem">Zum Beispiel Taschengeld am 1. jeden Monats oder die Miete. Wird am Stichtag automatisch gebucht.</span>'}
+  </div>`;
+}
+function recDialog(r){
+  const isNew = !r;
+  const one = isCombined();
+  const nextFirst = (() => { const d = new Date(); return iso(new Date(d.getFullYear(), d.getMonth()+1, 1)); })();
+  r = r ? clone(r) : {type:'einnahme', account:'bank', amount:0, text:'', cat:'', rhythm:'monthly', start:nextFirst, end:'', paused:false};
+  const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
+  const form = openDlg(`
+    <h3>${isNew?'Neue regelmäßige Buchung':'Regelmäßige Buchung'}</h3>
+    <div class="seg" role="radiogroup" aria-label="Art">
+      <label><input type="radio" name="type" value="einnahme" ${r.type==='einnahme'?'checked':''}><span>Einnahme</span></label>
+      <label><input type="radio" name="type" value="ausgabe" ${r.type==='ausgabe'?'checked':''}><span>Ausgabe</span></label>
+      ${savingsOn() || r.type==='sparen' ? `<label><input type="radio" name="type" value="sparen" ${r.type==='sparen'?'checked':''}><span>Sparen</span></label>` : ''}
+    </div>
+    <div class="field" ${one?'hidden':''}><span>Konto</span>
+      <div class="seg"><label><input type="radio" name="account" value="bank" ${r.account!=='cash'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash" ${r.account==='cash'?'checked':''}><span>Bargeld</span></label></div>
+    </div>
+    <label class="field"><span>Bezeichnung</span><input name="text" value="${esc(r.text)}" placeholder="z. B. Taschengeld" autofocus id="rec-text"></label>
+    <div class="row2">
+      <label class="field"><span>Betrag (€)</span><input class="amount-in" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(r.amount)}" id="rec-amount"></label>
+      <label class="field"><span>Rhythmus</span><select name="rhythm" id="rec-rhythm">${Object.entries(RHYTHM).map(([k,l])=>`<option value="${k}" ${r.rhythm===k?'selected':''}>${l}</option>`).join('')}</select></label>
+    </div>
+    <div class="row2">
+      <label class="field"><span>Erste Buchung am</span><input type="date" name="start" value="${esc(r.start)}" id="rec-start"></label>
+      <label class="field"><span>Endet am (optional)</span><input type="date" name="end" value="${esc(r.end||'')}" id="rec-end"></label>
+    </div>
+    <p class="hint" id="rec-sum" style="margin:0"></p>
+    <label class="field"><span>Kategorie</span><input name="cat" list="reccats" value="${esc(r.cat)}" placeholder="z. B. Taschengeld" id="rec-cat"><datalist id="reccats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label>
+    ${isNew ? '' : `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="paused" id="rec-paused" ${r.paused?'checked':''} style="width:18px;height:18px">Pausieren (es wird nichts mehr gebucht)</label>`}
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions">${isNew?'':'<button type="button" class="btn danger" id="rec-del">Löschen</button>'}<span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const amount = parseAmt(f.amount.value), err = f.querySelector('#f-err');
+      if (!f.text.value.trim()){ err.textContent = 'Bitte eine Bezeichnung eingeben, z. B. Taschengeld.'; f.text.focus(); return false; }
+      if (!(amount > 0)){ err.textContent = 'Bitte einen Betrag größer als 0 eingeben, z. B. 20,00.'; f.amount.focus(); return false; }
+      if (!f.start.value){ err.textContent = 'Bitte das Datum der ersten Buchung wählen.'; return false; }
+      if (f.end.value && f.end.value < f.start.value){ err.textContent = 'Das Enddatum liegt vor der ersten Buchung.'; return false; }
+      const rec = {id: r.id || newId(), type: f.type.value, account: one ? (r.account || 'bank') : f.account.value, amount, text: f.text.value.trim(), cat: f.cat.value.trim(),
+        rhythm: f.rhythm.value, start: f.start.value, day: parseIso(f.start.value).getDate(), end: f.end.value, paused: f.paused ? f.paused.checked : false, last: r.last || null};
+      const list = S.finance.recurring, i = list.findIndex(x => x.id===rec.id);
+      if (i>=0) list[i] = rec; else list.push(rec);
+      save('finance'); toast(isNew ? 'Regelmäßige Buchung angelegt' : 'Änderung gespeichert');
+    });
+  const sum = () => {
+    const pr = {rhythm: form.rhythm.value, start: form.start.value, day: form.start.value ? parseIso(form.start.value).getDate() : 1, end: form.end.value};
+    if (!pr.start){ form.querySelector('#rec-sum').textContent = ''; return; }
+    let t = recSummary(pr); if (!t.endsWith('.')) t += '.';
+    if (pr.rhythm==='monthly' && pr.day > 28) t += ' In kürzeren Monaten am letzten Tag.';
+    if (isNew && pr.start <= today()) {
+      let n = 0, nx = occAfter(pr, null); while (nx && nx <= today() && n < 400){ n++; nx = occAfter(pr, nx); }
+      if (n) t += ` Beim Speichern ${n===1?'wird 1 bereits fällige Buchung':'werden '+n+' bereits fällige Buchungen'} eingetragen.`;
+    }
+    form.querySelector('#rec-sum').textContent = t;
+  };
+  ['rhythm','start','end'].forEach(n => form[n].addEventListener('input', sum)); form.rhythm.addEventListener('change', sum); sum();
+  const del = form.querySelector('#rec-del');
+  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return;
+    S.finance.recurring = S.finance.recurring.filter(x => x.id!==r.id); save('finance'); closeDlg(); toast('Regelmäßige Buchung gelöscht – bisherige Buchungen bleiben erhalten'); });
 }
 
 /* =========================================================
@@ -1023,8 +1237,11 @@ $('#main').addEventListener('click', e => {
   if (a==='acct'){ ui.acct = b.dataset.k; render(); }
   else if (a==='month'){ const [y,m] = ui.month.split('-').map(Number); const d = new Date(y, m-1+Number(b.dataset.d), 1); ui.month = d.getFullYear()+'-'+pad(d.getMonth()+1); render(); }
   else if (a==='newtx') txDialog();
-  else if (a==='edittx') txDialog(S.finance.tx.find(t=>t.id===b.dataset.id));
+  else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isSave(t) ? saveDialog(t) : txDialog(t)); }
+  else if (a==='save') saveDialog();
   else if (a==='start') startDialog();
+  else if (a==='rec-new') recDialog();
+  else if (a==='rec-edit'){ const r = S.finance.recurring.find(x=>x.id===b.dataset.id); if (r) recDialog(r); }
   else if (a==='newplan') planDialog();
   else if (a==='editplan') planDialog(activePlan());
   else if (a==='plan'){ S.schedule.active = b.dataset.id; save('schedule'); render(); }
