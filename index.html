@@ -67,6 +67,9 @@ nav.tabs button{border:0;background:transparent;padding:8px 16px;border-radius:9
 nav.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:var(--shadow)}
 nav.tabs svg{width:18px;height:18px;flex:none}
 @media (max-width:700px){
+  nav.tabs button{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  nav.tabs.many button{font-size:.64rem;padding:6px 2px}
+  nav.tabs.many .l-long{display:none}
   nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;border-radius:0;background:var(--surface);border-top:1px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom,0px));justify-content:space-around}
   nav.tabs button{flex-direction:column;gap:2px;font-size:.72rem;padding:6px 10px;border-radius:10px;flex:1}
   nav.tabs button[aria-selected="true"]{box-shadow:none;background:transparent;color:var(--accent)}
@@ -105,7 +108,11 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .acct.save .label i{background:var(--save);transform:rotate(45deg) scale(.85)}
 .accounts.has-save{grid-template-columns:repeat(4,minmax(0,1fr))}
 .accounts.one.has-save{grid-template-columns:repeat(2,minmax(0,1fr))}
-.accounts.one.has-save .acct.total{cursor:pointer}
+.accounts.one.has-save .acct.total-sub{color:var(--ink);cursor:default}
+.accounts.one.has-save .acct.total-sub .label i{background:var(--ink)}
+.accounts.one.has-save .acct.wide{grid-column:1/-1;cursor:default}
+.save-hero{cursor:default}
+.save-hero .bal{font-size:1.9rem}
 .accounts.one.has-save .acct .bal{font-size:1.45rem}
 .acct.bank .label i{background:var(--bank)} .acct.cash .label i{background:var(--cash);border-radius:50%} .acct.total .label i{background:var(--ink)}
 .acct .bal{font-family:var(--f-num);font-weight:600;font-size:1.45rem;color:var(--ink);overflow-wrap:anywhere}
@@ -261,6 +268,8 @@ td.per.now b{color:var(--accent)}
 .hw-next{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
 body.single .wrap{padding-bottom:32px}
 body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
+.l-short{display:none}
+@media (max-width:700px){nav.tabs.many .l-short{display:inline}}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -274,8 +283,9 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
     <button class="btn sm" id="backupBtn" type="button" aria-label="Daten sichern">Sichern</button>
     <nav class="tabs" role="tablist" aria-label="Bereiche">
       <button role="tab" data-tab="finanzen" aria-selected="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="5.5" width="19" height="13" rx="2.5"/><path d="M2.5 10h19M6.5 15h4"/></svg>Finanzen</button>
+      <button role="tab" data-tab="sparen" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12l-1 12.5a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 7 20.5z"/><path d="M5 5.5h14V8H5z"/><path d="M12 11.5v6M9.5 14h5"/></svg>Sparen</button>
       <button role="tab" data-tab="stundenplan" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9.5h18M9 9.5v11M15 9.5v11M8 2.5v4M16 2.5v4"/></svg>Stundenplan</button>
-      <button role="tab" data-tab="hausaufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H19v-5"/><path d="M9 8h6M9 11.5h4"/></svg>Hausaufgaben</button>
+      <button role="tab" data-tab="hausaufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H19v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H19v-5"/><path d="M9 8h6M9 11.5h4"/></svg><span class="l-long">Hausaufgaben</span><span class="l-short">Hausaufg.</span></button>
       <button role="tab" data-tab="aufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l2 2 3.5-3.5M4 15.5l2 2 3.5-3.5M13 7h7M13 16h7"/></svg>Aufgaben</button>
     </nav>
   </header>
@@ -315,9 +325,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.5.0';
-const SECTIONS = [['finanzen','Finanzen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
+const APP_VERSION = '1.6.0';
+const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['1.6.0', '07.10.2026, 22:12 Uhr', ['Sparen ist ein eigener Bereich: Einzahlen, Auszahlen, Sparpläne und Übersicht nach Zweck', 'Sparstand zählt im Bereich Finanzen ins Gesamt mit']],
   ['1.5.0', '07.10.2026, 22:00 Uhr', ['Option „Sparen“: Geld aufs Sparen legen und wieder auszahlen, Sparstand als eigene Karte', 'Versionshistorie zeigt die Uhrzeit']],
   ['1.4.0', '07.10.2026, 21:57 Uhr', ['Regelmäßige Einnahmen und Ausgaben (monatlich, wöchentlich, jährlich), die automatisch gebucht werden']],
   ['1.3.1', '07.10.2026, 21:49 Uhr', ['Neues App-Symbol: Ringbuch mit Registern und Checkliste']],
@@ -468,12 +479,12 @@ document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('cl
 /* ---------- Einstellungen: Name & Version ---------- */
 const appName = () => (S.settings && S.settings.appName) || DEFAULT_NAME;
 const isCombined = () => !!(S.settings && S.settings.combined);
-const isVisible = k => !(S.settings && S.settings.hidden || []).includes(k);
+const isVisible = k => k==='sparen' ? !!(S.settings && S.settings.savings) : !(S.settings && S.settings.hidden || []).includes(k);
 function applySections(){
   const vis = SECTIONS.map(x => x[0]).filter(isVisible);
   if (!vis.includes(ui.tab)) ui.tab = vis[0] || 'finanzen';
   document.querySelectorAll('nav.tabs button').forEach(b => { b.hidden = !isVisible(b.dataset.tab); });
-  const nav = document.querySelector('nav.tabs'); nav.hidden = vis.length < 2;
+  const nav = document.querySelector('nav.tabs'); nav.hidden = vis.length < 2; nav.classList.toggle('many', vis.length >= 5);
   document.body.classList.toggle('single', vis.length < 2);
 }
 const isTransfer = t => t.type==='einzahlung' || t.type==='auszahlung';
@@ -495,7 +506,6 @@ function settingsDialog(){
       ${SECTIONS.map(([k,l]) => `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="sec" value="${k}" id="set-sec-${k}" ${isVisible(k)?'checked':''} style="width:18px;height:18px;flex:none">${l}</label>`).join('')}
       <span style="font-size:.85rem;color:var(--muted)">Ausgeblendete Bereiche behalten ihre Daten. Mindestens ein Bereich bleibt sichtbar.</span>
     </fieldset>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="savings" id="set-savings" ${savingsOn()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Sparen anzeigen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Zeigt im Bereich Finanzen den Knopf „Sparen“ und den Sparstand. Gespartes Geld wird vom Konto abgezogen und kann wieder ausgezahlt werden.</span></span></label>
     <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px" id="set-combined-row"><input type="checkbox" name="combined" id="set-combined" ${isCombined()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
@@ -507,9 +517,9 @@ function settingsDialog(){
       S.settings.appName = (n && n !== DEFAULT_NAME) ? n : '';
       const shown = [...f.querySelectorAll('input[name=sec]:checked')].map(i => i.value);
       if (!shown.length){ f.querySelector('#f-err').textContent = 'Bitte mindestens einen Bereich auswählen.'; return false; }
-      S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => !shown.includes(k));
+      S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => k!=='sparen' && !shown.includes(k));
+      S.settings.savings = shown.includes('sparen');
       S.settings.combined = f.combined.checked;
-      S.settings.savings = f.savings.checked;
       save('settings'); applyName(); toast('Einstellungen gespeichert');
     });
 }
@@ -524,6 +534,7 @@ function render(){
   if (ui.tab==='finanzen') m.innerHTML = renderFinance();
   else if (ui.tab==='stundenplan') m.innerHTML = renderSchedule();
   else if (ui.tab==='hausaufgaben') m.innerHTML = renderHomework();
+  else if (ui.tab==='sparen') m.innerHTML = renderSavings();
   else m.innerHTML = renderTasks();
 }
 
@@ -563,13 +574,13 @@ function renderFinance(){
   const F = S.finance;
   const one = isCombined();
   const sv = savingsOn();
-  if (ui.acct==='save' && !sv) ui.acct = 'all';
-  if (one && ui.acct!=='save') ui.acct = 'all';
+  if (ui.acct==='save' || one) ui.acct = 'all';
   const all = sortTx(F.tx);
   const bal = {bank:F.start.bank, cash:F.start.cash, save:F.start.save||0};
   const running = {};
   all.forEach(t => { const e = effect(t); bal.bank += e.bank; bal.cash += e.cash; bal.save += e.save; running[t.id] = {bank:bal.bank, cash:bal.cash, save:bal.save}; });
-  const total = bal.bank + bal.cash;
+  const total = bal.bank + bal.cash + (sv ? bal.save : 0);
+  const cashTotal = bal.bank + bal.cash;
 
   const [y,m] = ui.month.split('-').map(Number);
   const monthTx = all.filter(t => t.date.startsWith(ui.month) && touches(t, ui.acct) && !(one && isTransfer(t)));
@@ -594,13 +605,15 @@ function renderFinance(){
 
   let html = `
   ${one ? `<section class="accounts one ${sv?'has-save':''}" aria-label="Kontostand">
-    ${sv ? acctCard('all','total','Kontostand',total, ui.acct==='all'?'ohne Sparen':'Alle anzeigen') + acctCard('save','save','Sparen',bal.save, ui.acct==='save'?'Filter aktiv':'Antippen zum Filtern')
+    ${sv ? `<div class="acct total-sub"><span class="label"><i></i>Kontostand</span><span class="bal ${cashTotal<0?'neg':''}">${euro(cashTotal)}</span><span class="sub">Bank und Bargeld</span></div>`
+         + acctCard('save','save','Sparen',bal.save,'Zum Bereich Sparen')
+         + `<div class="acct total wide"><span class="label"><i></i>Gesamt</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">inkl. Sparen</span></div>`
          : `<div class="acct total"><span class="label"><i></i>Kontostand</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">Bank und Bargeld zusammen</span></div>`}
   </section>` : `<section class="accounts ${sv?'has-save':''}" aria-label="Kontostände">
     ${acctCard('bank','bank','Bankkonto',bal.bank, ui.acct==='bank'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('cash','cash','Bargeld',bal.cash, ui.acct==='cash'?'Filter aktiv':'Antippen zum Filtern')}
-    ${sv ? acctCard('save','save','Sparen',bal.save, ui.acct==='save'?'Filter aktiv':'Antippen zum Filtern') : ''}
-    ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'Bank und Bargeld, ohne Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
+    ${sv ? acctCard('save','save','Sparen',bal.save,'Zum Bereich Sparen') : ''}
+    ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'inkl. Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
   </section>`}
   <div class="sec-head">
     <div class="monthbar">
@@ -610,7 +623,6 @@ function renderFinance(){
     </div>
     <span style="margin-right:auto"></span>
     <button class="btn ghost sm" data-act="start">${one?'Anfangsbestand':'Anfangsbestände'}</button>
-    ${sv ? '<button class="btn save-btn" data-act="save">Sparen</button>' : ''}
     <button class="btn primary" data-act="newtx">+ Buchung</button>
   </div>
   <div class="fin-grid">
@@ -729,13 +741,12 @@ function txDialog(t){
   const del = form.querySelector('[data-act=del]');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
 }
-function saveDialog(t){
+function saveDialog(t, preset){
   const isNew = !t, one = isCombined();
-  t = t ? clone(t) : {type:'sparen', account:'bank', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
-  if (isNew && (ui.acct==='bank' || ui.acct==='cash')) t.account = ui.acct;
+  t = t ? clone(t) : {type: preset || 'sparen', account:'bank', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
   const avail = savingsBalance(t.id);
   const form = openDlg(`
-    <h3>${isNew ? 'Sparen' : 'Spar-Buchung bearbeiten'}</h3>
+    <h3>${isNew ? (t.type==='entsparen' ? 'Vom Sparen auszahlen' : 'Aufs Sparen legen') : 'Spar-Buchung bearbeiten'}</h3>
     <div class="seg" role="radiogroup" aria-label="Art">
       <label><input type="radio" name="type" value="sparen" ${t.type==='sparen'?'checked':''}><span>Aufs Sparen legen</span></label>
       <label><input type="radio" name="type" value="entsparen" ${t.type==='entsparen'?'checked':''}><span>Vom Sparen auszahlen</span></label>
@@ -761,7 +772,6 @@ function saveDialog(t){
       if (t.rec) rec.rec = t.rec;
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
-      ui.month = rec.date.slice(0,7);
       save('finance'); toast(type==='sparen' ? euro(amount)+' aufs Sparen gelegt' : euro(amount)+' vom Sparen ausgezahlt');
     });
   const lbl = () => { form.querySelector('#sv-acct-label').textContent = form.type.value==='sparen' ? 'Abbuchen von' : 'Gutschreiben auf'; };
@@ -775,7 +785,6 @@ function startDialog(){
     <h3>Anfangsbestand</h3>
     <p class="hint">Der Betrag, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.</p>
     <label class="field"><span>Kontostand am Start (€)</span><input class="amount-in" name="total" inputmode="decimal" value="${amtInput(S.finance.start.bank + S.finance.start.cash)}" placeholder="0,00" autofocus id="st-total"></label>
-    ${savingsOn() ? `<label class="field"><span>Bereits gespart (€)</span><input class="amount-in" name="save" inputmode="decimal" value="${amtInput(S.finance.start.save||0)}" placeholder="0,00" id="st-save"></label>` : ''}
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const v = f.total.value.trim() ? parseAmt(f.total.value) : 0;
@@ -793,7 +802,6 @@ function startDialog(){
       <label class="field"><span>Bankkonto (€)</span><input class="amount-in" name="bank" inputmode="decimal" value="${amtInput(S.finance.start.bank)}" placeholder="0,00" id="st-bank"></label>
       <label class="field"><span>Bargeld (€)</span><input class="amount-in" name="cash" inputmode="decimal" value="${amtInput(S.finance.start.cash)}" placeholder="0,00" id="st-cash"></label>
     </div>
-    ${savingsOn() ? `<label class="field"><span>Bereits gespart (€)</span><input class="amount-in" name="save" inputmode="decimal" value="${amtInput(S.finance.start.save||0)}" placeholder="0,00" id="st-save"></label>` : ''}
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const b = f.bank.value.trim() ? parseAmt(f.bank.value) : 0, c = f.cash.value.trim() ? parseAmt(f.cash.value) : 0;
@@ -852,36 +860,38 @@ function recSummary(r){
   if (r.rhythm === 'yearly') return 'Jährlich am ' + st.getDate() + '. ' + MONTHS[st.getMonth()];
   return 'Monatlich am ' + (r.day || st.getDate()) + '.';
 }
-function renderRecurringPanel(){
-  const list = (S.finance.recurring || []).slice().sort((a,b) => (a.paused?1:0)-(b.paused?1:0) || String(occAfter(a,a.last||null)||'9999').localeCompare(String(occAfter(b,b.last||null)||'9999')));
+function renderRecurringPanel(mode){
+  const forSave = mode==='save';
+  const list = (S.finance.recurring || []).filter(r => forSave ? r.type==='sparen' : r.type!=='sparen').slice().sort((a,b) => (a.paused?1:0)-(b.paused?1:0) || String(occAfter(a,a.last||null)||'9999').localeCompare(String(occAfter(b,b.last||null)||'9999')));
   const one = isCombined();
   return `<div class="panel cats">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">Regelmäßige Buchungen</span><button class="btn sm" data-act="rec-new">+ Neu</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">${forSave?'Sparpläne':'Regelmäßige Buchungen'}</span><button class="btn sm" data-act="${forSave?'rec-new-save':'rec-new'}">+ Neu</button></div>
     ${list.length ? `<div class="rec-list">${list.map(r => {
       const next = r.paused ? null : occAfter(r, r.last || null);
-      const sign = r.type==='einnahme' ? '+' : r.type==='sparen' ? '→ ' : '−';
+      const sign = r.type==='einnahme' || r.type==='sparen' ? '+' : '−';
       const info = [recSummary(r), r.paused ? 'pausiert' : next ? 'nächste: ' + fmtShort(next) + (next.slice(0,4)!==today().slice(0,4) ? ' ' + next.slice(0,4) : '') : 'beendet', one ? '' : (r.account==='cash'?'Bargeld':'Bank')].filter(Boolean).join(' · ');
       return `<button class="rec-row ${r.paused||!next?'paused':''}" data-act="rec-edit" data-id="${esc(r.id)}"><b>${esc(r.text)}</b><span class="num amt ${r.type==='einnahme'?'pos':r.type==='sparen'?'save-v':'neg'}">${sign}${euro(r.amount)}</span><small>${esc(info)}</small></button>`;
-    }).join('')}</div>` : '<span style="color:var(--muted);font-size:.88rem">Zum Beispiel Taschengeld am 1. jeden Monats oder die Miete. Wird am Stichtag automatisch gebucht.</span>'}
+    }).join('')}</div>` : `<span style="color:var(--muted);font-size:.88rem">${forSave ? 'Zum Beispiel jeden Monat 50 € aufs Sparen. Wird am Stichtag automatisch gebucht.' : 'Zum Beispiel Taschengeld am 1. jeden Monats oder die Miete. Wird am Stichtag automatisch gebucht.'}</span>`}
   </div>`;
 }
-function recDialog(r){
+function recDialog(r, mode){
   const isNew = !r;
+  const forSave = mode==='save' || (r && r.type==='sparen');
   const one = isCombined();
   const nextFirst = (() => { const d = new Date(); return iso(new Date(d.getFullYear(), d.getMonth()+1, 1)); })();
-  r = r ? clone(r) : {type:'einnahme', account:'bank', amount:0, text:'', cat:'', rhythm:'monthly', start:nextFirst, end:'', paused:false};
+  r = r ? clone(r) : {type: forSave ? 'sparen' : 'einnahme', account:'bank', amount:0, text:'', cat:'', rhythm:'monthly', start:nextFirst, end:'', paused:false};
   const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
   const form = openDlg(`
-    <h3>${isNew?'Neue regelmäßige Buchung':'Regelmäßige Buchung'}</h3>
-    <div class="seg" role="radiogroup" aria-label="Art">
+    <h3>${forSave ? (isNew?'Neuer Sparplan':'Sparplan') : (isNew?'Neue regelmäßige Buchung':'Regelmäßige Buchung')}</h3>
+    <div class="seg" role="radiogroup" aria-label="Art" ${forSave?'hidden':''}>
       <label><input type="radio" name="type" value="einnahme" ${r.type==='einnahme'?'checked':''}><span>Einnahme</span></label>
       <label><input type="radio" name="type" value="ausgabe" ${r.type==='ausgabe'?'checked':''}><span>Ausgabe</span></label>
-      ${savingsOn() || r.type==='sparen' ? `<label><input type="radio" name="type" value="sparen" ${r.type==='sparen'?'checked':''}><span>Sparen</span></label>` : ''}
+      ${forSave ? `<label><input type="radio" name="type" value="sparen" checked><span>Sparen</span></label>` : ''}
     </div>
-    <div class="field" ${one?'hidden':''}><span>Konto</span>
+    <div class="field" ${one?'hidden':''}><span>${forSave?'Abbuchen von':'Konto'}</span>
       <div class="seg"><label><input type="radio" name="account" value="bank" ${r.account!=='cash'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash" ${r.account==='cash'?'checked':''}><span>Bargeld</span></label></div>
     </div>
-    <label class="field"><span>Bezeichnung</span><input name="text" value="${esc(r.text)}" placeholder="z. B. Taschengeld" autofocus id="rec-text"></label>
+    <label class="field"><span>${forSave?'Wofür':'Bezeichnung'}</span><input name="text" value="${esc(r.text)}" placeholder="${forSave?'z. B. Urlaub':'z. B. Taschengeld'}" autofocus id="rec-text"></label>
     <div class="row2">
       <label class="field"><span>Betrag (€)</span><input class="amount-in" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(r.amount)}" id="rec-amount"></label>
       <label class="field"><span>Rhythmus</span><select name="rhythm" id="rec-rhythm">${Object.entries(RHYTHM).map(([k,l])=>`<option value="${k}" ${r.rhythm===k?'selected':''}>${l}</option>`).join('')}</select></label>
@@ -891,7 +901,7 @@ function recDialog(r){
       <label class="field"><span>Endet am (optional)</span><input type="date" name="end" value="${esc(r.end||'')}" id="rec-end"></label>
     </div>
     <p class="hint" id="rec-sum" style="margin:0"></p>
-    <label class="field"><span>Kategorie</span><input name="cat" list="reccats" value="${esc(r.cat)}" placeholder="z. B. Taschengeld" id="rec-cat"><datalist id="reccats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label>
+    <label class="field" ${forSave?'hidden':''}><span>Kategorie</span><input name="cat" list="reccats" value="${esc(r.cat)}" placeholder="z. B. Taschengeld" id="rec-cat"><datalist id="reccats">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label>
     ${isNew ? '' : `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="paused" id="rec-paused" ${r.paused?'checked':''} style="width:18px;height:18px">Pausieren (es wird nichts mehr gebucht)</label>`}
     <div class="err" id="f-err"></div>
     <div class="dlg-actions">${isNew?'':'<button type="button" class="btn danger" id="rec-del">Löschen</button>'}<span class="spacer"></span>
@@ -905,7 +915,7 @@ function recDialog(r){
         rhythm: f.rhythm.value, start: f.start.value, day: parseIso(f.start.value).getDate(), end: f.end.value, paused: f.paused ? f.paused.checked : false, last: r.last || null};
       const list = S.finance.recurring, i = list.findIndex(x => x.id===rec.id);
       if (i>=0) list[i] = rec; else list.push(rec);
-      save('finance'); toast(isNew ? 'Regelmäßige Buchung angelegt' : 'Änderung gespeichert');
+      save('finance'); toast(isNew ? (forSave ? 'Sparplan angelegt' : 'Regelmäßige Buchung angelegt') : 'Änderung gespeichert');
     });
   const sum = () => {
     const pr = {rhythm: form.rhythm.value, start: form.start.value, day: form.start.value ? parseIso(form.start.value).getDate() : 1, end: form.end.value};
@@ -922,6 +932,86 @@ function recDialog(r){
   const del = form.querySelector('#rec-del');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return;
     S.finance.recurring = S.finance.recurring.filter(x => x.id!==r.id); save('finance'); closeDlg(); toast('Regelmäßige Buchung gelöscht – bisherige Buchungen bleiben erhalten'); });
+}
+
+/* =========================================================
+   SPAREN
+   ========================================================= */
+function renderSavings(){
+  const one = isCombined();
+  const list = sortTx(S.finance.tx.filter(isSave));
+  let run = S.finance.start.save || 0; const running = {};
+  list.forEach(t => { run += effect(t).save; running[t.id] = run; });
+  const bal = run;
+  const ym = today().slice(0,7);
+  let mIn = 0, mOut = 0, totIn = 0, totOut = 0;
+  list.forEach(t => { const a = t.amount||0; if (t.type==='sparen'){ totIn += a; if (t.date.startsWith(ym)) mIn += a; } else { totOut += a; if (t.date.startsWith(ym)) mOut += a; } });
+  const purposes = {};
+  list.forEach(t => { const k = t.text || 'Ohne Zweck'; purposes[k] = (purposes[k]||0) + effect(t).save; });
+  if (S.finance.start.save) purposes['Anfangsbestand'] = (purposes['Anfangsbestand']||0) + S.finance.start.save;
+  const pList = Object.entries(purposes).filter(([,v]) => Math.abs(v) >= 1).sort((a,b) => b[1]-a[1]);
+  const pMax = Math.max(1, ...pList.map(([,v]) => Math.abs(v)));
+
+  let rows = '';
+  if (!list.length){
+    rows = `<div class="empty"><strong>Noch nichts gespart</strong>Leg Geld vom Bankkonto${one?'':' oder aus dem Bargeld'} aufs Sparen. Der Betrag wird dort abgezogen und hier gutgeschrieben.
+      <div class="row"><button class="btn primary" data-act="save">+ Aufs Sparen legen</button></div></div>`;
+  } else {
+    const desc = list.slice().reverse(); let cur = '';
+    desc.forEach(t => {
+      const mk = t.date.slice(0,7);
+      if (mk !== cur){
+        cur = mk; const [y,m] = mk.split('-').map(Number);
+        const net = desc.filter(x => x.date.startsWith(mk)).reduce((a,x) => a + effect(x).save, 0);
+        rows += `<div class="day"><span>${MONTHS[m-1]} ${y}</span><span class="num">${net>=0?'+':'−'}${euro(Math.abs(net))}</span></div>`;
+      }
+      const inn = t.type==='sparen';
+      const acc = t.account==='cash' ? 'Bargeld' : 'Bank', accCls = t.account==='cash' ? 'cash' : 'bank';
+      const from = one ? (inn ? 'vom Konto' : 'aufs Konto') : (inn ? `von <span class="tag ${accCls}"><i></i>${acc}</span>` : `auf <span class="tag ${accCls}"><i></i>${acc}</span>`);
+      rows += `<button class="tx" data-act="edittx" data-id="${esc(t.id)}">
+        <span class="ico sparen" aria-hidden="true">${inn?'↓':'↑'}</span>
+        <span class="t">${esc(t.text || (inn ? 'Aufs Sparen gelegt' : 'Vom Sparen genommen'))}</span>
+        <span class="amt ${inn?'save-v':'neg'}">${inn?'+':'−'}${euro(t.amount)}</span>
+        <span class="meta">${t.rec?'<span class="rec-tag" title="Sparplan">↻</span>':''}<span>${fmtShort(t.date)}</span><span>· ${from}</span></span>
+        <span class="run">${euro(running[t.id])}</span>
+      </button>`;
+    });
+  }
+  return `
+  <section class="accounts one" aria-label="Sparstand">
+    <div class="acct save save-hero"><span class="label"><i></i>Sparstand</span><span class="bal ${bal<0?'neg':''}">${euro(bal)}</span><span class="sub">Insgesamt eingezahlt ${euro(totIn)} · ausgezahlt ${euro(totOut)}</span></div>
+  </section>
+  <div class="sec-head"><h2>Sparen</h2>
+    <button class="btn ghost sm" data-act="save-start">Anfangsbestand</button>
+    <button class="btn" data-act="save-out">Auszahlen</button>
+    <button class="btn primary" data-act="save">+ Sparen</button>
+  </div>
+  <div class="fin-grid">
+    <div class="panel ledger">${rows}</div>
+    <aside class="side">
+      <div class="stats">
+        <div><span class="label">Diesen Monat gespart</span><span class="v save-v">${euro(mIn)}</span></div>
+        <div><span class="label">Diesen Monat ausgezahlt</span><span class="v">${euro(mOut)}</span></div>
+      </div>
+      ${renderRecurringPanel('save')}
+      <div class="panel cats">
+        <span class="label">Nach Zweck</span>
+        ${pList.length ? pList.map(([k,v]) => `<div class="cat-row"><span>${esc(k)}</span><span class="num">${euro(v)}</span><div class="bar"><i style="width:${Math.max(3,Math.abs(v)/pMax*100)}%;background:var(--save)"></i></div></div>`).join('') : '<span style="color:var(--muted);font-size:.88rem">Trag beim Sparen ein, wofür das Geld ist, z. B. Urlaub. Dann siehst du hier, wie viel für jeden Zweck zusammengekommen ist.</span>'}
+      </div>
+    </aside>
+  </div>`;
+}
+function saveStartDialog(){
+  openDlg(`
+    <h3>Anfangsbestand Sparen</h3>
+    <p class="hint">Was du schon gespart hattest, bevor du hier die erste Spar-Buchung eingetragen hast.</p>
+    <label class="field"><span>Bereits gespart (€)</span><input class="amount-in" name="save" inputmode="decimal" value="${amtInput(S.finance.start.save||0)}" placeholder="0,00" autofocus id="st-save"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const v = f.save.value.trim() ? parseAmt(f.save.value) : 0;
+      if (isNaN(v)){ f.querySelector('#f-err').textContent = 'Bitte einen Betrag wie 500,00 eingeben.'; return false; }
+      S.finance.start.save = v; save('finance'); toast('Anfangsbestand gespeichert');
+    });
 }
 
 /* =========================================================
@@ -1234,13 +1324,16 @@ document.getElementById('settingsBtn').addEventListener('click', settingsDialog)
 $('#main').addEventListener('click', e => {
   const b = e.target.closest('[data-act]'); if (!b) return;
   const a = b.dataset.act;
-  if (a==='acct'){ ui.acct = b.dataset.k; render(); }
+  if (a==='acct'){ if (b.dataset.k==='save'){ ui.tab = 'sparen'; window.scrollTo(0,0); } else ui.acct = b.dataset.k; render(); }
   else if (a==='month'){ const [y,m] = ui.month.split('-').map(Number); const d = new Date(y, m-1+Number(b.dataset.d), 1); ui.month = d.getFullYear()+'-'+pad(d.getMonth()+1); render(); }
   else if (a==='newtx') txDialog();
   else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isSave(t) ? saveDialog(t) : txDialog(t)); }
   else if (a==='save') saveDialog();
   else if (a==='start') startDialog();
   else if (a==='rec-new') recDialog();
+  else if (a==='rec-new-save') recDialog(null, 'save');
+  else if (a==='save-out') saveDialog(null, 'entsparen');
+  else if (a==='save-start') saveStartDialog();
   else if (a==='rec-edit'){ const r = S.finance.recurring.find(x=>x.id===b.dataset.id); if (r) recDialog(r); }
   else if (a==='newplan') planDialog();
   else if (a==='editplan') planDialog(activePlan());
