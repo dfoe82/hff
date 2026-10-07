@@ -239,6 +239,8 @@ td.per.now b{color:var(--accent)}
 .hw .meta .tod{color:var(--accent);font-weight:600}
 .hw .meta .kid{font-weight:600;color:var(--ink)}
 .hw-next{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:.85rem;color:var(--muted)}
+body.single .wrap{padding-bottom:32px}
+body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -293,9 +295,11 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.2.0';
+const APP_VERSION = '1.3.0';
+const SECTIONS = [['finanzen','Finanzen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const APP_BUILD = '2026-10-07';
 const CHANGELOG = [
+  ['1.3.0', '07.10.2026', ['Bereiche (Finanzen, Stundenplan, Hausaufgaben, Aufgaben) einzeln ein- und ausschaltbar']],
   ['1.2.0', '07.10.2026', ['Neue Einstellung: Bankkonto und Bargeld zu einem Konto zusammenlegen']],
   ['1.1.0', '07.10.2026', ['App heißt jetzt „Organizer“', 'Beispieldaten entfernt']],
   ['1.0.0', '07.10.2026', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
@@ -307,19 +311,19 @@ const DEF = {
   schedule: { plans:[], active:null },
   tasks: { items:[] },
   homework: { items:[] },
-  settings: { appName:'', combined:false }
+  settings: { appName:'', combined:false, hidden:[] }
 };
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
 const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.start.bank!==0 || v.start.cash!==0)
-  : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined) : v.items.length>0;
+  : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined || v.hidden.length>0) : v.items.length>0;
 
 const LS = 'haushaltsplaner.v1.';
 const lsGet = k => { try { const v = localStorage.getItem(LS+k); return v ? JSON.parse(v) : null; } catch(e){ return null; } };
@@ -442,6 +446,14 @@ document.querySelectorAll('nav.tabs button').forEach(b => b.addEventListener('cl
 /* ---------- Einstellungen: Name & Version ---------- */
 const appName = () => (S.settings && S.settings.appName) || DEFAULT_NAME;
 const isCombined = () => !!(S.settings && S.settings.combined);
+const isVisible = k => !(S.settings && S.settings.hidden || []).includes(k);
+function applySections(){
+  const vis = SECTIONS.map(x => x[0]).filter(isVisible);
+  if (!vis.includes(ui.tab)) ui.tab = vis[0] || 'finanzen';
+  document.querySelectorAll('nav.tabs button').forEach(b => { b.hidden = !isVisible(b.dataset.tab); });
+  const nav = document.querySelector('nav.tabs'); nav.hidden = vis.length < 2;
+  document.body.classList.toggle('single', vis.length < 2);
+}
 const isTransfer = t => t.type==='einzahlung' || t.type==='auszahlung';
 function applyName(){
   const n = appName();
@@ -454,7 +466,12 @@ function settingsDialog(){
     <h3>Einstellungen</h3>
     <label class="field"><span>Name der App</span><input name="appName" value="${esc(appName())}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
     <p class="hint" style="margin:0">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="combined" id="set-combined" ${isCombined()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
+    <fieldset style="border:0;padding:0;margin:4px 0 0;display:flex;flex-direction:column;gap:8px">
+      <legend class="label" style="margin-bottom:8px">Bereiche anzeigen</legend>
+      ${SECTIONS.map(([k,l]) => `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="sec" value="${k}" id="set-sec-${k}" ${isVisible(k)?'checked':''} style="width:18px;height:18px;flex:none">${l}</label>`).join('')}
+      <span style="font-size:.85rem;color:var(--muted)">Ausgeblendete Bereiche behalten ihre Daten. Mindestens ein Bereich bleibt sichtbar.</span>
+    </fieldset>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px" id="set-combined-row"><input type="checkbox" name="combined" id="set-combined" ${isCombined()?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
     <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
@@ -463,6 +480,9 @@ function settingsDialog(){
     </div>`, f => {
       const n = f.appName.value.trim().replace(/\s+/g,' ');
       S.settings.appName = (n && n !== DEFAULT_NAME) ? n : '';
+      const shown = [...f.querySelectorAll('input[name=sec]:checked')].map(i => i.value);
+      if (!shown.length){ f.querySelector('#f-err').textContent = 'Bitte mindestens einen Bereich auswählen.'; return false; }
+      S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => !shown.includes(k));
       S.settings.combined = f.combined.checked;
       save('settings'); applyName(); toast('Einstellungen gespeichert');
     });
@@ -470,6 +490,7 @@ function settingsDialog(){
 
 function render(){
   applyName();
+  applySections();
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab===ui.tab)));
   const m = $('#main');
   if (ui.tab==='finanzen') m.innerHTML = renderFinance();
