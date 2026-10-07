@@ -1,6 +1,6 @@
 // Organizer – macht die App offline verfügbar (nur wenn über http/https geöffnet)
-const CACHE = 'organizer-1.3.0'; // bei jeder neuen Version anpassen
-const FILES = ['./', './index.html', './apple-touch-icon.png'];
+const CACHE = 'organizer-1.3.1'; // bei jeder neuen Version anpassen
+const FILES = ['./', './index.html', './apple-touch-icon.png?v=1.3.1'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
