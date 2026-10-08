@@ -270,6 +270,17 @@ body.single .wrap{padding-bottom:32px}
 body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .l-short{display:none}
 @media (max-width:700px){nav.tabs.many .l-short{display:inline}}
+.bk-banner{display:flex;gap:10px 14px;align-items:center;flex-wrap:wrap;justify-content:space-between;background:color-mix(in srgb,var(--warn) 12%,var(--surface));border:1px solid color-mix(in srgb,var(--warn) 40%,var(--line));border-radius:var(--r);padding:12px 14px;margin-bottom:8px}
+.bk-text{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 220px}
+.bk-text b{color:var(--warn)}
+.bk-text span{font-size:.84rem;color:var(--muted)}
+.bk-actions{display:flex;gap:6px;margin-left:auto}
+.welcome{padding:22px 18px;display:flex;flex-direction:column;gap:12px;max-width:520px;margin:20px auto 0}
+.welcome h2{font-size:1.35rem}
+.welcome p{margin:0;color:var(--muted)}
+.welcome-btn{position:relative;justify-content:center;padding:12px 14px}
+.welcome-btn input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.welcome .btn{justify-content:center}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -289,6 +300,10 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
       <button role="tab" data-tab="aufgaben" aria-selected="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5l2 2 3.5-3.5M4 15.5l2 2 3.5-3.5M13 7h7M13 16h7"/></svg>Aufgaben</button>
     </nav>
   </header>
+  <div class="bk-banner" id="bkBanner" hidden role="status">
+    <div class="bk-text"><b id="bkTitle">Sicherung fällig</b><span id="bkSub"></span></div>
+    <div class="bk-actions"><button class="btn ghost sm" type="button" id="bkLater">Später</button><button class="btn primary sm" type="button" id="bkNow">Jetzt sichern</button></div>
+  </div>
   <main id="main"></main>
 </div>
 <dialog id="dlg"></dialog>
@@ -325,9 +340,11 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.6.0';
+const APP_VERSION = '1.7.1';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['1.7.1', '08.10.2026, 02:38 Uhr', ['Sparen-Karte aus dem Bereich Finanzen entfernt; Gesamt zeigt weiter den Stand inkl. Sparen', 'Sparen wird nur noch über die untere Leiste geöffnet']],
+  ['1.7.0', '08.10.2026, 02:11 Uhr', ['Sicherungs-Erinnerung (täglich oder wöchentlich) mit „Jetzt sichern“ direkt oben in der App', 'Sicherung überschreibt immer dieselbe Datei', 'Leere App bietet beim Start an, eine Sicherung wiederherzustellen']],
   ['1.6.0', '07.10.2026, 22:12 Uhr', ['Sparen ist ein eigener Bereich: Einzahlen, Auszahlen, Sparpläne und Übersicht nach Zweck', 'Sparstand zählt im Bereich Finanzen ins Gesamt mit']],
   ['1.5.0', '07.10.2026, 22:00 Uhr', ['Option „Sparen“: Geld aufs Sparen legen und wieder auszahlen, Sparstand als eigene Karte', 'Versionshistorie zeigt die Uhrzeit']],
   ['1.4.0', '07.10.2026, 21:57 Uhr', ['Regelmäßige Einnahmen und Ausgaben (monatlich, wöchentlich, jährlich), die automatisch gebucht werden']],
@@ -396,16 +413,36 @@ function initLocal(){
 }
 
 /* ---------- Sicherung (Export / Import als Datei) ---------- */
+const BK_EVERY = {daily:['Täglich', 864e5], weekly:['Wöchentlich', 7*864e5], off:['Aus', Infinity]};
+const bkEvery = () => BK_EVERY[lsGet('bkEvery')] ? lsGet('bkEvery') : 'daily';
+const hasAnyData = () => KEYS.some(k => k!=='settings' && hasContent(k, S[k]));
+function backupDue(){
+  const last = +(lsGet('lastBackup')||0), changed = +(lsGet('changed')||0);
+  return hasAnyData() && changed > last && Date.now() - last > BK_EVERY[bkEvery()][1] * (bkEvery()==='daily' ? 0.75 : 1);
+}
+function ago(ts){
+  if (!ts) return 'noch nie';
+  const d = Math.floor((Date.now() - ts) / 864e5);
+  return d <= 0 ? 'heute' : d === 1 ? 'gestern' : 'vor ' + d + ' Tagen';
+}
 function updateBackupHint(){
   const btn = document.getElementById('backupBtn'); if (!btn) return;
-  const last = +(lsGet('lastBackup')||0), changed = +(lsGet('changed')||0);
-  const any = KEYS.some(k => hasContent(k, S[k]));
-  btn.classList.toggle('due', any && changed > last && Date.now() - last > 7*864e5);
+  const due = backupDue();
+  btn.classList.toggle('due', due);
+  const ban = document.getElementById('bkBanner');
+  const snoozed = +(lsGet('bkSnooze')||0) > Date.now();
+  ban.hidden = !(due && bkEvery()!=='off' && !snoozed);
+  if (!ban.hidden){
+    const last = +(lsGet('lastBackup')||0);
+    document.getElementById('bkTitle').textContent = last ? 'Sicherung fällig' : 'Noch keine Sicherung';
+    document.getElementById('bkSub').textContent = (last ? 'Letzte Sicherung ' + ago(last) + '. ' : '') + (isIOS() ? 'Im nächsten Fenster „In Dateien sichern“ wählen, z. B. iCloud Drive.' : 'Die Datei landet in deinem Download-Ordner.');
+  }
 }
+const isIOS = () => /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function backupData(){ return {app:'haushaltsplaner', version:1, appVersion:APP_VERSION, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework, settings:S.settings}; }
 async function exportBackup(){
   const json = JSON.stringify(backupData(), null, 2);
-  const name = (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung-'+today()+'.json';
+  const name = (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung.json';
   const file = new File([json], name, {type:'application/json'});
   try {
     if (navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
@@ -415,7 +452,7 @@ async function exportBackup(){
       const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
     }
-    lsSet('lastBackup', Date.now()); updateBackupHint(); toast('Sicherung erstellt');
+    lsSet('lastBackup', Date.now()); lsSet('bkSnooze', 0); updateBackupHint(); toast('Sicherung erstellt');
   } catch(e){ if (e && e.name === 'AbortError') return; toast('Sicherung konnte nicht erstellt werden.'); }
 }
 function importBackup(file){
@@ -424,8 +461,8 @@ function importBackup(file){
     let d; try { d = JSON.parse(r.result); } catch(e){ toast('Die Datei ist keine gültige Sicherung.'); return; }
     if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei ist keine Sicherung dieser App.'); return; }
     KEYS.forEach(k => { if (k==='settings' && !d[k]) return; S[k] = normalize(k, d[k]); save(k); });
-    lsSet('lastBackup', Date.now()); updateBackupHint();
-    if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt');
+    lsSet('lastBackup', Date.now()); lsSet('welcomed', 1); updateBackupHint();
+    if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt' + (d.exported ? ' (Stand ' + new Date(d.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) + ')' : ''));
   };
   r.readAsText(file);
 }
@@ -434,7 +471,7 @@ function backupDialog(){
   const n = S.finance.tx.length, t = S.tasks.items.length, p = S.schedule.plans.length, h = S.homework.items.length;
   const form = openDlg(`
     <h3>Daten sichern</h3>
-    <p class="hint">Alles wird nur in diesem Browser auf diesem Gerät gespeichert. Leerst du die Browserdaten oder wechselst das Gerät, ist es weg. Exportiere deshalb regelmäßig eine Sicherung, z. B. in iCloud Drive.</p>
+    <p class="hint">Alles wird nur in dieser App auf diesem Gerät gespeichert. <b>Entfernst du die App vom Home-Bildschirm, löscht das iPhone auch die Daten.</b> Sichere deshalb regelmäßig in iCloud Drive. Die Sicherung überschreibt immer dieselbe Datei.</p>
     <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <div><span class="label">Buchungen</span><span class="v">${n}</span></div>
       <div><span class="label">Pläne</span><span class="v">${p}</span></div>
@@ -442,13 +479,25 @@ function backupDialog(){
       <div><span class="label">Aufgaben</span><span class="v">${t}</span></div>
     </div>
     <p style="margin:0;color:var(--muted);font-size:.88rem">Letzte Sicherung: <b>${last ? new Date(last).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) : 'noch keine'}</b></p>
-    <button type="button" class="btn primary" id="bk-export" style="justify-content:center">Sicherung exportieren</button>
+    <label class="field"><span>An Sicherung erinnern</span><select id="bk-every">${Object.entries(BK_EVERY).map(([k,[l]]) => `<option value="${k}" ${bkEvery()===k?'selected':''}>${l}${k==='daily'?' (empfohlen)':''}</option>`).join('')}</select></label>
+    <button type="button" class="btn primary" id="bk-export" style="justify-content:center">Jetzt sichern</button>
     <label class="btn" style="justify-content:center;position:relative">Sicherung wiederherstellen …
       <input type="file" accept=".json,application/json" id="bk-file" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label>
     <p class="hint" style="margin:0">Beim Wiederherstellen werden die aktuellen Daten auf diesem Gerät durch die Sicherung ersetzt.</p>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Schließen</button></div>`, () => {});
   form.querySelector('#bk-export').addEventListener('click', exportBackup);
+  form.querySelector('#bk-every').addEventListener('change', e => { lsSet('bkEvery', e.target.value); updateBackupHint(); toast(e.target.value==='off' ? 'Erinnerung ausgeschaltet' : 'Erinnerung: ' + BK_EVERY[e.target.value][0].toLowerCase()); });
   form.querySelector('#bk-file').addEventListener('change', e => { const f = e.target.files[0]; if (f) importBackup(f); });
+}
+
+function renderWelcome(){
+  return `<div class="panel welcome">
+    <h2>Willkommen</h2>
+    <p>Hier ist noch nichts gespeichert. Hast du schon eine Sicherung, zum Beispiel in iCloud Drive? Dann hol deine Daten jetzt zurück.</p>
+    <label class="btn primary welcome-btn">Sicherung wiederherstellen …<input type="file" accept=".json,application/json" id="welcome-file"></label>
+    <button class="btn" type="button" data-act="welcome-skip">Ohne Sicherung neu beginnen</button>
+    <p class="hint" style="margin:0">Die Sicherungsdatei heißt zum Beispiel <b>organizer-sicherung.json</b> oder enthält „sicherung“ im Namen.</p>
+  </div>`;
 }
 
 /* ---------- UI-Grundlagen ---------- */
@@ -531,6 +580,7 @@ function render(){
   applySections();
   document.querySelectorAll('nav.tabs button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab===ui.tab)));
   const m = $('#main');
+  if (!hasAnyData() && !lsGet('welcomed')){ m.innerHTML = renderWelcome(); return; }
   if (ui.tab==='finanzen') m.innerHTML = renderFinance();
   else if (ui.tab==='stundenplan') m.innerHTML = renderSchedule();
   else if (ui.tab==='hausaufgaben') m.innerHTML = renderHomework();
@@ -606,14 +656,12 @@ function renderFinance(){
   let html = `
   ${one ? `<section class="accounts one ${sv?'has-save':''}" aria-label="Kontostand">
     ${sv ? `<div class="acct total-sub"><span class="label"><i></i>Kontostand</span><span class="bal ${cashTotal<0?'neg':''}">${euro(cashTotal)}</span><span class="sub">Bank und Bargeld</span></div>`
-         + acctCard('save','save','Sparen',bal.save,'Zum Bereich Sparen')
-         + `<div class="acct total wide"><span class="label"><i></i>Gesamt</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">inkl. Sparen</span></div>`
+         + `<div class="acct total-sub"><span class="label"><i></i>Gesamt</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">inkl. ${euro(bal.save)} Sparen</span></div>`
          : `<div class="acct total"><span class="label"><i></i>Kontostand</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">Bank und Bargeld zusammen</span></div>`}
-  </section>` : `<section class="accounts ${sv?'has-save':''}" aria-label="Kontostände">
+  </section>` : `<section class="accounts" aria-label="Kontostände">
     ${acctCard('bank','bank','Bankkonto',bal.bank, ui.acct==='bank'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('cash','cash','Bargeld',bal.cash, ui.acct==='cash'?'Filter aktiv':'Antippen zum Filtern')}
-    ${sv ? acctCard('save','save','Sparen',bal.save,'Zum Bereich Sparen') : ''}
-    ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'inkl. Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
+    ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'inkl. '+euro(bal.save)+' Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
   </section>`}
   <div class="sec-head">
     <div class="monthbar">
@@ -1330,6 +1378,7 @@ $('#main').addEventListener('click', e => {
   else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isSave(t) ? saveDialog(t) : txDialog(t)); }
   else if (a==='save') saveDialog();
   else if (a==='start') startDialog();
+  else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
   else if (a==='rec-new') recDialog();
   else if (a==='rec-new-save') recDialog(null, 'save');
   else if (a==='save-out') saveDialog(null, 'entsparen');
@@ -1365,6 +1414,10 @@ $('#main').addEventListener('submit', e => {
 render();
 initLocal();
 document.getElementById('backupBtn').addEventListener('click', backupDialog);
+document.getElementById('bkNow').addEventListener('click', exportBackup);
+document.getElementById('bkLater').addEventListener('click', () => { lsSet('bkSnooze', Date.now() + (bkEvery()==='weekly' ? 2 : 1) * 864e5 * 0.9); updateBackupHint(); toast('Erinnerung verschoben'); });
+$('#main').addEventListener('change', e => { if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden) updateBackupHint(); });
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 setInterval(() => { if (ui.tab==='stundenplan' && !dlg.open) render(); }, 60000);
 })();
