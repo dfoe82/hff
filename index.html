@@ -388,6 +388,19 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .set-rec .panel{background:var(--sunk)}
 .send-box{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
 .set-dlg{gap:4px}
+dialog.is-set{background:var(--bg)}
+dialog.is-set .set-card{background:var(--surface);border-color:color-mix(in srgb,var(--line) 70%,transparent);border-radius:16px}
+dialog.is-set .set-title h3{font-size:1.75rem;letter-spacing:-.02em}
+dialog.is-set .set-gl{margin-top:2px}
+.set-profile{display:grid;grid-template-columns:52px minmax(0,1fr) auto 12px;gap:12px;align-items:center;width:100%;text-align:left;padding:12px 14px;border:1px solid color-mix(in srgb,var(--line) 70%,transparent);border-radius:16px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.set-avatar{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--surface);font-family:var(--f-display);font-weight:700;font-size:1.35rem}
+.set-profile .set-tx b{font-size:1.08rem}
+.set-fold-h{display:flex;align-items:center;gap:8px;width:100%;padding:13px 14px;border:0;background:transparent;font:inherit;color:var(--ink);cursor:pointer;text-align:left}
+.set-fold-h b{margin-right:auto;font-weight:700}
+.set-fold-arrow{color:var(--muted);transition:transform .15s}
+.set-fold.open .set-fold-arrow{transform:rotate(180deg)}
+.set-fold.open .set-fold-h{border-bottom:1px solid var(--line)}
+.set-input{border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:10px 12px;width:100%;min-width:0;font:inherit;font-size:16px}
 .set-head{display:flex;flex-direction:column;gap:2px;margin-bottom:2px}
 .set-back{border:0;background:none;color:var(--accent);font-weight:600;padding:0;align-self:flex-start;font-size:.95rem}
 .set-title{display:flex;align-items:center;gap:8px;justify-content:space-between}
@@ -401,9 +414,10 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 button.set-it:hover{background:var(--sunk)}
 .set-tog{grid-template-columns:34px minmax(0,1fr) auto}
 .set-noic{grid-template-columns:minmax(0,1fr) auto}
-.set-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--surface);font-weight:700;font-size:.95rem}
+.set-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--ic);background:color-mix(in srgb,var(--ic) 14%,var(--surface))}
+.set-ic svg{width:19px;height:19px}
 .set-tx{display:flex;flex-direction:column;min-width:0}
-.set-tx b{font-weight:600}
+.set-tx b{font-weight:500}
 .set-tx small{color:var(--muted);font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .set-val{color:var(--muted);font-size:.86rem;text-align:right;white-space:nowrap;max-width:9em;overflow:hidden;text-overflow:ellipsis}
 .set-chev{color:var(--muted);font-size:1.2rem;line-height:1}
@@ -490,9 +504,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.5.0';
+const APP_VERSION = '2.6.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.6.0', '13.10.2026, 19:49 Uhr', ['Einstellungen im iOS-Stil: Profilkarte mit Name und Modus, helle Symbol-Kacheln, einklappbare „Verwaltung“, Versionshistorie als eigener Eintrag']],
   ['2.5.0', '13.10.2026, 19:41 Uhr', ['Einstellungen neu geordnet: Übersicht mit Gruppen (Allgemein, Für Eltern bzw. Finanzen, Sicherheit & Daten, Info) und Unterseiten', 'Einstellungen wirken sofort – kein Speichern-Knopf mehr', 'Finanzen der Kinder auch in den Einstellungen verwalten']],
   ['2.4.2', '13.10.2026, 19:24 Uhr', ['Kindermodus: „Taschengeld & feste Beträge“ sind jetzt in den Einstellungen unter „Für Eltern“']],
   ['2.4.1', '13.10.2026, 19:05 Uhr', ['„An Eltern senden“ und „Eltern-Ansicht“ sind jetzt in den Einstellungen (Kindermodus)']],
@@ -1045,6 +1060,7 @@ let toastT;
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(()=> t.hidden = true, 2600); }
 const dlg = $('#dlg');
 function openDlg(html, onSubmit){
+  dlg.classList.remove('is-set');
   dlg.innerHTML = '<form class="dlg" novalidate>'+html+'</form>';
   const form = dlg.querySelector('form');
   form.addEventListener('submit', e => { e.preventDefault(); if (onSubmit(form) !== false) closeDlg(); });
@@ -1100,27 +1116,43 @@ function applyName(){
   const m = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (m) m.setAttribute('content', n);
 }
 /* ---------- Einstellungen: Übersicht mit Unterseiten ---------- */
-const SET_PAGES = ['main','name','mode','sections','money','fixed','kids','pin','version'];
-const SET_TITLES = {main:'Einstellungen', name:'Name der App', mode:'Für wen ist die App?', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Version & Neuerungen'};
+const SET_PAGES = ['main','profile','name','mode','sections','money','fixed','kids','pin','version'];
+const SET_TITLES = {main:'Einstellungen', profile:'Name & Modus', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Versionshistorie'};
+const SET_ICONS = {
+  grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+  repeat:'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  wallet:'<path d="M3 7a2 2 0 0 1 2-2h13v4"/><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M16 13.5h2"/>',
+  swap:'<path d="M7 4L3 8l4 4"/><path d="M3 8h14"/><path d="M17 20l4-4-4-4"/><path d="M21 16H7"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.5a5 5 0 0 1 5.5 5.5"/>',
+  download:'<path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M4 20h16"/>',
+  send:'<path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/>',
+  lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>',
+  list:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/>',
+  euro:'<path d="M18 7a7 7 0 1 0 0 10"/><path d="M4 10h9M4 14h9"/>'
+};
+const setIcon = (name, color) => `<span class="set-ic" style="--ic:${color}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${SET_ICONS[name] || ''}</svg></span>`;
 function setRow(o){
   return `<button type="button" class="set-it" ${o.page ? `data-page="${o.page}"` : ''} ${o.act ? `data-do="${o.act}"` : ''}>
-    <span class="set-ic" style="background:${o.c}" aria-hidden="true">${o.ic}</span>
+    ${setIcon(o.ic, o.c)}
     <span class="set-tx"><b>${o.t}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>
     <span class="set-val">${o.v || ''}</span><span class="set-chev" aria-hidden="true">›</span>
   </button>`;
 }
 function setToggle(o){
   return `<label class="set-it set-tog${o.ic ? '' : ' set-noic'}">
-    ${o.ic ? `<span class="set-ic" style="background:${o.c}" aria-hidden="true">${o.ic}</span>` : ''}
+    ${o.ic ? setIcon(o.ic, o.c) : ''}
     <span class="set-tx"><b>${o.t}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>
     <span class="switch"><input type="checkbox" id="${o.id}" ${o.on ? 'checked' : ''}><i></i></span>
   </label>`;
 }
-const setGroup = (label, rows) => `<div class="set-grp"><div class="set-gl">${label}</div><div class="set-card">${rows}</div></div>`;
+const setGroup = (label, rows) => `<div class="set-grp">${label ? `<div class="set-gl">${label}</div>` : ''}<div class="set-card">${rows}</div></div>`;
 function changeSetting(fn, page){ fn(); save('settings'); applyName(); render(); settingsDialog(page); }
 
 function settingsDialog(page){
   if (typeof page !== 'string' || !SET_PAGES.includes(page)) page = 'main';
+  if (page === 'name' || page === 'mode') page = 'profile';
   if (page === 'money' || page === 'fixed') { if (!isKid()) page = 'main'; }
   if (page === 'kids' && isKid()) page = 'main';
   const kid = isKid();
@@ -1131,40 +1163,39 @@ function settingsDialog(page){
   let body = '';
 
   if (page === 'main'){
-    body += setGroup('Allgemein',
-      setRow({page:'name', ic:'Aa', c:'var(--accent)', t:'Name der App', v:esc(appName())}) +
-      setRow({page:'mode', ic:'☺', c:'var(--s4)', t:'Für wen ist die App?', v: kid ? 'Kinder (ab 10)' : 'Erwachsene'}) +
-      setRow({page:'sections', ic:'▦', c:'var(--s1)', t:'Bereiche', s: esc(vis.map(x => x[1]).join(', ')), v: vis.length + ' von ' + SECTIONS.length}));
-    if (kid){
-      body += setGroup('Für Eltern',
-        setRow({act:'parent', ic:'€', c:'var(--pos)', t:'Eltern-Ansicht', s:'Finanzen ausführlich ansehen und bearbeiten'}) +
-        setRow({page:'fixed', ic:'↻', c:'var(--s3)', t:'Taschengeld & feste Beträge', v: fixedCount || ''}) +
-        setRow({act:'send', ic:'⇪', c:'var(--s5)', t:'An Eltern senden', s:'Per AirDrop oder Nachricht'}) +
-        setRow({page:'money', ic:'⚙', c:'var(--bank)', t:'Geld & Sparen', s: ({cash:'Portemonnaie', bank:'Bankkonto', both:'Portemonnaie & Konto'})[kidAcc()] + ' · ' + SV().name + ' · Bestätigung ' + (S.settings.confirmIncome !== false ? 'an' : 'aus')}));
-    } else {
-      body += setGroup('Finanzen',
-        setToggle({id:'set-combined', ic:'⇄', c:'var(--bank)', t:'Bank & Bargeld zusammenlegen', s:'Nur ein Kontostand', on: !!S.settings.combined}) +
-        setRow({page:'kids', ic:'☻', c:'var(--pos)', t:'Finanzen der Kinder', s: S.kids.items.length ? esc(S.kids.items.map(k => k.name).join(', ')) : 'Sicherung eines Kindes einlesen', v: S.kids.items.length || ''}));
-    }
-    body += setGroup('Sicherheit & Daten',
-      setRow({page:'pin', ic:'⚿', c:'var(--neg)', t:'Eltern-PIN', v: pinSet() ? 'Aktiv' : 'Aus'}) +
-      setRow({act:'log', ic:'☰', c:'var(--muted)', t:'Protokoll', v: logNew() ? `<span class="set-new">${logNew()} neu</span>` : ''}) +
-      setRow({act:'backup', ic:'⤓', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}));
-    body += setGroup('Info',
-      setRow({page:'version', ic:'i', c:'var(--muted)', t:'Version & Neuerungen', v: APP_VERSION}));
+    const name = appName();
+    body += `<div class="set-grp"><button type="button" class="set-profile" data-page="profile">
+      <span class="set-avatar" aria-hidden="true">${esc((name.trim()[0] || 'O').toUpperCase())}</span>
+      <span class="set-tx"><b>${esc(name)}</b><small>${kid ? 'Kinder-Modus' : 'Erwachsenen-Modus'}</small></span>
+      ${badge}<span class="set-chev" aria-hidden="true">›</span></button></div>`;
+    body += setGroup('',
+      setRow({page:'sections', ic:'grid', c:'var(--s1)', t:'Bereiche', s: esc(vis.map(x => x[1]).join(', ')), v: vis.length + ' von ' + SECTIONS.length}) +
+      (kid
+        ? setRow({act:'parent', ic:'eye', c:'var(--pos)', t:'Eltern-Ansicht', s:'Finanzen ausführlich ansehen'}) +
+          setRow({page:'fixed', ic:'repeat', c:'var(--s3)', t:'Taschengeld & feste Beträge', s: fixedCount ? fixedCount + (fixedCount === 1 ? ' fester Betrag' : ' feste Beträge') : 'Noch keine'}) +
+          setRow({page:'money', ic:'wallet', c:'var(--bank)', t:'Geld & Sparen', s: ({cash:'Portemonnaie', bank:'Bankkonto', both:'Portemonnaie & Konto'})[kidAcc()] + ' · ' + SV().name})
+        : setToggle({id:'set-combined', ic:'swap', c:'var(--bank)', t:'Bank & Bargeld zusammenlegen', s:'Nur ein Kontostand', on: !!S.settings.combined}) +
+          setRow({page:'kids', ic:'users', c:'var(--s6)', t:'Finanzen der Kinder', s: S.kids.items.length ? esc(S.kids.items.map(k => k.name).join(', ')) : 'Sicherung eines Kindes einlesen'})));
+    body += setGroup('',
+      setRow({act:'backup', ic:'download', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}) +
+      (kid ? setRow({act:'send', ic:'send', c:'var(--s5)', t:'An Eltern senden', s:'Per AirDrop oder Nachricht'}) : ''));
+    const open = !!lsGet('setAdminOpen'), nNew = logNew();
+    body += `<div class="set-grp"><div class="set-card set-fold${open ? ' open' : ''}">
+      <button type="button" class="set-fold-h" data-do="fold" aria-expanded="${open}"><b>Verwaltung</b>${!open && nNew ? `<span class="set-new">${nNew} neu</span>` : ''}<span class="set-fold-arrow" aria-hidden="true">▾</span></button>
+      ${open ? setRow({page:'pin', ic:'lock', c:'var(--neg)', t:'Eltern-PIN', s: pinSet() ? 'Aktiv' : 'Aus'}) +
+               setRow({act:'log', ic:'list', c:'var(--muted)', t:'Protokoll', v: nNew ? `<span class="set-new">${nNew} neu</span>` : ''}) : ''}
+    </div></div>`;
+    body += setGroup('', setRow({page:'version', ic:'history', c:'var(--muted)', t:'Versionshistorie', s:'Version ' + APP_VERSION}));
   }
 
-  if (page === 'name'){
-    body += `<div class="set-grp"><div class="set-card set-pad">
-      <label class="field"><span>Name</span><input name="appName" value="${esc(S.settings.appName || '')}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
-      <button type="submit" class="btn primary" style="justify-content:center">Übernehmen</button>
-    </div><p class="set-note">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p></div>`;
-  }
-
-  if (page === 'mode'){
-    body += `<div class="set-grp"><div class="set-card set-pad">
+  if (page === 'profile'){
+    body += `<div class="set-grp"><div class="set-gl">Name der App</div><div class="set-card set-pad">
+      <input class="set-input" name="appName" value="${esc(S.settings.appName || '')}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" id="set-name" aria-label="Name der App">
+      <button type="submit" class="btn primary" style="justify-content:center">Name übernehmen</button>
+    </div><p class="set-note">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p></div>
+    <div class="set-grp"><div class="set-gl">Für wen ist die App?</div><div class="set-card set-pad">
       <div class="seg"><label><input type="radio" name="mode" value="adult" ${kid ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${kid ? 'checked' : ''}><span>Kinder (ab 10)</span></label></div>
-    </div><p class="set-note">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. Unter „Für Eltern“ gibt es dann Eltern-Ansicht, Taschengeld und das Senden an die Eltern. Alle Daten bleiben beim Umschalten erhalten.</p></div>`;
+    </div><p class="set-note">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. In den Einstellungen gibt es dann Eltern-Ansicht, Taschengeld und das Senden an die Eltern. Alle Daten bleiben beim Umschalten erhalten.</p></div>`;
   }
 
   if (page === 'sections'){
@@ -1184,7 +1215,7 @@ function settingsDialog(page){
       ${setToggle({id:'set-confirm', t:'Von Eltern bestätigen lassen', s:'„Geld bekommen“ zählt erst nach Freigabe (nur mit Eltern-PIN)', on: S.settings.confirmIncome !== false})}
     </div></div>
     <div class="set-grp"><div class="set-gl">Start</div><div class="set-card">
-      ${setRow({act:'start', ic:'€', c:'var(--accent)', t:'Startbetrag', v: euro(S.finance.start.bank + S.finance.start.cash)})}
+      ${setRow({act:'start', ic:'euro', c:'var(--accent)', t:'Startbetrag', v: euro(S.finance.start.bank + S.finance.start.cash)})}
     </div></div>`;
   }
 
@@ -1227,18 +1258,18 @@ function settingsDialog(page){
   const form = openDlg(`
     <div class="set-head">
       ${page !== 'main' ? '<button type="button" class="set-back" data-page="main">‹ Einstellungen</button>' : ''}
-      <div class="set-title"><h3>${SET_TITLES[page]}</h3>${page === 'main' ? badge : ''}</div>
+      <div class="set-title"><h3>${SET_TITLES[page]}</h3></div>
     </div>
     ${body}
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Fertig</button></div>`, f => {
-      if (page === 'name'){
+      if (page === 'profile'){
         const n = f.appName.value.trim().replace(/\s+/g,' ');
         changeSetting(() => { S.settings.appName = (n && n !== DEFAULT_NAME) ? n : ''; }, 'main');
         toast('Name gespeichert');
       }
       return false;
     });
-  form.classList.add('set-dlg');
+  form.classList.add('set-dlg'); dlg.classList.add('is-set');
 
   // Navigation und Aktionen
   form.addEventListener('click', e => {
@@ -1246,6 +1277,7 @@ function settingsDialog(page){
     if (nav){ e.preventDefault(); settingsDialog(nav.dataset.page); return; }
     const b = e.target.closest('[data-do]'); if (!b) return;
     const a = b.dataset.do;
+    if (a === 'fold'){ lsSet('setAdminOpen', !lsGet('setAdminOpen')); settingsDialog('main'); return; }
     if (a === 'parent'){ ui.parentView = true; ui.tab = 'finanzen'; lsSet('tab','finanzen'); closeDlg(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); }
     else if (a === 'send') exportBackup('send');
     else if (a === 'log') logDialog();
@@ -1269,7 +1301,7 @@ function settingsDialog(page){
     const t = e.target;
     if (t.dataset && t.dataset.kidUpdate && t.files && t.files[0]){ readKidBackup(t.files[0], t.dataset.kidUpdate); return; }
     if (t.id === 'set-combined') changeSetting(() => { S.settings.combined = t.checked; }, 'main');
-    else if (t.name === 'mode') changeSetting(() => { S.settings.kid = t.value === 'kid'; ui.parentView = false; }, 'mode');
+    else if (t.name === 'mode') changeSetting(() => { S.settings.kid = t.value === 'kid'; ui.parentView = false; }, 'profile');
     else if (t.name === 'sec'){
       const shown = [...form.querySelectorAll('input[name=sec]:checked')].map(i => i.value);
       if (!shown.length){ t.checked = true; toast('Mindestens ein Bereich bleibt sichtbar.'); return; }
