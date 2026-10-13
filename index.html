@@ -441,6 +441,13 @@ button.set-it:hover{background:var(--sunk)}
 .set-changelog ul{margin:4px 0 0;padding-left:18px;color:var(--muted)}
 .set-rec .panel{background:var(--bg)}
 @media (prefers-reduced-motion:reduce){.switch i,.switch i::after{transition:none}}
+.scan-btn{position:relative;gap:6px}
+.scan-btn svg{flex:none}
+form.dlg > .scan-btn{justify-content:center;border-style:dashed}
+.scan-hint{display:flex;gap:8px;align-items:flex-start;background:color-mix(in srgb,var(--accent) 10%,var(--sunk))}
+.scan-hint svg{flex:none;margin-top:2px;color:var(--accent)}
+.scan-bar{height:10px;border-radius:5px;background:var(--sunk);overflow:hidden}
+.scan-bar i{display:block;height:100%;width:3%;background:var(--accent);border-radius:5px;transition:width .3s}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -504,9 +511,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.6.0';
+const APP_VERSION = '2.7.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.7.0', '13.10.2026, 20:15 Uhr', ['Kassenbon scannen: Betrag, Datum, Geschäft und Kategorie werden vom Foto erkannt – die Texterkennung läuft komplett auf dem Gerät']],
   ['2.6.0', '13.10.2026, 19:49 Uhr', ['Einstellungen im iOS-Stil: Profilkarte mit Name und Modus, helle Symbol-Kacheln, einklappbare „Verwaltung“, Versionshistorie als eigener Eintrag']],
   ['2.5.0', '13.10.2026, 19:41 Uhr', ['Einstellungen neu geordnet: Übersicht mit Gruppen (Allgemein, Für Eltern bzw. Finanzen, Sicherheit & Daten, Info) und Unterseiten', 'Einstellungen wirken sofort – kein Speichern-Knopf mehr', 'Finanzen der Kinder auch in den Einstellungen verwalten']],
   ['2.4.2', '13.10.2026, 19:24 Uhr', ['Kindermodus: „Taschengeld & feste Beträge“ sind jetzt in den Einstellungen unter „Für Eltern“']],
@@ -1417,6 +1425,7 @@ function renderFinance(){
     </div>
     <span style="margin-right:auto"></span>
     <button class="btn ghost sm" data-act="start">${one?'Anfangsbestand':'Anfangsbestände'}</button>
+    ${scanButton('fin-scan', 'Beleg scannen')}
     <button class="btn primary" data-act="newtx">+ Buchung</button>
   </div>
   <div class="fin-grid">
@@ -1485,9 +1494,10 @@ function renderLedger(list, running){
   return html;
 }
 
-function txDialog(t){
+function txDialog(t, preset){
   const isNew = !t;
   t = t ? clone(t) : {type:'ausgabe', account:'bank', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:'', cat:''};
+  if (preset) Object.assign(t, preset);
   if (isNew && ui.acct!=='all') t.account = ui.acct;
   const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
   const one = isCombined();
@@ -1495,6 +1505,7 @@ function txDialog(t){
   const typeRadios = Object.entries(TYPES).filter(([k]) => !isSave({type:k}) && (!one || !isTransfer({type:k}))).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
   const form = openDlg(`
     <h3>${isNew?'Neue Buchung':'Buchung bearbeiten'}</h3>
+    ${isNew ? (t.scan ? scanHint(t.scan) : scanButton('tx-scan', 'Kassenbon scannen')) : ''}
     <div class="seg" role="radiogroup" aria-label="Art" style="grid-template-columns:repeat(2,1fr);grid-auto-flow:row">${typeRadios}</div>
     <div class="field" id="f-acct" ${one?'hidden':''}><span>Konto</span>
       <div class="seg"><label><input type="radio" name="account" value="bank" ${t.account!=='cash'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash" ${t.account==='cash'?'checked':''}><span>Bargeld</span></label></div>
@@ -1525,6 +1536,7 @@ function txDialog(t){
       ui.month = rec.date.slice(0,7);
       save('finance'); toast(isNew?'Buchung gespeichert':'Änderung gespeichert');
     });
+  const txs = form.querySelector('#tx-scan'); if (txs) txs.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, r => txDialog(null, scanPreset(r))); });
   const sync2 = () => {
     const type = form.type.value, tr = type==='einzahlung'||type==='auszahlung';
     form.querySelector('#f-acct').hidden = tr || one; form.querySelector('#f-cat').hidden = tr;
@@ -1901,15 +1913,17 @@ function renderKidFinance(){
     </aside>
   </div>`;
 }
-function kidTxDialog(t, type){
+function kidTxDialog(t, type, preset){
   const isNew = !t, mode = kidAcc();
   const defAcc = mode==='both' ? (lsGet('kidLastAcc')==='bank' ? 'bank' : 'cash') : mode;
   t = t ? clone(t) : {type, account:defAcc, amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:'', cat:''};
+  if (preset){ const {cat, ...rest} = preset; Object.assign(t, rest); }
   const inn = t.type==='einnahme';
   const cats = KID_CATS[inn ? 'einnahme' : 'ausgabe'].slice();
   if (t.cat && !cats.includes(t.cat)) cats.unshift(t.cat);
   const form = openDlg(`
     <h3>${inn ? 'Geld bekommen' : 'Geld ausgegeben'}</h3>
+    ${isNew && !inn ? (t.scan ? scanHint(t.scan) : scanButton('kid-scan', 'Kassenbon scannen')) : ''}
     <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(t.amount)}" autofocus id="kid-amount"></label>
     ${mode==='both' ? `<div class="field"><span>${inn ? 'Wohin kommt das Geld?' : 'Womit hast du bezahlt?'}</span>
       <div class="seg"><label><input type="radio" name="account" value="cash" ${t.account!=='bank'?'checked':''}><span>${inn ? 'Ins Portemonnaie' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${t.account==='bank'?'checked':''}><span>${inn ? 'Aufs Konto' : 'Mit Karte / Konto'}</span></label></div></div>` : ''}
@@ -1936,6 +1950,7 @@ function kidTxDialog(t, type){
       if (rec.type==='einnahme' && needsConfirm()) rec.pending = true;
       save('finance'); toast(rec.pending ? 'Eingetragen – zählt, sobald Mama oder Papa es bestätigt' : isNew ? (inn ? euro(amount)+' dazubekommen' : euro(amount)+' ausgegeben') : 'Geändert');
     });
+  const ks = form.querySelector('#kid-scan'); if (ks) ks.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, r => kidTxDialog(null, 'ausgabe', scanPreset(r))); });
   const left = form.querySelector('#kid-left');
   if (left){
     const upd = () => {
@@ -2205,6 +2220,157 @@ function goalDialog(){
   const del = form.querySelector('#goal-del');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich entfernen?')) return; S.finance.goal = null; save('finance'); closeDlg(); toast('Sparziel entfernt'); });
 }
+
+/* =========================================================
+   KASSENBON SCANNEN – Texterkennung läuft auf dem Gerät (Tesseract.js)
+   ========================================================= */
+const OCR_SRC = 'https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';
+let ocrWorker = null, ocrLoading = null;
+const CAM_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
+function loadOcrLib(){
+  if (window.Tesseract) return Promise.resolve();
+  if (ocrLoading) return ocrLoading;
+  ocrLoading = new Promise((res, rej) => {
+    const sc = document.createElement('script'); sc.src = OCR_SRC; sc.async = true;
+    sc.onload = () => res(); sc.onerror = () => { ocrLoading = null; rej(new Error('load')); };
+    document.head.appendChild(sc);
+  });
+  return ocrLoading;
+}
+async function getOcrWorker(onProgress){
+  if (ocrWorker) return ocrWorker;
+  await loadOcrLib();
+  ocrWorker = await Tesseract.createWorker('deu', 1, { logger: m => { if (m && typeof m.progress === 'number') onProgress(m.status, m.progress); } });
+  return ocrWorker;
+}
+// Foto verkleinern und in Graustufen umwandeln – das macht die Erkennung schneller und genauer
+function prepareImage(file){
+  return new Promise((res, rej) => {
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => {
+      const max = 1800, sc = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight));
+      const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * sc); c.height = Math.round(img.naturalHeight * sc);
+      const g = c.getContext('2d'); g.drawImage(img, 0, 0, c.width, c.height);
+      try {
+        const d = g.getImageData(0, 0, c.width, c.height), p = d.data;
+        for (let i = 0; i < p.length; i += 4){ let y = 0.299*p[i] + 0.587*p[i+1] + 0.114*p[i+2]; y = Math.max(0, Math.min(255, (y - 128) * 1.35 + 140)); p[i] = p[i+1] = p[i+2] = y; }
+        g.putImageData(d, 0, 0);
+      } catch(e){}
+      URL.revokeObjectURL(url); res(c);
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+const SHOPS = [
+  [/\brewe\b/i,'REWE','Lebensmittel'], [/\bedeka\b/i,'EDEKA','Lebensmittel'], [/\baldi\b/i,'ALDI','Lebensmittel'], [/\blidl\b/i,'Lidl','Lebensmittel'],
+  [/\bnetto\b(?!\s*betrag)/i,'Netto','Lebensmittel'], [/\bpenny\b/i,'PENNY','Lebensmittel'], [/\bkaufland\b/i,'Kaufland','Lebensmittel'], [/\bfamila\b/i,'famila','Lebensmittel'],
+  [/\bcombi\b/i,'Combi','Lebensmittel'], [/\bmarktkauf\b/i,'Marktkauf','Lebensmittel'], [/\bnorma\b/i,'NORMA','Lebensmittel'], [/\bglobus\b/i,'Globus','Lebensmittel'],
+  [/\bb(ä|ae|a)ckerei\b|\bbackhaus\b/i,'Bäckerei','Lebensmittel'],
+  [/\bdm[- ]drogerie|\bdm\b.*markt/i,'dm','Haushalt'], [/\brossmann\b/i,'Rossmann','Haushalt'], [/\bbudni/i,'Budni','Haushalt'], [/\bm(ü|ue)ller\b/i,'Müller','Haushalt'],
+  [/\baral\b/i,'Aral','Auto & Tanken'], [/\bshell\b/i,'Shell','Auto & Tanken'], [/\besso\b/i,'Esso','Auto & Tanken'], [/\bjet\b/i,'JET','Auto & Tanken'],
+  [/\btotal\s*energies|\btotal tankstelle/i,'TotalEnergies','Auto & Tanken'], [/\bstar\b.*tank|\borlen\b/i,'Star','Auto & Tanken'], [/\btankstelle\b/i,'Tankstelle','Auto & Tanken'],
+  [/\bapotheke\b/i,'Apotheke','Gesundheit'],
+  [/\bikea\b/i,'IKEA','Haushalt'], [/\bobi\b/i,'OBI','Haushalt'], [/\bhornbach\b/i,'Hornbach','Haushalt'], [/\bbauhaus\b/i,'Bauhaus','Haushalt'], [/\btoom\b/i,'toom','Haushalt'],
+  [/\baction\b/i,'Action','Haushalt'], [/\btedi\b/i,'TEDi','Haushalt'], [/\bmcdonald/i,"McDonald's",'Freizeit'], [/\bburger king\b/i,'Burger King','Freizeit'],
+  [/\bh\s?&\s?m\b/i,'H&M','Kleidung'], [/\bc\s?&\s?a\b/i,'C&A','Kleidung'], [/\bdeichmann\b/i,'Deichmann','Kleidung'], [/\bkik\b/i,'KiK','Kleidung'],
+  [/\bthalia\b/i,'Thalia','Freizeit'], [/\bsmyths\b|\bspielwaren\b/i,'Spielwaren','Kinder'], [/\bfressnapf\b/i,'Fressnapf','Haushalt']
+];
+function parseReceipt(text){
+  const lines = String(text || '').split(/\r?\n/).map(l => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  const amounts = l => { const out = []; const re = /(\d{1,5})\s?[,.]\s?(\d{2})(?![\d])/g; let m; while ((m = re.exec(l))) out.push(parseInt(m[1],10)*100 + parseInt(m[2],10)); return out; };
+  const EXCL = /(zwischen\s*summe|netto|mwst|m\.?w\.?st|ust\b|steuer|gegeben|r(ü|ue)ckgeld|wechselgeld|zur(ü|ue)ck|rabatt|ersparnis|gespart|punkte|payback|pfandbon)/i;
+  const P1 = /(zu\s*zahlen|zahlbetrag|summe|gesamtbetrag|gesamt|endbetrag|rechnungsbetrag|total|betrag\s*eur|eur\s*gesamt)/i;
+  const P2 = /(ec[- ]?cash|ec[- ]?karte|girocard|kartenzahlung|kreditkarte|visa|mastercard|maestro|apple\s*pay|google\s*pay|kontaktlos|bar\b|bezahlt)/i;
+  const pick = re => {
+    const found = [];
+    lines.forEach((l, i) => {
+      if (!re.test(l) || EXCL.test(l)) return;
+      let a = amounts(l);
+      if (!a.length && lines[i+1] && !EXCL.test(lines[i+1])) a = amounts(lines[i+1]);
+      if (a.length) found.push(a[a.length - 1]);
+    });
+    return found.length ? Math.max(...found) : 0;
+  };
+  let amount = pick(P1), sure = !!amount;
+  if (!amount) amount = pick(P2);
+  if (!amount){ const all = []; lines.forEach(l => { if (!EXCL.test(l)) all.push(...amounts(l)); }); amount = all.length ? Math.max(...all) : 0; }
+  // Datum
+  let date = '';
+  const t0 = today();
+  for (const l of lines){
+    const m = l.match(/\b(\d{1,2})[.\/-](\d{1,2})[.\/-](\d{4}|\d{2})\b/);
+    if (!m) continue;
+    let [_, d, mo, y] = m; d = +d; mo = +mo; y = +y; if (y < 100) y += 2000;
+    if (mo < 1 || mo > 12 || d < 1 || d > 31 || y < 2000) continue;
+    const iso2 = y + '-' + pad(mo) + '-' + pad(d);
+    if (iso2 <= t0){ date = iso2; break; }
+  }
+  // Geschäft und Kategorie
+  let shop = '', cat = '';
+  const all = lines.join('\n');
+  for (const [re, name, c] of SHOPS){
+    if (re.test(all)){
+      shop = name; cat = c;
+      // Allgemeine Namen (Bäckerei, Apotheke …): vollständigen Namen vom Bon übernehmen
+      if (['Bäckerei','Apotheke','Tankstelle','Spielwaren'].includes(name)){ const l = lines.slice(0, 6).find(x => re.test(x) && x.length <= 40); if (l) shop = l.replace(/[^\wäöüÄÖÜß&' .-]/g, '').trim(); }
+      break;
+    }
+  }
+  if (!shop){
+    const cand = lines.slice(0, 6).find(l => /[a-zäöüß]{3,}/i.test(l) && (l.replace(/[^\d]/g,'').length / l.length) < 0.3 && !/(beleg|kasse|bon\b|str\.|stra(ß|ss)e|tel|www|http|@|ust|steuer|filiale)/i.test(l));
+    if (cand) shop = cand.replace(/[^\wäöüÄÖÜß&' .-]/g, '').trim().slice(0, 30);
+  }
+  return {amount, sure, date, shop, cat, lines: lines.length};
+}
+function scanReceipt(file, done){
+  let cancelled = false;
+  openDlg(`
+    <h3>Beleg wird gelesen …</h3>
+    <div class="scan-bar"><i id="scan-bar"></i></div>
+    <p class="hint" id="scan-st" style="margin:0">${window.Tesseract || ocrWorker ? 'Texterkennung startet …' : 'Texterkennung wird geladen. Beim ersten Mal sind das einige MB, danach geht es schneller und auch ohne Internet.'}</p>
+    <p class="hint" style="margin:0">Das Foto bleibt auf diesem Gerät. Es wird nichts hochgeladen.</p>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" id="scan-cancel">Abbrechen</button></div>`, () => false);
+  const bar = $('#scan-bar'), st = $('#scan-st');
+  $('#scan-cancel').addEventListener('click', () => { cancelled = true; dlg.close(); });
+  const phase = {'loading tesseract core':'Texterkennung wird geladen …', 'initializing tesseract':'Texterkennung wird vorbereitet …', 'loading language traineddata':'Deutsche Sprachdaten werden geladen …', 'initializing api':'Wird vorbereitet …', 'recognizing text':'Text wird erkannt …'};
+  const prog = (status, p) => { if (cancelled) return; const recog = status === 'recognizing text'; bar.style.width = Math.round((recog ? 40 + p*60 : p*40)) + '%'; if (phase[status]) st.textContent = phase[status] + (recog ? ' ' + Math.round(p*100) + ' %' : ''); };
+  (async () => {
+    try {
+      const img = await prepareImage(file);
+      const w = await getOcrWorker(prog);
+      if (cancelled) return;
+      const { data } = await w.recognize(img);
+      if (cancelled) return;
+      const r = parseReceipt(data && data.text);
+      dlg.close();
+      if (!r.amount && !r.shop){ toast('Auf dem Foto wurde kein Betrag erkannt. Bitte den Bon gerade und gut beleuchtet fotografieren.'); }
+      done(r);
+    } catch(e){
+      if (cancelled) return;
+      dlg.close();
+      toast(e && e.message === 'load' ? 'Die Texterkennung konnte nicht geladen werden. Für das erste Scannen ist Internet nötig.' : e && e.message === 'img' ? 'Das Foto konnte nicht geöffnet werden.' : 'Der Beleg konnte nicht gelesen werden.');
+    }
+  })();
+}
+// Vorbelegung für die Buchungsdialoge
+function scanPreset(r){
+  const p = {type:'ausgabe', scan:r};
+  if (r.amount) p.amount = r.amount;
+  if (r.date) p.date = r.date;
+  if (r.shop) p.text = r.shop;
+  if (r.cat) p.cat = r.cat;
+  return p;
+}
+function scanHint(r){
+  if (!r) return '';
+  const parts = [];
+  if (r.amount) parts.push((r.sure ? 'Summe ' : 'Betrag ') + euro(r.amount));
+  if (r.shop) parts.push(esc(r.shop));
+  if (r.date) parts.push(new Date(r.date + 'T12:00:00').toLocaleDateString('de-DE'));
+  return `<p class="hint scan-hint" style="margin:0">${CAM_ICON}<span>${parts.length ? 'Vom Beleg erkannt: ' + parts.join(' · ') + '. Bitte kurz prüfen.' : 'Auf dem Beleg wurde nichts Eindeutiges erkannt. Bitte die Angaben selbst eintragen.'}</span></p>`;
+}
+const scanButton = (id, label) => `<label class="btn scan-btn">${CAM_ICON}<span>${label}</span><input type="file" accept="image/*" capture="environment" class="file-hidden" id="${id}"></label>`;
 
 /* =========================================================
    STUNDENPLAN
@@ -2575,7 +2741,7 @@ document.getElementById('updLater').addEventListener('click', () => { const v = 
 if (updatedFrom){ addLog('Update auf Version ' + APP_VERSION + (updatedFrom !== '0' ? ' (von ' + updatedFrom + ')' : '') + ' – Sicherungspunkt angelegt'); setTimeout(showWhatsNew, 500); }
 setTimeout(checkForUpdate, 3000);
 document.getElementById('bkLater').addEventListener('click', () => { lsSet('bkSnooze', Date.now() + (bkEvery()==='weekly' ? 2 : 1) * 864e5 * 0.9); updateBackupHint(); toast('Erinnerung verschoben'); });
-$('#main').addEventListener('change', e => { if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
+$('#main').addEventListener('change', e => { if (e.target.id === 'fin-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => txDialog(null, scanPreset(r))); return; } if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden){ updateBackupHint(); checkForUpdate(); } });
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 setInterval(() => { if (ui.tab==='stundenplan' && !dlg.open) render(); }, 60000);

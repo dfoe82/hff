@@ -1,6 +1,7 @@
 // Organizer – macht die App offline verfügbar (nur wenn über http/https geöffnet)
-const CACHE = 'organizer-2.6.0'; // bei jeder neuen Version anpassen
+const CACHE = 'organizer-2.7.0'; // bei jeder neuen Version anpassen
 const FILES = ['./', './index.html', './apple-touch-icon.png?v=1.3.1'];
+const EXT = 'organizer-extern'; // Schriften und Texterkennung – bleibt bei Updates erhalten
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
@@ -8,7 +9,7 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    .then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== EXT).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 
@@ -17,9 +18,9 @@ self.addEventListener('fetch', e => {
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
 
-  // Schriften: aus dem Speicher, sonst laden und merken
-  if (url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com')) {
-    e.respondWith(caches.open(CACHE).then(c => c.match(req).then(hit => hit || fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit))));
+  // Schriften und Texterkennung (Tesseract) aus dem Speicher, sonst laden und merken
+  if (url.hostname.endsWith('fonts.googleapis.com') || url.hostname.endsWith('fonts.gstatic.com') || (url.hostname === 'cdn.jsdelivr.net' && /tesseract/.test(url.pathname))) {
+    e.respondWith(caches.open(EXT).then(c => c.match(req).then(hit => hit || fetch(req).then(res => { c.put(req, res.clone()); return res; }).catch(() => hit))));
     return;
   }
   if (url.origin !== location.origin) return;
