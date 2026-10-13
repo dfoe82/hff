@@ -387,6 +387,46 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .send-btns .btn{justify-content:center;white-space:normal;text-align:center;padding-inline:8px}
 .set-rec .panel{background:var(--sunk)}
 .send-box{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
+.set-dlg{gap:4px}
+.set-head{display:flex;flex-direction:column;gap:2px;margin-bottom:2px}
+.set-back{border:0;background:none;color:var(--accent);font-weight:600;padding:0;align-self:flex-start;font-size:.95rem}
+.set-title{display:flex;align-items:center;gap:8px;justify-content:space-between}
+.set-title h3{font-size:1.3rem}
+.set-badge{font-size:.72rem;font-weight:700;color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.set-grp{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.set-gl{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;margin:0 4px}
+.set-card{background:var(--bg);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.set-it{display:grid;grid-template-columns:34px minmax(0,1fr) auto 12px;gap:10px;align-items:center;padding:11px 12px;border:0;border-top:1px solid var(--line);background:transparent;width:100%;text-align:left;color:var(--ink);font:inherit;cursor:pointer}
+.set-it:first-child{border-top:0}
+button.set-it:hover{background:var(--sunk)}
+.set-tog{grid-template-columns:34px minmax(0,1fr) auto}
+.set-noic{grid-template-columns:minmax(0,1fr) auto}
+.set-ic{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:var(--surface);font-weight:700;font-size:.95rem}
+.set-tx{display:flex;flex-direction:column;min-width:0}
+.set-tx b{font-weight:600}
+.set-tx small{color:var(--muted);font-size:.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.set-val{color:var(--muted);font-size:.86rem;text-align:right;white-space:nowrap;max-width:9em;overflow:hidden;text-overflow:ellipsis}
+.set-chev{color:var(--muted);font-size:1.2rem;line-height:1}
+.set-new{background:var(--neg);color:var(--surface);border-radius:999px;font-size:.72rem;font-weight:700;padding:2px 7px}
+.set-pad{padding:12px;display:flex;flex-direction:column;gap:10px}
+.set-note{font-size:.82rem;color:var(--muted);margin:0 4px}
+.switch{position:relative;width:46px;height:28px;flex:none}
+.switch input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;z-index:1;width:100%;height:100%}
+.switch i{position:absolute;inset:0;border-radius:14px;background:var(--line);transition:background .15s}
+.switch i::after{content:"";position:absolute;left:3px;top:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgb(0 0 0 / .25);transition:transform .15s}
+.switch input:checked + i{background:var(--pos)}
+.switch input:checked + i::after{transform:translateX(18px)}
+.switch input:focus-visible + i{outline:2px solid var(--accent);outline-offset:2px}
+.set-kid{grid-template-columns:minmax(0,1fr);cursor:default;gap:8px}
+.set-kid-acts{display:flex;gap:6px;flex-wrap:wrap}
+.set-kid-acts .btn{position:relative}
+.set-full{width:100%;justify-content:center}
+.set-btns{flex-direction:row;flex-wrap:wrap}
+.set-btns .btn{flex:1 1 140px;justify-content:center}
+.set-changelog{display:flex;flex-direction:column;gap:8px;font-size:.86rem;max-height:52vh;overflow:auto}
+.set-changelog ul{margin:4px 0 0;padding-left:18px;color:var(--muted)}
+.set-rec .panel{background:var(--bg)}
+@media (prefers-reduced-motion:reduce){.switch i,.switch i::after{transition:none}}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -450,9 +490,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.4.2';
+const APP_VERSION = '2.5.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.5.0', '13.10.2026, 19:41 Uhr', ['Einstellungen neu geordnet: Übersicht mit Gruppen (Allgemein, Für Eltern bzw. Finanzen, Sicherheit & Daten, Info) und Unterseiten', 'Einstellungen wirken sofort – kein Speichern-Knopf mehr', 'Finanzen der Kinder auch in den Einstellungen verwalten']],
   ['2.4.2', '13.10.2026, 19:24 Uhr', ['Kindermodus: „Taschengeld & feste Beträge“ sind jetzt in den Einstellungen unter „Für Eltern“']],
   ['2.4.1', '13.10.2026, 19:05 Uhr', ['„An Eltern senden“ und „Eltern-Ansicht“ sind jetzt in den Einstellungen (Kindermodus)']],
   ['2.4.0', '13.10.2026, 11:01 Uhr', ['Kindermodus: Eltern-Ansicht der Finanzen direkt auf dem Gerät des Kindes (mit Eltern-PIN)', 'Kindermodus: Knopf „An Eltern senden“ verschickt die Finanzen mit einem Tippen']],
@@ -1058,75 +1099,188 @@ function applyName(){
   if (document.title !== n) document.title = n;
   const m = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (m) m.setAttribute('content', n);
 }
-function settingsDialog(){
-  const form = openDlg(`
-    <h3>Einstellungen</h3>
-    <label class="field"><span>Name der App</span><input name="appName" value="${esc(appName())}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
-    <p class="hint" style="margin:0">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p>
-    <fieldset style="border:0;padding:0;margin:4px 0 0;display:flex;flex-direction:column;gap:8px">
-      <legend class="label" style="margin-bottom:8px">Bereiche anzeigen</legend>
-      ${SECTIONS.map(([k,l]) => `<label style="display:flex;gap:10px;align-items:center;font-weight:600"><input type="checkbox" name="sec" value="${k}" id="set-sec-${k}" ${isVisible(k)?'checked':''} style="width:18px;height:18px;flex:none">${l}</label>`).join('')}
-      <span style="font-size:.85rem;color:var(--muted)">Ausgeblendete Bereiche behalten ihre Daten. Mindestens ein Bereich bleibt sichtbar.</span>
-    </fieldset>
-    <div class="field" style="margin-top:4px"><span>Für wen ist die App?</span>
-      <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid()?'':'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid()?'checked':''}><span>Kinder (ab 10)</span></label></div>
-      <span style="font-size:.85rem;color:var(--muted);font-weight:400">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. Alle Daten bleiben beim Umschalten erhalten.</span>
-    </div>
-    <div class="field kid-opts send-box" ${isKid()?'':'hidden'}><span>Für Eltern</span>
-      <div class="send-btns"><button type="button" class="btn" id="set-parent">Eltern-Ansicht</button><button type="button" class="btn" id="set-send">An Eltern senden</button></div>
-      <span style="font-size:.85rem;color:var(--muted);font-weight:400"><b>Eltern-Ansicht:</b> alle Finanzen dieses Geräts ausführlich ansehen und bearbeiten. „Zurück zur Kinderansicht“ sperrt die App wieder.<br><b>An Eltern senden:</b> öffnet das Teilen-Fenster, z. B. für AirDrop. Die Eltern lesen die Datei unter Finanzen → „+ Kind“ ein. Mit Eltern-PIN ist sie verschlüsselt.</span>
-    </div>
-    <div class="kid-opts set-rec" ${isKid()?'':'hidden'}>${renderRecurringPanel()}</div>
-    <div class="field kid-opts" ${isKid()?'':'hidden'}><span>Wo hat das Kind sein Geld?</span>
-      <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${S.settings.kidAccounts==='cash'||!S.settings.kidAccounts?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${S.settings.kidAccounts==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${S.settings.kidAccounts==='both'?'checked':''}><span>Beides</span></label></div>
-      <span style="font-size:.85rem;color:var(--muted);font-weight:400">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann abheben und einzahlen.</span>
-    </div>
-    <div class="field kid-opts" ${isKid()?'':'hidden'}><span>Gespartes heißt</span>
+/* ---------- Einstellungen: Übersicht mit Unterseiten ---------- */
+const SET_PAGES = ['main','name','mode','sections','money','fixed','kids','pin','version'];
+const SET_TITLES = {main:'Einstellungen', name:'Name der App', mode:'Für wen ist die App?', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Version & Neuerungen'};
+function setRow(o){
+  return `<button type="button" class="set-it" ${o.page ? `data-page="${o.page}"` : ''} ${o.act ? `data-do="${o.act}"` : ''}>
+    <span class="set-ic" style="background:${o.c}" aria-hidden="true">${o.ic}</span>
+    <span class="set-tx"><b>${o.t}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>
+    <span class="set-val">${o.v || ''}</span><span class="set-chev" aria-hidden="true">›</span>
+  </button>`;
+}
+function setToggle(o){
+  return `<label class="set-it set-tog${o.ic ? '' : ' set-noic'}">
+    ${o.ic ? `<span class="set-ic" style="background:${o.c}" aria-hidden="true">${o.ic}</span>` : ''}
+    <span class="set-tx"><b>${o.t}</b>${o.s ? `<small>${o.s}</small>` : ''}</span>
+    <span class="switch"><input type="checkbox" id="${o.id}" ${o.on ? 'checked' : ''}><i></i></span>
+  </label>`;
+}
+const setGroup = (label, rows) => `<div class="set-grp"><div class="set-gl">${label}</div><div class="set-card">${rows}</div></div>`;
+function changeSetting(fn, page){ fn(); save('settings'); applyName(); render(); settingsDialog(page); }
+
+function settingsDialog(page){
+  if (typeof page !== 'string' || !SET_PAGES.includes(page)) page = 'main';
+  if (page === 'money' || page === 'fixed') { if (!isKid()) page = 'main'; }
+  if (page === 'kids' && isKid()) page = 'main';
+  const kid = isKid();
+  const vis = SECTIONS.filter(([k]) => isVisible(k));
+  const last = +(lsGet('lastBackup')||0);
+  const fixedCount = S.finance.recurring.filter(r => r.type !== 'sparen').length;
+  const badge = pinSet() && isUnlocked() ? '<span class="set-badge">PIN entsperrt</span>' : '';
+  let body = '';
+
+  if (page === 'main'){
+    body += setGroup('Allgemein',
+      setRow({page:'name', ic:'Aa', c:'var(--accent)', t:'Name der App', v:esc(appName())}) +
+      setRow({page:'mode', ic:'☺', c:'var(--s4)', t:'Für wen ist die App?', v: kid ? 'Kinder (ab 10)' : 'Erwachsene'}) +
+      setRow({page:'sections', ic:'▦', c:'var(--s1)', t:'Bereiche', s: esc(vis.map(x => x[1]).join(', ')), v: vis.length + ' von ' + SECTIONS.length}));
+    if (kid){
+      body += setGroup('Für Eltern',
+        setRow({act:'parent', ic:'€', c:'var(--pos)', t:'Eltern-Ansicht', s:'Finanzen ausführlich ansehen und bearbeiten'}) +
+        setRow({page:'fixed', ic:'↻', c:'var(--s3)', t:'Taschengeld & feste Beträge', v: fixedCount || ''}) +
+        setRow({act:'send', ic:'⇪', c:'var(--s5)', t:'An Eltern senden', s:'Per AirDrop oder Nachricht'}) +
+        setRow({page:'money', ic:'⚙', c:'var(--bank)', t:'Geld & Sparen', s: ({cash:'Portemonnaie', bank:'Bankkonto', both:'Portemonnaie & Konto'})[kidAcc()] + ' · ' + SV().name + ' · Bestätigung ' + (S.settings.confirmIncome !== false ? 'an' : 'aus')}));
+    } else {
+      body += setGroup('Finanzen',
+        setToggle({id:'set-combined', ic:'⇄', c:'var(--bank)', t:'Bank & Bargeld zusammenlegen', s:'Nur ein Kontostand', on: !!S.settings.combined}) +
+        setRow({page:'kids', ic:'☻', c:'var(--pos)', t:'Finanzen der Kinder', s: S.kids.items.length ? esc(S.kids.items.map(k => k.name).join(', ')) : 'Sicherung eines Kindes einlesen', v: S.kids.items.length || ''}));
+    }
+    body += setGroup('Sicherheit & Daten',
+      setRow({page:'pin', ic:'⚿', c:'var(--neg)', t:'Eltern-PIN', v: pinSet() ? 'Aktiv' : 'Aus'}) +
+      setRow({act:'log', ic:'☰', c:'var(--muted)', t:'Protokoll', v: logNew() ? `<span class="set-new">${logNew()} neu</span>` : ''}) +
+      setRow({act:'backup', ic:'⤓', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}));
+    body += setGroup('Info',
+      setRow({page:'version', ic:'i', c:'var(--muted)', t:'Version & Neuerungen', v: APP_VERSION}));
+  }
+
+  if (page === 'name'){
+    body += `<div class="set-grp"><div class="set-card set-pad">
+      <label class="field"><span>Name</span><input name="appName" value="${esc(S.settings.appName || '')}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" autofocus id="set-name"></label>
+      <button type="submit" class="btn primary" style="justify-content:center">Übernehmen</button>
+    </div><p class="set-note">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p></div>`;
+  }
+
+  if (page === 'mode'){
+    body += `<div class="set-grp"><div class="set-card set-pad">
+      <div class="seg"><label><input type="radio" name="mode" value="adult" ${kid ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${kid ? 'checked' : ''}><span>Kinder (ab 10)</span></label></div>
+    </div><p class="set-note">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. Unter „Für Eltern“ gibt es dann Eltern-Ansicht, Taschengeld und das Senden an die Eltern. Alle Daten bleiben beim Umschalten erhalten.</p></div>`;
+  }
+
+  if (page === 'sections'){
+    body += `<div class="set-grp"><div class="set-card">
+      ${SECTIONS.map(([k,l]) => `<label class="set-it set-tog set-noic"><span class="set-tx"><b>${l}</b></span><span class="switch"><input type="checkbox" name="sec" value="${k}" id="set-sec-${k}" ${isVisible(k) ? 'checked' : ''}><i></i></span></label>`).join('')}
+    </div><p class="set-note">Ausgeblendete Bereiche behalten ihre Daten. Mindestens ein Bereich bleibt sichtbar.</p></div>`;
+  }
+
+  if (page === 'money'){
+    body += `<div class="set-grp"><div class="set-gl">Wo hat das Kind sein Geld?</div><div class="set-card set-pad">
+      <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div>
+    </div><p class="set-note">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann abheben und einzahlen.</p></div>
+    <div class="set-grp"><div class="set-gl">Gespartes heißt</div><div class="set-card set-pad">
       <div class="seg"><label><input type="radio" name="kidSave" value="schwein" ${S.settings.kidSave!=='konto'?'checked':''}><span>Sparschwein</span></label><label><input type="radio" name="kidSave" value="konto" ${S.settings.kidSave==='konto'?'checked':''}><span>Sparkonto</span></label></div>
+    </div></div>
+    <div class="set-grp"><div class="set-gl">Einnahmen</div><div class="set-card">
+      ${setToggle({id:'set-confirm', t:'Von Eltern bestätigen lassen', s:'„Geld bekommen“ zählt erst nach Freigabe (nur mit Eltern-PIN)', on: S.settings.confirmIncome !== false})}
+    </div></div>
+    <div class="set-grp"><div class="set-gl">Start</div><div class="set-card">
+      ${setRow({act:'start', ic:'€', c:'var(--accent)', t:'Startbetrag', v: euro(S.finance.start.bank + S.finance.start.cash)})}
+    </div></div>`;
+  }
+
+  if (page === 'fixed'){
+    body += `<div class="set-grp set-rec">${renderRecurringPanel()}<p class="set-note">Zum Beispiel das Taschengeld jeden Monat am 1. Es wird dann automatisch eingetragen. Das Kind kann diese Beträge nicht selbst ändern, wenn eine Eltern-PIN gesetzt ist.</p></div>`;
+  }
+
+  if (page === 'kids'){
+    const kids = S.kids.items;
+    body += `<div class="set-grp"><div class="set-card">
+      ${kids.length ? kids.map(k => `<div class="set-it set-kid">
+        <span class="set-tx"><b>${esc(k.name)}</b><small>Stand: ${esc(new Date(k.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}))}</small></span>
+        <span class="set-kid-acts">
+          <button type="button" class="btn sm" data-do="kid-view" data-id="${esc(k.id)}">Ansehen</button>
+          <label class="btn sm">Neuer Stand<input type="file" accept=".json,application/json" class="file-hidden" data-kid-update="${esc(k.id)}"></label>
+          <button type="button" class="btn sm danger" data-do="kid-remove" data-id="${esc(k.id)}">Entfernen</button>
+        </span></div>`).join('') : '<div class="set-pad" style="color:var(--muted)">Noch keine Kinder eingelesen.</div>'}
+    </div></div>
+    <div class="set-grp"><button type="button" class="btn primary set-full" data-do="kid-add">+ Kind hinzufügen</button>
+    <p class="set-note">Das Kind tippt auf seinem Gerät in den Einstellungen auf „An Eltern senden“ und schickt dir die Datei. Die Übersicht findest du dann im Bereich Finanzen. Deine eigenen Daten bleiben unverändert.</p></div>`;
+  }
+
+  if (page === 'pin'){
+    body += `<div class="set-grp"><div class="set-card set-pad">
+      <b>${pinSet() ? 'Die Eltern-PIN ist aktiv.' : 'Es ist keine Eltern-PIN gesetzt.'}</b>
+      <span style="color:var(--muted);font-size:.9rem">Geschützt sind: Einstellungen, Protokoll, Wiederherstellen einer Sicherung, Start- und Anfangsbeträge, regelmäßige Buchungen und die Bestätigung von Einnahmen. Sicherungen werden mit der PIN verschlüsselt.</span>
+    </div></div>
+    <div class="set-grp set-btns">${pinSet()
+      ? '<button type="button" class="btn" data-do="pin-setup">PIN ändern</button><button type="button" class="btn danger" data-do="pin-remove">PIN entfernen</button>'
+      : '<button type="button" class="btn primary" data-do="pin-setup">PIN festlegen</button>'}</div>`;
+  }
+
+  if (page === 'version'){
+    body += `<div class="set-grp"><div class="set-card set-pad">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:baseline"><b>Version ${APP_VERSION}</b><span style="color:var(--muted);font-size:.85rem">${esc(CHANGELOG[0][1])}</span></div>
+      <div class="set-changelog">${CHANGELOG.map(([v,d,items]) => `<div><b class="num">${v}</b> <span style="color:var(--muted)">${esc(d)}</span><ul>${items.map(i => `<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}</div>
+    </div></div>`;
+  }
+
+  const form = openDlg(`
+    <div class="set-head">
+      ${page !== 'main' ? '<button type="button" class="set-back" data-page="main">‹ Einstellungen</button>' : ''}
+      <div class="set-title"><h3>${SET_TITLES[page]}</h3>${page === 'main' ? badge : ''}</div>
     </div>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="confirmIncome" id="set-confirm" ${S.settings.confirmIncome!==false?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Einnahmen von Kindern bestätigen lassen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Im Kindermodus mit Eltern-PIN zählt „Geld bekommen“ erst, wenn ein Elternteil es freigibt.</span></span></label>
-    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px" id="set-combined-row" ${isKid()?'hidden':''}><input type="checkbox" name="combined" id="set-combined" ${S.settings.combined?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
-    <div class="err" id="f-err"></div>
-    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
-    <div class="pin-box">
-      <div><span class="label">Eltern-PIN</span><span class="pin-state">${pinSet() ? 'Aktiv – Einstellungen, Taschengeld und Startbeträge sind geschützt.' : 'Aus – jeder kann die Einstellungen ändern.'}</span></div>
-      <div class="pin-btns"><button type="button" class="btn sm" id="log-open">Protokoll${logNew() ? ' (' + logNew() + ' neu)' : ''}</button>${pinSet() ? '<button type="button" class="btn sm" id="pin-change">PIN ändern</button><button type="button" class="btn sm danger" id="pin-remove">PIN entfernen</button>' : '<button type="button" class="btn sm" id="pin-setup">PIN festlegen</button>'}</div>
-    </div>
-    <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="label">Version</span><span class="num" style="font-weight:600">${APP_VERSION} <span style="color:var(--muted);font-weight:400">· ${CHANGELOG[0][1]}</span></span></div>
-      ${CHANGELOG.map(([v,d,items]) => `<div style="font-size:.86rem"><b class="num">${v}</b> <span style="color:var(--muted)">${d}</span><ul style="margin:4px 0 0;padding-left:18px;color:var(--muted)">${items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul></div>`).join('')}
-    </div>`, f => {
-      const n = f.appName.value.trim().replace(/\s+/g,' ');
-      S.settings.appName = (n && n !== DEFAULT_NAME) ? n : '';
-      const shown = [...f.querySelectorAll('input[name=sec]:checked')].map(i => i.value);
-      if (!shown.length){ f.querySelector('#f-err').textContent = 'Bitte mindestens einen Bereich auswählen.'; return false; }
-      S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => k!=='sparen' && !shown.includes(k));
-      S.settings.savings = shown.includes('sparen');
-      S.settings.combined = f.combined.checked;
-      S.settings.kid = f.mode.value === 'kid';
-      S.settings.kidAccounts = f.kidAccounts.value || 'cash';
-      S.settings.kidSave = f.kidSave.value || 'schwein';
-      S.settings.confirmIncome = f.confirmIncome.checked;
-      save('settings'); applyName(); toast('Einstellungen gespeichert');
+    ${body}
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Fertig</button></div>`, f => {
+      if (page === 'name'){
+        const n = f.appName.value.trim().replace(/\s+/g,' ');
+        changeSetting(() => { S.settings.appName = (n && n !== DEFAULT_NAME) ? n : ''; }, 'main');
+        toast('Name gespeichert');
+      }
+      return false;
     });
-  const ps = form.querySelector('#pin-setup'), pc = form.querySelector('#pin-change'), pr = form.querySelector('#pin-remove');
-  if (ps) ps.addEventListener('click', pinSetupDialog);
-  if (pc) pc.addEventListener('click', pinSetupDialog);
-  form.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', () => {
-    const kid = form.mode.value === 'kid';
-    form.querySelectorAll('.kid-opts').forEach(el => el.hidden = !kid);
-    const cr = form.querySelector('#set-combined-row'); if (cr) cr.hidden = kid;
-  }));
-  form.querySelector('.set-rec').addEventListener('click', e => {
+  form.classList.add('set-dlg');
+
+  // Navigation und Aktionen
+  form.addEventListener('click', e => {
+    const nav = e.target.closest('[data-page]');
+    if (nav){ e.preventDefault(); settingsDialog(nav.dataset.page); return; }
+    const b = e.target.closest('[data-do]'); if (!b) return;
+    const a = b.dataset.do;
+    if (a === 'parent'){ ui.parentView = true; ui.tab = 'finanzen'; lsSet('tab','finanzen'); closeDlg(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); }
+    else if (a === 'send') exportBackup('send');
+    else if (a === 'log') logDialog();
+    else if (a === 'backup') backupDialog();
+    else if (a === 'start') startDialog();
+    else if (a === 'kid-add') kidAddDialog();
+    else if (a === 'kid-view'){ ui.finView = b.dataset.id; lsSet('finView', ui.finView); ui.tab = 'finanzen'; lsSet('tab','finanzen'); closeDlg(); window.scrollTo(0,0); }
+    else if (a === 'kid-remove'){ if (!armed(b, 'Wirklich?')) return; const k = S.kids.items.find(x => x.id === b.dataset.id); S.kids.items = S.kids.items.filter(x => x.id !== b.dataset.id); save('kids'); if (k) addLog('Finanzen von ' + k.name + ' entfernt'); if (ui.finView === b.dataset.id){ ui.finView = 'me'; lsSet('finView','me'); } render(); settingsDialog('kids'); toast('Entfernt'); }
+    else if (a === 'pin-setup') pinSetupDialog();
+    else if (a === 'pin-remove'){ if (!armed(b, 'Wirklich entfernen?')) return; S.settings.pin = null; save('settings'); render(); settingsDialog('pin'); toast('Eltern-PIN entfernt'); }
+  });
+  // Feste Beträge (Panel enthält data-act-Knöpfe)
+  const rec = form.querySelector('.set-rec');
+  if (rec) rec.addEventListener('click', e => {
     const b = e.target.closest('[data-act]'); if (!b) return;
     if (b.dataset.act === 'rec-new') recDialog();
     else if (b.dataset.act === 'rec-edit'){ const r = S.finance.recurring.find(x => x.id === b.dataset.id); if (r) recDialog(r); }
   });
-  const ss = form.querySelector('#set-send'); if (ss) ss.addEventListener('click', () => exportBackup('send'));
-  const sp = form.querySelector('#set-parent'); if (sp) sp.addEventListener('click', () => { ui.parentView = true; ui.tab = 'finanzen'; lsSet('tab', 'finanzen'); closeDlg(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
-  const lo = form.querySelector('#log-open'); if (lo) lo.addEventListener('click', logDialog);
-  if (pr) pr.addEventListener('click', () => { if (!armed(pr,'Wirklich entfernen?')) return; S.settings.pin = null; save('settings'); closeDlg(); toast('Eltern-PIN entfernt'); });
+  // Sofort wirksame Einstellungen
+  form.addEventListener('change', e => {
+    const t = e.target;
+    if (t.dataset && t.dataset.kidUpdate && t.files && t.files[0]){ readKidBackup(t.files[0], t.dataset.kidUpdate); return; }
+    if (t.id === 'set-combined') changeSetting(() => { S.settings.combined = t.checked; }, 'main');
+    else if (t.name === 'mode') changeSetting(() => { S.settings.kid = t.value === 'kid'; ui.parentView = false; }, 'mode');
+    else if (t.name === 'sec'){
+      const shown = [...form.querySelectorAll('input[name=sec]:checked')].map(i => i.value);
+      if (!shown.length){ t.checked = true; toast('Mindestens ein Bereich bleibt sichtbar.'); return; }
+      changeSetting(() => { S.settings.hidden = SECTIONS.map(x => x[0]).filter(k => k !== 'sparen' && !shown.includes(k)); S.settings.savings = shown.includes('sparen'); }, 'sections');
+    }
+    else if (t.name === 'kidAccounts') changeSetting(() => { S.settings.kidAccounts = t.value; }, 'money');
+    else if (t.name === 'kidSave') changeSetting(() => { S.settings.kidSave = t.value; }, 'money');
+    else if (t.id === 'set-confirm') changeSetting(() => { S.settings.confirmIncome = t.checked; }, 'money');
+  });
 }
+
 
 function render(){
   const made = runRecurring();
