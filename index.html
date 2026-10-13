@@ -381,6 +381,8 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .snap-row b{font-size:.88rem;font-weight:600}
 .snap-row small{font-size:.78rem;color:var(--muted)}
 .snap-note{font-size:.8rem;color:var(--muted)}
+.kid-tools{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
+.kid-tools .btn{flex:1 1 140px;justify-content:center}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -444,9 +446,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.3.0';
+const APP_VERSION = '2.4.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.4.0', '13.10.2026, 11:01 Uhr', ['Kindermodus: Eltern-Ansicht der Finanzen direkt auf dem Gerät des Kindes (mit Eltern-PIN)', 'Kindermodus: Knopf „An Eltern senden“ verschickt die Finanzen mit einem Tippen']],
   ['2.3.0', '13.10.2026, 10:48 Uhr', ['Automatischer Sicherungspunkt bei jedem Update – unter „Sichern“ mit einem Tippen zurückholbar', 'Hinweis, wenn eine neue Version verfügbar ist, und Übersicht „Was ist neu“ nach dem Update']],
   ['2.2.0', '13.10.2026, 10:44 Uhr', ['Eltern: Finanzen der Kinder auf dem eigenen Gerät ansehen – Sicherung des Kindes einlesen, eigene Daten bleiben unverändert', 'Übersicht pro Kind: Kontostände, Sparen, Monatsliste, Kategorien und Verlauf der letzten 6 Monate']],
   ['2.1.0', '13.10.2026, 10:02 Uhr', ['Kindermodus: auswählbar, wo das Kind Geld hat – Portemonnaie, Bankkonto oder beides (mit Abheben und Einzahlen)', 'Kindermodus: Gespartes heißt wahlweise „Sparschwein“ oder „Sparkonto“']],
@@ -698,7 +701,8 @@ async function prepareBackup(){
   if (readyBk && readyBk.stamp === st) return readyBk.file;
   const file = await buildBackupFile(); readyBk = {stamp: st, file}; return file;
 }
-async function exportBackup(){
+async function exportBackup(mode){
+  if (mode !== 'send') mode = '';
   let file = (readyBk && readyBk.stamp === bkStamp()) ? readyBk.file : null;
   if (!file){
     try { file = await prepareBackup(); }
@@ -713,13 +717,13 @@ async function exportBackup(){
   }
   try {
     if (navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
-      await navigator.share({files:[file], title:file.name});
+      await navigator.share({files:[file], title: mode==='send' ? 'Finanzen von ' + appName() : file.name});
     } else {
       const url = URL.createObjectURL(file);
       const a = document.createElement('a'); a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
     }
-    lsSet('lastBackup', Date.now()); lsSet('bkSnooze', 0); updateBackupHint(); toast(pinSet() ? 'Verschlüsselte Sicherung erstellt' : 'Sicherung erstellt');
+    lsSet('lastBackup', Date.now()); lsSet('bkSnooze', 0); updateBackupHint(); toast(mode==='send' ? 'Fertig – deine Eltern können die Datei jetzt in ihrer App einlesen.' : pinSet() ? 'Verschlüsselte Sicherung erstellt' : 'Sicherung erstellt');
   } catch(e){ if (e && e.name === 'AbortError') return; toast('Sicherung konnte nicht erstellt werden.'); }
 }
 function importBackup(file){
@@ -1616,6 +1620,11 @@ function kidBalance(excludeId, acct){
   return S.finance.tx.reduce((sum,t) => { if (t.id===excludeId) return sum; const e = effect(t); return sum + (acct ? e[acct] : e.bank + e.cash); }, start);
 }
 function renderKidFinance(){
+  if (ui.parentView){
+    if (isUnlocked()) return renderKidOverview({id:'live', name: appName(), exported: new Date().toISOString(), finance: S.finance,
+      cfg: {kid:true, kidAccounts: kidAcc(), kidSave: S.settings.kidSave, combined: !!S.settings.combined, savings: savingsOn()}}, true);
+    ui.parentView = false;
+  }
   ui.acct = 'all';
   const sv = savingsOn(), mode = kidAcc(), SVN = SV();
   const money = kidBalance(), piggy = savingsBalance();
@@ -1668,6 +1677,7 @@ function renderKidFinance(){
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
   </div>
   ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move">⇄ Abheben oder einzahlen</button>' : ''}
+  <div class="kid-tools"><button class="btn sm" data-act="send-parents">An Eltern senden</button><button class="btn sm ghost" data-act="parent-view">Eltern-Ansicht</button></div>
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -1796,7 +1806,7 @@ function kidAddDialog(){
     <h3>Finanzen eines Kindes ansehen</h3>
     <p style="margin:0">So holst du die Daten deines Kindes auf dein Gerät:</p>
     <ol class="kv-steps">
-      <li>Auf dem Gerät des Kindes oben auf <b>„Sichern“</b> und dann <b>„Jetzt sichern“</b> tippen.</li>
+      <li>Auf dem Gerät des Kindes im Bereich Finanzen auf <b>„An Eltern senden“</b> tippen.</li>
       <li>Die Datei an dich schicken, z. B. per AirDrop oder Nachricht, oder in iCloud Drive speichern.</li>
       <li>Hier die Datei auswählen. Ist sie mit der Eltern-PIN verschlüsselt, fragt die App nach der PIN.</li>
     </ol>
@@ -1872,7 +1882,7 @@ function storeKid(inner, outer, targetId){
       ui.finView = k.id; lsSet('finView', ui.finView); toast('Finanzen von ' + name + ' eingelesen');
     });
 }
-function renderKidOverview(k){
+function renderKidOverview(k, live){
   const F = k.finance, cfg = k.cfg || {};
   const mode = cfg.kid ? (cfg.kidAccounts || 'cash') : (cfg.combined ? 'cash' : 'both');
   const svName = cfg.kid ? (cfg.kidSave === 'konto' ? 'Sparkonto' : 'Sparschwein') : 'Sparen';
@@ -1906,36 +1916,36 @@ function renderKidOverview(k){
     const title = t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Vom Konto abgehoben' : t.type==='einzahlung' ? 'Aufs Konto eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
     const plus = inn || t.type==='entsparen';
     const where = mode==='both' && !mv ? (t.account==='bank' ? 'Konto' : 'Portemonnaie') : mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : '';
-    return `<div class="tx ro${t.pending?' is-pending':''}">
+    return `<${live?'button':'div'} class="tx${live?'':' ro'}${t.pending?' is-pending':''}"${live ? ' data-act="edittx" data-id="' + esc(t.id) + '"' : ''}>
       <span class="ico ${mv?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
       <span class="t">${esc(title)}</span>
       <span class="amt ${mv||sav?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
       <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${where?'<span>· '+where+'</span>':''}${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
-    </div>`;
-  }).join('') : `<div class="empty"><strong>Keine Einträge im ${MONTHS[m-1]}</strong>Im Stand vom ${esc(new Date(k.exported).toLocaleDateString('de-DE'))} hat ${esc(k.name)} in diesem Monat nichts eingetragen.</div>`;
+    </${live?'button':'div'}>`;
+  }).join('') : `<div class="empty"><strong>Keine Einträge im ${MONTHS[m-1]}</strong>${live ? 'In diesem Monat wurde nichts eingetragen.' : 'Im Stand vom ' + esc(new Date(k.exported).toLocaleDateString('de-DE')) + ' hat ' + esc(k.name) + ' in diesem Monat nichts eingetragen.'}</div>`;
   const g = F.goal;
   return `
   <div class="kv-head">
-    <div><h2>${esc(k.name)}</h2><span class="kv-stand">Stand: ${esc(new Date(k.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}))}</span></div>
+    <div><h2>${live ? 'Eltern-Ansicht' : esc(k.name)}</h2><span class="kv-stand">${live ? 'Aktuelle Daten auf diesem Gerät · Einträge zum Bearbeiten antippen' : 'Stand: ' + esc(new Date(k.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}))}</span></div>
     <div class="kv-acts">
-      <label class="btn sm">Neuen Stand einlesen<input type="file" accept=".json,application/json" data-kid-update="${esc(k.id)}" class="file-hidden"></label>
-      <button class="btn sm danger" data-act="kid-remove" data-id="${esc(k.id)}">Entfernen</button>
+      ${live ? '<button class="btn sm primary" data-act="parent-exit">Zurück zur Kinderansicht</button>' : `<label class="btn sm">Neuen Stand einlesen<input type="file" accept=".json,application/json" data-kid-update="${esc(k.id)}" class="file-hidden"></label>
+      <button class="btn sm danger" data-act="kid-remove" data-id="${esc(k.id)}">Entfernen</button>`}
     </div>
   </div>
-  ${stale ? `<div class="kv-warn">Dieser Stand ist ${Math.floor(age/864e5)} Tage alt. Für aktuelle Zahlen eine neue Sicherung vom Gerät des Kindes einlesen.</div>` : ''}
+  ${!live && stale ? `<div class="kv-warn">Dieser Stand ist ${Math.floor(age/864e5)} Tage alt. Für aktuelle Zahlen eine neue Sicherung vom Gerät des Kindes einlesen.</div>` : ''}
   <section class="accounts kv-cards" aria-label="Kontostände von ${esc(k.name)}">
     <div class="acct total-sub"><span class="label">${mode==='bank' ? 'Konto' : 'Verfügbar'}</span><span class="bal ${money<0?'neg':''}">${euro(money)}</span><span class="sub">${mode==='both' ? `Portemonnaie ${euro(b.cash)} · Konto ${euro(b.bank)}` : mode==='bank' ? 'Bankkonto' : 'Portemonnaie'}</span></div>
     ${hasSave ? `<div class="acct save"><span class="label"><i></i>${svName}</span><span class="bal">${euro(b.save)}</span><span class="sub">${g ? 'Ziel: ' + esc(g.name || 'Sparziel') + ' ' + Math.round(Math.max(0, Math.min(100, b.save / g.amount * 100))) + ' %' : 'gespart'}</span></div>` : ''}
     <div class="acct total-sub"><span class="label">Gesamt</span><span class="bal">${euro(money + b.save)}</span><span class="sub">${hasSave ? 'inkl. ' + svName : 'alles zusammen'}</span></div>
   </section>
-  ${pend.length ? `<div class="kv-pend">${pend.length === 1 ? '1 Einnahme wartet' : pend.length + ' Einnahmen warten'} auf Bestätigung (zusammen ${euro(pend.reduce((a,t)=>a+t.amount,0))}). Bestätigen kannst du sie auf dem Gerät des Kindes mit der Eltern-PIN.</div>` : ''}
+  ${live ? pendingBanner() : pend.length ? `<div class="kv-pend">${pend.length === 1 ? '1 Einnahme wartet' : pend.length + ' Einnahmen warten'} auf Bestätigung (zusammen ${euro(pend.reduce((a,t)=>a+t.amount,0))}). Bestätigen kannst du sie auf dem Gerät des Kindes mit der Eltern-PIN.</div>` : ''}
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
       <span class="m">${MONTHS[m-1]} ${y}</span>
       <button class="icon-btn" data-act="month" data-d="1" aria-label="Nächster Monat">›</button>
     </div>
-    <span class="kv-ro">Nur ansehen</span>
+    ${live ? '' : '<span class="kv-ro">Nur ansehen</span>'}
   </div>
   <div class="fin-grid">
     <div class="panel ledger">${rows}</div>
@@ -2313,6 +2323,9 @@ $('#main').addEventListener('click', e => {
   else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
   else if (a==='pend-review') requirePin('Das Bestätigen von Einnahmen', pendingDialog);
   else if (a==='kid-move') kidMoveDialog();
+  else if (a==='send-parents') exportBackup('send');
+  else if (a==='parent-view') requirePin('Die Eltern-Ansicht', () => { ui.parentView = true; render(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
+  else if (a==='parent-exit'){ ui.parentView = false; unlockedUntil = 0; render(); window.scrollTo(0,0); toast('Zurück in der Kinderansicht – Einstellungen sind wieder gesperrt'); }
   else if (a==='finview'){ ui.finView = b.dataset.id; lsSet('finView', ui.finView); render(); }
   else if (a==='kid-add') kidAddDialog();
   else if (a==='kid-remove'){ if (!armed(b, 'Wirklich entfernen?')) return; const k = S.kids.items.find(x => x.id === b.dataset.id); S.kids.items = S.kids.items.filter(x => x.id !== b.dataset.id); save('kids'); if (k) addLog('Finanzen von ' + k.name + ' entfernt'); ui.finView = 'me'; lsSet('finView','me'); render(); toast('Entfernt'); }
