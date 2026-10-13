@@ -385,6 +385,7 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .kid-tools .btn{flex:1 1 140px;justify-content:center}
 .send-btns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
 .send-btns .btn{justify-content:center;white-space:normal;text-align:center;padding-inline:8px}
+.set-rec .panel{background:var(--sunk)}
 .send-box{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
@@ -449,9 +450,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.4.1';
+const APP_VERSION = '2.4.2';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.4.2', '13.10.2026, 19:24 Uhr', ['Kindermodus: „Taschengeld & feste Beträge“ sind jetzt in den Einstellungen unter „Für Eltern“']],
   ['2.4.1', '13.10.2026, 19:05 Uhr', ['„An Eltern senden“ und „Eltern-Ansicht“ sind jetzt in den Einstellungen (Kindermodus)']],
   ['2.4.0', '13.10.2026, 11:01 Uhr', ['Kindermodus: Eltern-Ansicht der Finanzen direkt auf dem Gerät des Kindes (mit Eltern-PIN)', 'Kindermodus: Knopf „An Eltern senden“ verschickt die Finanzen mit einem Tippen']],
   ['2.3.0', '13.10.2026, 10:48 Uhr', ['Automatischer Sicherungspunkt bei jedem Update – unter „Sichern“ mit einem Tippen zurückholbar', 'Hinweis, wenn eine neue Version verfügbar ist, und Übersicht „Was ist neu“ nach dem Update']],
@@ -1074,6 +1076,7 @@ function settingsDialog(){
       <div class="send-btns"><button type="button" class="btn" id="set-parent">Eltern-Ansicht</button><button type="button" class="btn" id="set-send">An Eltern senden</button></div>
       <span style="font-size:.85rem;color:var(--muted);font-weight:400"><b>Eltern-Ansicht:</b> alle Finanzen dieses Geräts ausführlich ansehen und bearbeiten. „Zurück zur Kinderansicht“ sperrt die App wieder.<br><b>An Eltern senden:</b> öffnet das Teilen-Fenster, z. B. für AirDrop. Die Eltern lesen die Datei unter Finanzen → „+ Kind“ ein. Mit Eltern-PIN ist sie verschlüsselt.</span>
     </div>
+    <div class="kid-opts set-rec" ${isKid()?'':'hidden'}>${renderRecurringPanel()}</div>
     <div class="field kid-opts" ${isKid()?'':'hidden'}><span>Wo hat das Kind sein Geld?</span>
       <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${S.settings.kidAccounts==='cash'||!S.settings.kidAccounts?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${S.settings.kidAccounts==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${S.settings.kidAccounts==='both'?'checked':''}><span>Beides</span></label></div>
       <span style="font-size:.85rem;color:var(--muted);font-weight:400">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann abheben und einzahlen.</span>
@@ -1114,6 +1117,11 @@ function settingsDialog(){
     form.querySelectorAll('.kid-opts').forEach(el => el.hidden = !kid);
     const cr = form.querySelector('#set-combined-row'); if (cr) cr.hidden = kid;
   }));
+  form.querySelector('.set-rec').addEventListener('click', e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    if (b.dataset.act === 'rec-new') recDialog();
+    else if (b.dataset.act === 'rec-edit'){ const r = S.finance.recurring.find(x => x.id === b.dataset.id); if (r) recDialog(r); }
+  });
   const ss = form.querySelector('#set-send'); if (ss) ss.addEventListener('click', () => exportBackup('send'));
   const sp = form.querySelector('#set-parent'); if (sp) sp.addEventListener('click', () => { ui.parentView = true; ui.tab = 'finanzen'; lsSet('tab', 'finanzen'); closeDlg(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
   const lo = form.querySelector('#log-open'); if (lo) lo.addEventListener('click', logDialog);
@@ -1465,12 +1473,12 @@ function renderRecurringPanel(mode){
   const list = (S.finance.recurring || []).filter(r => forSave ? r.type==='sparen' : r.type!=='sparen').slice().sort((a,b) => (a.paused?1:0)-(b.paused?1:0) || String(occAfter(a,a.last||null)||'9999').localeCompare(String(occAfter(b,b.last||null)||'9999')));
   const one = isCombined();
   return `<div class="panel cats">
-    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">${forSave?(isKid()?'Automatisch '+SV().inA:'Sparpläne'):(isKid()?'Taschengeld & feste Beträge':'Regelmäßige Buchungen')}</span><button class="btn sm" data-act="${forSave?'rec-new-save':'rec-new'}">+ Neu</button></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><span class="label">${forSave?(isKid()?'Automatisch '+SV().inA:'Sparpläne'):(isKid()?'Taschengeld & feste Beträge':'Regelmäßige Buchungen')}</span><button type="button" class="btn sm" data-act="${forSave?'rec-new-save':'rec-new'}">+ Neu</button></div>
     ${list.length ? `<div class="rec-list">${list.map(r => {
       const next = r.paused ? null : occAfter(r, r.last || null);
       const sign = r.type==='einnahme' || r.type==='sparen' ? '+' : '−';
       const info = [recSummary(r), r.paused ? 'pausiert' : next ? 'nächste: ' + fmtShort(next) + (next.slice(0,4)!==today().slice(0,4) ? ' ' + next.slice(0,4) : '') : 'beendet', one ? '' : (r.account==='cash'?'Bargeld':'Bank')].filter(Boolean).join(' · ');
-      return `<button class="rec-row ${r.paused||!next?'paused':''}" data-act="rec-edit" data-id="${esc(r.id)}"><b>${esc(r.text)}</b><span class="num amt ${r.type==='einnahme'?'pos':r.type==='sparen'?'save-v':'neg'}">${sign}${euro(r.amount)}</span><small>${esc(info)}</small></button>`;
+      return `<button type="button" class="rec-row ${r.paused||!next?'paused':''}" data-act="rec-edit" data-id="${esc(r.id)}"><b>${esc(r.text)}</b><span class="num amt ${r.type==='einnahme'?'pos':r.type==='sparen'?'save-v':'neg'}">${sign}${euro(r.amount)}</span><small>${esc(info)}</small></button>`;
     }).join('')}</div>` : `<span style="color:var(--muted);font-size:.88rem">${forSave ? (isKid() ? 'Zum Beispiel jede Woche 1 € ' + SV().inA + '. Das passiert dann von selbst.' : 'Zum Beispiel jeden Monat 50 € aufs Sparen. Wird am Stichtag automatisch gebucht.') : (isKid() ? 'Zum Beispiel dein Taschengeld jeden Monat am 1. Es wird dann von selbst eingetragen.' : 'Zum Beispiel Taschengeld am 1. jeden Monats oder die Miete. Wird am Stichtag automatisch gebucht.')}</span>`}
   </div>`;
 }
@@ -1704,7 +1712,6 @@ function renderKidFinance(){
         <span class="label">Wofür habe ich Geld ausgegeben?</span>
         ${catList.length ? catList.map(([c,v]) => `<div class="cat-row"><span>${esc(c)}</span><span class="num">${euro(v)}</span><div class="bar"><i style="width:${Math.max(3,v/catMax*100)}%"></i></div></div>`).join('') : '<span style="color:var(--muted);font-size:.88rem">In diesem Monat noch nichts ausgegeben.</span>'}
       </div>
-      ${renderRecurringPanel()}
     </aside>
   </div>`;
 }
