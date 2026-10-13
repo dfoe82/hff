@@ -383,6 +383,9 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .snap-note{font-size:.8rem;color:var(--muted)}
 .kid-tools{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap;margin-top:10px}
 .kid-tools .btn{flex:1 1 140px;justify-content:center}
+.send-btns{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.send-btns .btn{justify-content:center;white-space:normal;text-align:center;padding-inline:8px}
+.send-box{padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--sunk)}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -446,9 +449,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.4.0';
+const APP_VERSION = '2.4.1';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.4.1', '13.10.2026, 19:05 Uhr', ['„An Eltern senden“ und „Eltern-Ansicht“ sind jetzt in den Einstellungen (Kindermodus)']],
   ['2.4.0', '13.10.2026, 11:01 Uhr', ['Kindermodus: Eltern-Ansicht der Finanzen direkt auf dem Gerät des Kindes (mit Eltern-PIN)', 'Kindermodus: Knopf „An Eltern senden“ verschickt die Finanzen mit einem Tippen']],
   ['2.3.0', '13.10.2026, 10:48 Uhr', ['Automatischer Sicherungspunkt bei jedem Update – unter „Sichern“ mit einem Tippen zurückholbar', 'Hinweis, wenn eine neue Version verfügbar ist, und Übersicht „Was ist neu“ nach dem Update']],
   ['2.2.0', '13.10.2026, 10:44 Uhr', ['Eltern: Finanzen der Kinder auf dem eigenen Gerät ansehen – Sicherung des Kindes einlesen, eigene Daten bleiben unverändert', 'Übersicht pro Kind: Kontostände, Sparen, Monatsliste, Kategorien und Verlauf der letzten 6 Monate']],
@@ -1066,6 +1070,10 @@ function settingsDialog(){
       <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid()?'':'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid()?'checked':''}><span>Kinder (ab 10)</span></label></div>
       <span style="font-size:.85rem;color:var(--muted);font-weight:400">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. Alle Daten bleiben beim Umschalten erhalten.</span>
     </div>
+    <div class="field kid-opts send-box" ${isKid()?'':'hidden'}><span>Für Eltern</span>
+      <div class="send-btns"><button type="button" class="btn" id="set-parent">Eltern-Ansicht</button><button type="button" class="btn" id="set-send">An Eltern senden</button></div>
+      <span style="font-size:.85rem;color:var(--muted);font-weight:400"><b>Eltern-Ansicht:</b> alle Finanzen dieses Geräts ausführlich ansehen und bearbeiten. „Zurück zur Kinderansicht“ sperrt die App wieder.<br><b>An Eltern senden:</b> öffnet das Teilen-Fenster, z. B. für AirDrop. Die Eltern lesen die Datei unter Finanzen → „+ Kind“ ein. Mit Eltern-PIN ist sie verschlüsselt.</span>
+    </div>
     <div class="field kid-opts" ${isKid()?'':'hidden'}><span>Wo hat das Kind sein Geld?</span>
       <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${S.settings.kidAccounts==='cash'||!S.settings.kidAccounts?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${S.settings.kidAccounts==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${S.settings.kidAccounts==='both'?'checked':''}><span>Beides</span></label></div>
       <span style="font-size:.85rem;color:var(--muted);font-weight:400">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann abheben und einzahlen.</span>
@@ -1106,6 +1114,8 @@ function settingsDialog(){
     form.querySelectorAll('.kid-opts').forEach(el => el.hidden = !kid);
     const cr = form.querySelector('#set-combined-row'); if (cr) cr.hidden = kid;
   }));
+  const ss = form.querySelector('#set-send'); if (ss) ss.addEventListener('click', () => exportBackup('send'));
+  const sp = form.querySelector('#set-parent'); if (sp) sp.addEventListener('click', () => { ui.parentView = true; ui.tab = 'finanzen'; lsSet('tab', 'finanzen'); closeDlg(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
   const lo = form.querySelector('#log-open'); if (lo) lo.addEventListener('click', logDialog);
   if (pr) pr.addEventListener('click', () => { if (!armed(pr,'Wirklich entfernen?')) return; S.settings.pin = null; save('settings'); closeDlg(); toast('Eltern-PIN entfernt'); });
 }
@@ -1677,7 +1687,6 @@ function renderKidFinance(){
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
   </div>
   ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move">⇄ Abheben oder einzahlen</button>' : ''}
-  <div class="kid-tools"><button class="btn sm" data-act="send-parents">An Eltern senden</button><button class="btn sm ghost" data-act="parent-view">Eltern-Ansicht</button></div>
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -1806,7 +1815,7 @@ function kidAddDialog(){
     <h3>Finanzen eines Kindes ansehen</h3>
     <p style="margin:0">So holst du die Daten deines Kindes auf dein Gerät:</p>
     <ol class="kv-steps">
-      <li>Auf dem Gerät des Kindes im Bereich Finanzen auf <b>„An Eltern senden“</b> tippen.</li>
+      <li>Auf dem Gerät des Kindes in den <b>Einstellungen</b> (Zahnrad) auf <b>„An Eltern senden“</b> tippen.</li>
       <li>Die Datei an dich schicken, z. B. per AirDrop oder Nachricht, oder in iCloud Drive speichern.</li>
       <li>Hier die Datei auswählen. Ist sie mit der Eltern-PIN verschlüsselt, fragt die App nach der PIN.</li>
     </ol>
