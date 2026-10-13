@@ -316,6 +316,28 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .pin-forgot p{margin:8px 0}
 .pin-code{flex:1;min-width:0;border:1px solid var(--line);background:var(--bg);border-radius:10px;padding:8px 10px;font-family:var(--f-num);font-size:16px;text-transform:uppercase}
 .pin-recovery-code{font-size:1.8rem;font-weight:600;text-align:center;letter-spacing:.12em;padding:14px;border:2px dashed var(--line);border-radius:12px;background:var(--sunk)}
+.pend-banner{display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:12px 0 0;padding:12px 14px;border-radius:var(--r);border:1px dashed color-mix(in srgb,var(--pos) 55%,var(--line));background:color-mix(in srgb,var(--pos) 8%,var(--surface))}
+.pend-banner > div{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1 1 200px}
+.pend-banner span{font-size:.84rem;color:var(--muted)}
+.accounts + .pend-banner, .pend-banner + .accounts{margin-bottom:12px}
+.tx.is-pending{opacity:.72}
+.tx.is-pending .amt{text-decoration:line-through dotted;text-decoration-thickness:1px}
+.pend-tag{font-weight:700;color:var(--warn)}
+.pend-list{display:flex;flex-direction:column}
+.pend-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.pend-row:first-child{border-top:0}
+.pend-info{display:flex;flex-direction:column;min-width:0}
+.pend-info b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pend-info small{color:var(--muted);font-size:.8rem}
+.pend-acts{grid-column:1/-1;display:flex;gap:6px;justify-content:flex-end}
+.log-list{max-height:52vh;overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.log-day{position:sticky;top:0;background:var(--sunk);padding:6px 10px;font-size:.76rem;font-weight:700;color:var(--muted)}
+.log-row{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:8px;align-items:baseline;padding:7px 10px;border-top:1px solid var(--line);font-size:.86rem}
+.log-row .num{color:var(--muted);font-size:.78rem}
+.log-txt{overflow-wrap:anywhere}
+.log-by{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.log-by.p{background:color-mix(in srgb,var(--accent) 15%,transparent);color:var(--accent)}
+.lock-hint{background:color-mix(in srgb,var(--accent) 12%,var(--sunk))}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(84px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:50;max-width:calc(100vw - 32px)}
 @media (min-width:701px){.toast{bottom:24px}}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{opacity:0;transform:translate(-50%,8px)}}}
@@ -375,9 +397,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '1.9.0';
+const APP_VERSION = '2.0.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.0.0', '13.10.2026, 09:16 Uhr', ['Verschlüsselte Sicherung: Mit Eltern-PIN ist die Sicherungsdatei nur mit PIN oder Notfall-Code lesbar und wiederherstellbar', 'Kindermodus: Einnahmen warten auf Bestätigung durch die Eltern', 'Änderungsprotokoll aller Buchungen und Einstellungen (in den Einstellungen)', 'Härtere PIN-Sperre: wachsende Wartezeiten und Hinweis auf Fehlversuche']],
   ['1.9.0', '13.10.2026, 09:01 Uhr', ['Eltern-PIN: schützt Einstellungen, Wiederherstellen einer Sicherung, Startbeträge und regelmäßige Buchungen (z. B. Taschengeld)', 'Notfall-Code, falls die PIN vergessen wird']],
   ['1.8.0', '13.10.2026, 08:04 Uhr', ['Kindermodus (ab 10 Jahren): „Mein Geld“ mit großen Knöpfen für bekommen/ausgegeben, einfachen Kategorien und Hinweis, ob das Geld reicht', 'Sparen heißt im Kindermodus „Sparschwein“', 'Sparziel mit Fortschrittsbalken im Bereich Sparen']],
   ['1.7.1', '08.10.2026, 02:38 Uhr', ['Sparen-Karte aus dem Bereich Finanzen entfernt; Gesamt zeigt weiter den Stand inkl. Sparen', 'Sparen wird nur noch über die untere Leiste geöffnet']],
@@ -392,24 +415,26 @@ const CHANGELOG = [
   ['1.0.0', '07.10.2026, 07:52 Uhr', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
 ];
 const DEFAULT_NAME = 'Organizer';
-const KEYS = ['finance','schedule','tasks','homework','settings'];
+const KEYS = ['finance','schedule','tasks','homework','settings','log'];
 const DEF = {
   finance: { start:{bank:0,cash:0,save:0}, tx:[], recurring:[] },
   schedule: { plans:[], active:null },
   tasks: { items:[] },
   homework: { items:[] },
-  settings: { appName:'', combined:false, hidden:[] }
+  settings: { appName:'', combined:false, hidden:[] },
+  log: { items:[] }
 };
 function normalize(key, v){
   const d = clone(DEF[key]);
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0, save:+(v.start?.save)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; d.recurring = Array.isArray(v.recurring)?v.recurring:[]; d.goal = (v.goal && +v.goal.amount > 0) ? {name: String(v.goal.name||'').slice(0,60), amount: Math.round(+v.goal.amount)} : null; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.savings = !!v.savings; d.kid = !!v.kid; d.pin = (v.pin && v.pin.h && v.pin.s) ? {s:String(v.pin.s), h:String(v.pin.h), r:String(v.pin.r||'')} : null; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.savings = !!v.savings; d.kid = !!v.kid; d.pin = (v.pin && v.pin.h && v.pin.s) ? {s:String(v.pin.s), h:String(v.pin.h), r:String(v.pin.r||''), wk: (v.pin.wk && v.pin.wk.salt && v.pin.wk.wp) ? v.pin.wk : null} : null; d.confirmIncome = v.confirmIncome !== false; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
+  if (key==='log'){ d.items = Array.isArray(v.items) ? v.items.filter(e => e && e.ts && e.txt).slice(-500) : []; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
   return d;
 }
-const hasContent = (key, v) => key==='finance' ? (v.tx.length>0 || v.recurring.length>0 || v.start.bank!==0 || v.start.cash!==0 || v.start.save!==0)
+const hasContent = (key, v) => key==='log' ? false : key==='finance' ? (v.tx.length>0 || v.recurring.length>0 || v.start.bank!==0 || v.start.cash!==0 || v.start.save!==0)
   : key==='schedule' ? v.plans.length>0 : key==='settings' ? (!!v.appName || v.combined || v.savings || v.hidden.length>0) : v.items.length>0;
 
 const LS = 'haushaltsplaner.v1.';
@@ -432,11 +457,12 @@ const ui = {
 if (ui.day > 4 && now.getDay()===0) ui.day = 0;
 
 /* ---------- Speicherung: nur auf diesem Gerät (localStorage) ---------- */
-let storageOk = true;
+let storageOk = true, suppressLog = false;
 function save(key){
+  if (!suppressLog){ if (key==='finance') logFinanceDiff(); if (key==='settings') logSettingsDiff(); }
   try { localStorage.setItem(LS+key, JSON.stringify(S[key])); storageOk = true; }
   catch(e){ storageOk = false; toast('Speichern nicht möglich – privates Surfen aus? Bitte Sicherung exportieren.'); }
-  try { localStorage.setItem(LS+'changed', String(Date.now())); } catch(e){}
+  if (key !== 'log') try { localStorage.setItem(LS+'changed', String(Date.now())); } catch(e){}
   updateBackupHint();
 }
 function setSync(on, text){
@@ -447,6 +473,74 @@ function initLocal(){
   catch(e){ storageOk = false; setSync(false,'Speichern nicht möglich'); }
   if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{});
   updateBackupHint();
+}
+
+/* ---------- Änderungsprotokoll ---------- */
+const LOG_MAX = 500;
+function addLog(txt){
+  const by = (pinSet() && Date.now() < unlockedUntil) ? 'Eltern' : (isKid() ? 'Kind' : '');
+  S.log.items.push({ts: Date.now(), txt, by});
+  if (S.log.items.length > LOG_MAX) S.log.items.splice(0, S.log.items.length - LOG_MAX);
+  try { localStorage.setItem(LS+'log', JSON.stringify(S.log)); } catch(e){}
+}
+const logNew = () => S.log.items.filter(e => e.ts > (+(lsGet('logSeen')||0))).length;
+const txKind = t => ({einnahme:'Einnahme', ausgabe:'Ausgabe', einzahlung:'Einzahlung', auszahlung:'Auszahlung', sparen:'Sparen', entsparen:'Vom Sparen'})[t.type] || 'Buchung';
+const txSign = t => (t.type==='einnahme' || t.type==='entsparen') ? '+' : (t.type==='ausgabe' || t.type==='sparen') ? '−' : '';
+const txDesc = t => `${txKind(t)} ${txSign(t)}${euro(t.amount)}${t.text ? ' „' + t.text + '“' : ''} (${fmtShort(t.date)})`;
+function finSnap(){
+  const F = S.finance, tx = {}, rec = {};
+  F.tx.forEach(t => tx[t.id] = {type:t.type, amount:t.amount, date:t.date, text:t.text||'', pending:!!t.pending, rec:t.rec||'', account:t.account||''});
+  (F.recurring||[]).forEach(r => rec[r.id] = {type:r.type, amount:r.amount, text:r.text||'', rhythm:r.rhythm, start:r.start, paused:!!r.paused, end:r.end||''});
+  return {tx, rec, start: {bank:F.start.bank, cash:F.start.cash, save:F.start.save||0}};
+}
+function setSnap(){ const s = S.settings; return {kid:!!s.kid, pin: s.pin ? s.pin.h : '', hidden:(s.hidden||[]).join(','), savings:!!s.savings, combined:!!s.combined, name:s.appName||'', confirm: s.confirmIncome !== false}; }
+let prevFin = finSnap(), prevSet = setSnap();
+function logFinanceDiff(){
+  const cur = finSnap(), old = prevFin; prevFin = cur;
+  Object.keys(cur.tx).forEach(id => {
+    const n = cur.tx[id], o = old.tx[id];
+    if (!o){ addLog((n.rec ? 'Automatisch gebucht: ' : 'Neu: ') + txDesc(n) + (n.pending ? ' – wartet auf Bestätigung' : '')); return; }
+    if (o.pending && !n.pending && o.amount===n.amount && o.text===n.text && o.date===n.date){ addLog('Bestätigt: ' + txDesc(n)); return; }
+    if (o.type!==n.type || o.amount!==n.amount || o.date!==n.date || o.text!==n.text || o.account!==n.account)
+      addLog('Geändert: ' + txDesc(o) + ' → ' + txDesc(n) + (n.pending ? ' – wartet auf Bestätigung' : ''));
+  });
+  Object.keys(old.tx).forEach(id => { if (!cur.tx[id]) addLog('Gelöscht: ' + txDesc(old.tx[id])); });
+  const rDesc = r => `${r.text} ${euro(r.amount)} (${(RHYTHM[r.rhythm]||'').toLowerCase()})`;
+  Object.keys(cur.rec).forEach(id => {
+    const n = cur.rec[id], o = old.rec[id];
+    if (!o) addLog('Regelmäßige Buchung angelegt: ' + rDesc(n));
+    else if (JSON.stringify(o) !== JSON.stringify(n)) addLog('Regelmäßige Buchung geändert: ' + rDesc(o) + ' → ' + rDesc(n) + (n.paused && !o.paused ? ', pausiert' : ''));
+  });
+  Object.keys(old.rec).forEach(id => { if (!cur.rec[id]) addLog('Regelmäßige Buchung gelöscht: ' + rDesc(old.rec[id])); });
+  const st = x => x.bank + x.cash;
+  if (old.start.bank !== cur.start.bank || old.start.cash !== cur.start.cash) addLog('Startbetrag geändert: ' + euro(st(old.start)) + ' → ' + euro(st(cur.start)));
+  if (old.start.save !== cur.start.save) addLog('Anfangsbestand Sparen geändert: ' + euro(old.start.save) + ' → ' + euro(cur.start.save));
+}
+function logSettingsDiff(){
+  const cur = setSnap(), o = prevSet; prevSet = cur;
+  if (o.kid !== cur.kid) addLog('Modus geändert: ' + (cur.kid ? 'Kinder' : 'Erwachsene'));
+  if (o.pin !== cur.pin) addLog(!cur.pin ? 'Eltern-PIN entfernt' : !o.pin ? 'Eltern-PIN festgelegt' : 'Eltern-PIN geändert');
+  if (o.hidden !== cur.hidden || o.savings !== cur.savings) addLog('Sichtbare Bereiche geändert');
+  if (o.combined !== cur.combined) addLog('Konten zusammenlegen: ' + (cur.combined ? 'an' : 'aus'));
+  if (o.confirm !== cur.confirm) addLog('Bestätigung von Einnahmen: ' + (cur.confirm ? 'an' : 'aus'));
+  if (o.name !== cur.name) addLog('Name der App geändert');
+}
+function logDialog(){
+  const items = S.log.items.slice().reverse();
+  lsSet('logSeen', Date.now());
+  let html = '', cur = '';
+  items.forEach(e => {
+    const d = new Date(e.ts), day = iso(d);
+    if (day !== cur){ cur = day; html += `<div class="log-day">${fmtDay(day)}</div>`; }
+    html += `<div class="log-row"><span class="num">${pad(d.getHours())}:${pad(d.getMinutes())}</span><span class="log-txt">${esc(e.txt)}</span>${e.by ? `<span class="log-by ${e.by==='Eltern'?'p':''}">${esc(e.by)}</span>` : ''}</div>`;
+  });
+  const form = openDlg(`
+    <h3>Änderungsprotokoll</h3>
+    <p class="hint" style="margin:0">Jede Änderung an Buchungen, regelmäßigen Buchungen, Startbeträgen und Einstellungen wird hier festgehalten. „Eltern“ bedeutet: Die PIN war in dem Moment eingegeben.</p>
+    <div class="log-list">${html || '<p style="color:var(--muted);margin:0">Noch keine Einträge.</p>'}</div>
+    <div class="dlg-actions">${items.length ? '<button type="button" class="btn danger" id="log-clear">Protokoll leeren</button>' : ''}<span class="spacer"></span><button type="button" class="btn ghost" data-close>Schließen</button></div>`, () => {});
+  const c = form.querySelector('#log-clear');
+  if (c) c.addEventListener('click', () => { if (!armed(c, 'Wirklich leeren?')) return; S.log.items = []; addLog('Protokoll geleert'); closeDlg(); toast('Protokoll geleert'); });
 }
 
 /* ---------- Sicherung (Export / Import als Datei) ---------- */
@@ -462,6 +556,7 @@ function ago(ts){
   const d = Math.floor((Date.now() - ts) / 864e5);
   return d <= 0 ? 'heute' : d === 1 ? 'gestern' : 'vor ' + d + ' Tagen';
 }
+let prepT = 0, readyBk = null;
 function updateBackupHint(){
   const btn = document.getElementById('backupBtn'); if (!btn) return;
   const due = backupDue();
@@ -474,41 +569,135 @@ function updateBackupHint(){
     document.getElementById('bkTitle').textContent = last ? 'Sicherung fällig' : 'Noch keine Sicherung';
     document.getElementById('bkSub').textContent = (last ? 'Letzte Sicherung ' + ago(last) + '. ' : '') + (isIOS() ? 'Im nächsten Fenster „In Dateien sichern“ wählen, z. B. iCloud Drive.' : 'Die Datei landet in deinem Download-Ordner.');
   }
+  if (hasAnyData()){ clearTimeout(prepT); prepT = setTimeout(() => prepareBackup().catch(()=>{}), 300); }
 }
 const isIOS = () => /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-function backupData(){ return {app:'haushaltsplaner', version:1, appVersion:APP_VERSION, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework, settings:S.settings}; }
+function backupData(){ return {app:'haushaltsplaner', version:1, appVersion:APP_VERSION, exported:new Date().toISOString(), finance:S.finance, schedule:S.schedule, tasks:S.tasks, homework:S.homework, settings:S.settings, log:S.log}; }
+
+/* Verschlüsselung: AES-GCM. Der Datenschlüssel liegt nur auf diesem Gerät;
+   in der Sicherung steht er nur verschlüsselt mit der Eltern-PIN bzw. dem Notfall-Code (PBKDF2). */
+const cryptoOk = () => !!(window.crypto && crypto.subtle && crypto.getRandomValues);
+function b64(buf){ const u = buf instanceof Uint8Array ? buf : new Uint8Array(buf); let s = ''; for (let i = 0; i < u.length; i += 0x8000) s += String.fromCharCode.apply(null, u.subarray(i, i + 0x8000)); return btoa(s); }
+const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+async function kdf(secret, saltB64){
+  const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), 'PBKDF2', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'PBKDF2', salt: unb64(saltB64), iterations: 150000, hash:'SHA-256'}, base, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+const aesKey = raw => crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['encrypt','decrypt']);
+async function aesEnc(key, bytes){ const iv = crypto.getRandomValues(new Uint8Array(12)); const ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, bytes); return {iv: b64(iv), ct: b64(ct)}; }
+async function aesDec(key, o){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv: unb64(o.iv)}, key, unb64(o.ct))); }
+async function ensureWraps(pin, code){
+  if (!cryptoOk() || !pinSet()) return;
+  let k = lsGet('bkKey');
+  if (!k){ k = b64(crypto.getRandomValues(new Uint8Array(32))); lsSet('bkKey', k); }
+  const raw = unb64(k), salt = b64(crypto.getRandomValues(new Uint8Array(16)));
+  const wp = await aesEnc(await kdf(pin, salt), raw);
+  const wr = code ? await aesEnc(await kdf(code, salt), raw) : null;
+  suppressLog = true; S.settings.pin.wk = {salt, wp, wr}; save('settings'); suppressLog = false;
+  readyBk = null;
+}
+const bkName = () => (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung.json';
+async function buildBackupFile(){
+  if (!pinSet()) return new File([JSON.stringify(backupData(), null, 2)], bkName(), {type:'application/json'});
+  if (!cryptoOk()) throw new Error('nocrypto');
+  const wk = S.settings.pin.wk, k = lsGet('bkKey');
+  if (!wk || !k) throw new Error('nokey');
+  const data = await aesEnc(await aesKey(unb64(k)), new TextEncoder().encode(JSON.stringify(backupData())));
+  const out = {app:'haushaltsplaner', enc:1, format:2, appVersion:APP_VERSION, exported:new Date().toISOString(), hinweis:'Verschlüsselte Sicherung – nur mit Eltern-PIN oder Notfall-Code lesbar.', salt:wk.salt, wp:wk.wp, wr:wk.wr, data};
+  return new File([JSON.stringify(out)], bkName(), {type:'application/json'});
+}
+const bkStamp = () => String(lsGet('changed')||0) + ':' + (pinSet() ? (S.settings.pin.wk ? S.settings.pin.wk.salt : 'x') : '0') + ':' + appName();
+async function prepareBackup(){
+  const st = bkStamp();
+  if (readyBk && readyBk.stamp === st) return readyBk.file;
+  const file = await buildBackupFile(); readyBk = {stamp: st, file}; return file;
+}
 async function exportBackup(){
-  const json = JSON.stringify(backupData(), null, 2);
-  const name = (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung.json';
-  const file = new File([json], name, {type:'application/json'});
+  let file = (readyBk && readyBk.stamp === bkStamp()) ? readyBk.file : null;
+  if (!file){
+    try { file = await prepareBackup(); }
+    catch(e){
+      if (e && e.message === 'nokey') return requirePin('Die erste verschlüsselte Sicherung', pin => {
+        ensureWraps(pin).then(() => prepareBackup()).then(() => toast('Verschlüsselung eingerichtet – bitte noch einmal auf „Jetzt sichern“ tippen.')).catch(() => toast('Verschlüsselung konnte nicht eingerichtet werden.'));
+      }, true);
+      toast(e && e.message === 'nocrypto' ? 'Dieser Browser kann keine verschlüsselte Sicherung erstellen. Bitte die App über https öffnen.' : 'Sicherung konnte nicht erstellt werden.');
+      return;
+    }
+    if (isIOS()){ toast('Sicherung ist vorbereitet – bitte noch einmal auf „Jetzt sichern“ tippen.'); return; }
+  }
   try {
     if (navigator.canShare && navigator.canShare({files:[file]}) && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)){
-      await navigator.share({files:[file], title:name});
+      await navigator.share({files:[file], title:file.name});
     } else {
       const url = URL.createObjectURL(file);
-      const a = document.createElement('a'); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      const a = document.createElement('a'); a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 4000);
     }
-    lsSet('lastBackup', Date.now()); lsSet('bkSnooze', 0); updateBackupHint(); toast('Sicherung erstellt');
+    lsSet('lastBackup', Date.now()); lsSet('bkSnooze', 0); updateBackupHint(); toast(pinSet() ? 'Verschlüsselte Sicherung erstellt' : 'Sicherung erstellt');
   } catch(e){ if (e && e.name === 'AbortError') return; toast('Sicherung konnte nicht erstellt werden.'); }
 }
 function importBackup(file){
   const r = new FileReader();
-  r.onload = () => {
+  r.onload = async () => {
     let d; try { d = JSON.parse(r.result); } catch(e){ toast('Die Datei ist keine gültige Sicherung.'); return; }
     if (!d || d.app !== 'haushaltsplaner'){ toast('Diese Datei ist keine Sicherung dieser App.'); return; }
-    KEYS.forEach(k => { if (k==='settings' && !d[k]) return; S[k] = normalize(k, d[k]); save(k); });
-    lsSet('lastBackup', Date.now()); lsSet('welcomed', 1); updateBackupHint();
-    if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt' + (d.exported ? ' (Stand ' + new Date(d.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) + ')' : ''));
+    if (!d.enc) return applyBackup(d, d);
+    if (!cryptoOk()){ toast('Dieser Browser kann die verschlüsselte Sicherung nicht öffnen. Bitte die App über https öffnen.'); return; }
+    const local = lsGet('bkKey');
+    if (local){ try { const inner = JSON.parse(new TextDecoder().decode(await aesDec(await aesKey(unb64(local)), d.data))); return applyBackup(inner, d); } catch(e){} }
+    unlockBackupDialog(d);
   };
   r.readAsText(file);
+}
+function unlockBackupDialog(d){
+  openDlg(`
+    <h3>Verschlüsselte Sicherung</h3>
+    <p class="hint" style="margin:0">Diese Sicherung ist mit der Eltern-PIN geschützt. Gib die PIN ein, die beim Sichern galt${d.wr ? ', oder den Notfall-Code' : ''}.</p>
+    <label class="field"><span>PIN${d.wr ? ' oder Notfall-Code' : ''}</span><input class="pin-in" name="secret" type="password" autocomplete="off" autocapitalize="characters" autofocus id="bk-secret"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Öffnen</button></div>`, f => {
+      const err = f.querySelector('#f-err'), btn = f.querySelector('button[type=submit]');
+      const wait = pinWait(); if (wait){ err.textContent = wait; return false; }
+      const raw = f.secret.value.trim(); if (!raw) return false;
+      const isCode = !/^\d{4,6}$/.test(raw);
+      const secret = isCode ? raw.toUpperCase().replace(/[^A-Z0-9]/g,'') : raw;
+      const wrap = isCode ? d.wr : d.wp;
+      btn.disabled = true; err.textContent = 'Wird geöffnet …';
+      (async () => {
+        let k;
+        try { if (!wrap) throw new Error('nowrap'); k = await aesDec(await kdf(secret, d.salt), wrap); }
+        catch(e){ btn.disabled = false; f.secret.value = ''; err.textContent = pinBad(isCode ? 'Der Notfall-Code stimmt nicht.' : 'Die PIN stimmt nicht.'); return; }
+        let inner;
+        try { inner = JSON.parse(new TextDecoder().decode(await aesDec(await aesKey(k), d.data))); }
+        catch(e){ btn.disabled = false; pinGood(true); addLog('Wiederherstellen abgelehnt: Sicherungsdatei wurde verändert oder ist beschädigt'); err.textContent = 'Die PIN ist richtig, aber die Sicherungsdatei wurde verändert oder ist beschädigt. Sie kann nicht wiederhergestellt werden.'; return; }
+        lsSet('bkKey', b64(k)); pinGood(true);
+        dlg.close(); applyBackup(inner, d);
+      })();
+      return false;
+    });
+}
+function applyBackup(inner, outer){
+  suppressLog = true;
+  KEYS.forEach(k => {
+    if (k==='log'){ if (inner.log) S.log = normalize('log', inner.log); return; }
+    if (k==='settings' && !inner[k]) return;
+    S[k] = normalize(k, inner[k]); save(k);
+  });
+  suppressLog = false;
+  prevFin = finSnap(); prevSet = setSnap(); readyBk = null;
+  const when = outer.exported ? new Date(outer.exported).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) : '';
+  addLog('Sicherung wiederhergestellt' + (when ? ' (Stand ' + when + ')' : ''));
+  lsSet('lastBackup', Date.now()); lsSet('welcomed', 1); updateBackupHint();
+  if (dlg.open) dlg.close(); render(); toast('Sicherung wiederhergestellt' + (when ? ' (Stand ' + when + ')' : ''));
 }
 function backupDialog(){
   const last = +(lsGet('lastBackup')||0);
   const n = S.finance.tx.length, t = S.tasks.items.length, p = S.schedule.plans.length, h = S.homework.items.length;
+  prepareBackup().catch(()=>{});
   const form = openDlg(`
     <h3>Daten sichern</h3>
     <p class="hint">Alles wird nur in dieser App auf diesem Gerät gespeichert. <b>Entfernst du die App vom Home-Bildschirm, löscht das iPhone auch die Daten.</b> Sichere deshalb regelmäßig in iCloud Drive. Die Sicherung überschreibt immer dieselbe Datei.</p>
+    ${pinSet() ? '<p class="hint lock-hint" style="margin:0">Die Sicherung wird mit der Eltern-PIN verschlüsselt. Ohne PIN oder Notfall-Code kann sie niemand lesen, ändern oder wiederherstellen.</p>' : ''}
     <div class="stats" style="grid-template-columns:repeat(2,minmax(0,1fr))">
       <div><span class="label">Buchungen</span><span class="v">${n}</span></div>
       <div><span class="label">Pläne</span><span class="v">${p}</span></div>
@@ -534,12 +723,12 @@ function renderWelcome(){
     <p>Hier ist noch nichts gespeichert. Hast du schon eine Sicherung, zum Beispiel in iCloud Drive? Dann hol deine Daten jetzt zurück.</p>
     <label class="btn primary welcome-btn">Sicherung wiederherstellen …<input type="file" accept=".json,application/json" id="welcome-file"></label>
     <button class="btn" type="button" data-act="welcome-skip">Ohne Sicherung neu beginnen</button>
-    <p class="hint" style="margin:0">Die Sicherungsdatei heißt zum Beispiel <b>organizer-sicherung.json</b> oder enthält „sicherung“ im Namen.</p>
+    <p class="hint" style="margin:0">Die Sicherungsdatei heißt zum Beispiel <b>organizer-sicherung.json</b> oder enthält „sicherung“ im Namen. Ist sie mit der Eltern-PIN verschlüsselt, fragt die App nach der PIN.</p>
   </div>`;
 }
 
 /* ---------- Eltern-PIN ---------- */
-// Kindersicherung, kein Passwortschutz: verhindert versehentliches oder neugieriges Verstellen.
+// Kindersicherung: verhindert neugieriges Verstellen. Fehlversuche führen zu wachsenden Wartezeiten.
 function hashStr(str, seed = 0){
   let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;
   for (let i = 0; i < str.length; i++){ const ch = str.charCodeAt(i); h1 = Math.imul(h1 ^ ch, 2654435761); h2 = Math.imul(h2 ^ ch, 1597334677); }
@@ -549,44 +738,63 @@ function hashStr(str, seed = 0){
 }
 const pinHash = (pin, salt) => { let h = pin; for (let i = 0; i < 500; i++) h = hashStr(salt + ':' + h, i); return h; };
 const pinSet = () => !!(S.settings && S.settings.pin);
-let unlockedUntil = 0, pinFails = 0, pinBlockedUntil = 0;
+let unlockedUntil = 0;
 const isUnlocked = () => !pinSet() || Date.now() < unlockedUntil;
-function requirePin(what, fn){
-  if (isUnlocked()) return fn();
+// Wartezeit nach dem 5., 6., 7., 8. und jedem weiteren Fehlversuch
+const LOCK_STEPS = [30e3, 60e3, 5*60e3, 15*60e3, 60*60e3];
+function fmtWait(ms){ const s = Math.ceil(ms/1000); if (s < 60) return s + ' Sekunden'; const m = Math.ceil(s/60); if (m < 60) return m + (m===1 ? ' Minute' : ' Minuten'); const h = Math.ceil(m/60); return h + (h===1 ? ' Stunde' : ' Stunden'); }
+function pinWait(){ const until = +(lsGet('pinBlock')||0); return Date.now() < until ? `Zu viele falsche Versuche. Bitte warte noch ${fmtWait(until - Date.now())}.` : ''; }
+function pinBad(msg){
+  const fails = (+(lsGet('pinFails')||0)) + 1; lsSet('pinFails', fails);
+  lsSet('pinFailsSince', (+(lsGet('pinFailsSince')||0)) + 1);
+  addLog('Falsche PIN oder falscher Notfall-Code eingegeben');
+  if (fails < 5) return `${msg} Noch ${5 - fails} ${5 - fails === 1 ? 'Versuch' : 'Versuche'}, dann wird die Eingabe gesperrt.`;
+  const step = LOCK_STEPS[Math.min(fails - 5, LOCK_STEPS.length - 1)];
+  lsSet('pinBlock', Date.now() + step);
+  addLog('PIN-Eingabe für ' + fmtWait(step) + ' gesperrt');
+  return `${msg} Die Eingabe ist jetzt für ${fmtWait(step)} gesperrt.`;
+}
+function pinGood(silent){
+  const since = +(lsGet('pinFailsSince')||0);
+  lsSet('pinFails', 0); lsSet('pinBlock', 0); lsSet('pinFailsSince', 0);
+  unlockedUntil = Date.now() + 5*60000;
+  if (since && !silent) setTimeout(() => toast(`Hinweis: ${since} falsche PIN-${since===1 ? 'Eingabe' : 'Eingaben'} seit dem letzten Entsperren. Details im Protokoll.`), 500);
+}
+function requirePin(what, fn, force){
+  if (!force && isUnlocked()) return fn();
   const form = openDlg(`
     <h3>Eltern-PIN</h3>
     <p class="hint" style="margin:0">${esc(what)} ist durch die Eltern-PIN geschützt.</p>
     <label class="field"><span>PIN eingeben</span><input class="pin-in" name="pin" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" autofocus id="pin-check"></label>
-    <div class="err" id="f-err"></div>
+    <div class="err" id="f-err">${esc(pinWait())}</div>
     <details class="pin-forgot"><summary>PIN vergessen?</summary>
       <p>Gib den Notfall-Code ein, den du beim Festlegen der PIN aufgeschrieben hast. Die PIN wird dann entfernt.</p>
       <div style="display:flex;gap:8px"><input class="pin-code" id="pin-recovery" autocomplete="off" autocapitalize="characters" placeholder="XXXX-XXXX"><button type="button" class="btn sm" id="pin-recover">Entsperren</button></div>
     </details>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Weiter</button></div>`, f => {
       const err = f.querySelector('#f-err');
-      if (Date.now() < pinBlockedUntil){ err.textContent = `Zu viele Versuche. Bitte in ${Math.ceil((pinBlockedUntil-Date.now())/1000)} Sekunden noch einmal.`; return false; }
-      const P = S.settings.pin;
-      if (pinHash(f.pin.value.trim(), P.s) !== P.h){
-        pinFails++; f.pin.value = ''; f.pin.focus();
-        if (pinFails >= 5){ pinFails = 0; pinBlockedUntil = Date.now() + 30000; err.textContent = 'Zu viele falsche Versuche. Bitte 30 Sekunden warten.'; }
-        else err.textContent = 'Die PIN stimmt nicht. Bitte noch einmal versuchen.';
-        return false;
-      }
-      pinFails = 0; unlockedUntil = Date.now() + 5*60000;
-      setTimeout(fn, 0);
+      const wait = pinWait(); if (wait){ err.textContent = wait; return false; }
+      const P = S.settings.pin, val = f.pin.value.trim();
+      if (pinHash(val, P.s) !== P.h){ f.pin.value = ''; f.pin.focus(); err.textContent = pinBad('Die PIN stimmt nicht.'); return false; }
+      pinGood();
+      setTimeout(() => fn(val), 0);
     });
   form.querySelector('#pin-recover').addEventListener('click', () => {
+    const err = form.querySelector('#f-err');
+    const wait = pinWait(); if (wait){ err.textContent = wait; return; }
     const code = form.querySelector('#pin-recovery').value.toUpperCase().replace(/[^A-Z0-9]/g,'');
     const P = S.settings.pin;
     if (P.r && code && pinHash(code, P.s) === P.r){
+      pinGood(true); addLog('Eltern-PIN mit dem Notfall-Code entfernt');
       S.settings.pin = null; save('settings'); dlg.close(); render(); toast('PIN entfernt. Du kannst in den Einstellungen eine neue festlegen.');
-    } else form.querySelector('#f-err').textContent = 'Der Notfall-Code stimmt nicht.';
+    } else err.textContent = pinBad('Der Notfall-Code stimmt nicht.');
   });
 }
 function pinSetupDialog(){
   const form = openDlg(`
     <h3>${pinSet() ? 'PIN ändern' : 'Eltern-PIN festlegen'}</h3>
-    <p class="hint" style="margin:0">Mit der PIN geschützt sind: Einstellungen, Sicherung wiederherstellen, Start- und Anfangsbeträge sowie regelmäßige Buchungen wie das Taschengeld. Normale Einträge bleiben frei.</p>
+    <p class="hint" style="margin:0">Mit der PIN geschützt sind: Einstellungen, Protokoll, Sicherung wiederherstellen, Start- und Anfangsbeträge, regelmäßige Buchungen wie das Taschengeld und die Bestätigung von Einnahmen. Sicherungen werden mit der PIN verschlüsselt.</p>
+    ${pinSet() ? '<p class="hint" style="margin:0">Ältere Sicherungen lassen sich weiterhin mit der alten PIN oder dem alten Notfall-Code öffnen.</p>' : ''}
     <div class="row2">
       <label class="field"><span>Neue PIN (4–6 Ziffern)</span><input class="pin-in" name="p1" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password" autofocus id="pin-new1"></label>
       <label class="field"><span>PIN wiederholen</span><input class="pin-in" name="p2" type="password" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="new-password" id="pin-new2"></label>
@@ -596,22 +804,53 @@ function pinSetupDialog(){
       const a = f.p1.value.trim(), b2 = f.p2.value.trim(), err = f.querySelector('#f-err');
       if (!/^\d{4,6}$/.test(a)){ err.textContent = 'Die PIN muss aus 4 bis 6 Ziffern bestehen.'; return false; }
       if (a !== b2){ err.textContent = 'Die beiden PINs sind nicht gleich.'; return false; }
+      if (/^(\d)\1+$/.test(a) || '0123456789'.includes(a) || '9876543210'.includes(a)){ err.textContent = 'Bitte keine leicht zu erratende PIN wie 1111 oder 1234.'; return false; }
       const salt = newId() + newId();
       const abc = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
       const rnd = new Uint32Array(8); (window.crypto || {}).getRandomValues ? crypto.getRandomValues(rnd) : rnd.forEach((_,i) => rnd[i] = Math.random()*1e9);
       const code = Array.from(rnd, n => abc[n % abc.length]).join('');
-      S.settings.pin = {s: salt, h: pinHash(a, salt), r: pinHash(code, salt)};
-      save('settings'); unlockedUntil = Date.now() + 5*60000;
+      S.settings.pin = {s: salt, h: pinHash(a, salt), r: pinHash(code, salt), wk: null};
+      pinGood(true); save('settings');
+      ensureWraps(a, code).catch(()=>{});
       setTimeout(() => showRecovery(code.slice(0,4) + '-' + code.slice(4)), 0);
     });
 }
 function showRecovery(code){
   openDlg(`
     <h3>PIN gespeichert</h3>
-    <p style="margin:0">Schreib dir diesen <b>Notfall-Code</b> auf und bewahre ihn an einem sicheren Ort auf. Mit ihm kannst du die PIN entfernen, falls du sie vergisst.</p>
+    <p style="margin:0">Schreib dir diesen <b>Notfall-Code</b> auf und bewahre ihn an einem sicheren Ort auf. Mit ihm kannst du die PIN entfernen und verschlüsselte Sicherungen öffnen, falls du die PIN vergisst.</p>
     <div class="pin-recovery-code num">${esc(code)}</div>
-    <p class="hint" style="margin:0">Der Code wird nur jetzt angezeigt. Ohne PIN und ohne Notfall-Code kommst du nicht mehr in die Einstellungen.</p>
+    <p class="hint" style="margin:0">Der Code wird nur jetzt angezeigt. Ohne PIN und ohne Notfall-Code kommst du nicht mehr in die Einstellungen und nicht an die Sicherungen.</p>
     <div class="dlg-actions"><span class="spacer"></span><button class="btn primary" type="submit">Habe ich notiert</button></div>`, () => { toast('Eltern-PIN ist aktiv'); });
+}
+
+/* ---------- Einnahmen bestätigen (Kindermodus mit PIN) ---------- */
+const needsConfirm = () => isKid() && pinSet() && S.settings.confirmIncome !== false && !isUnlocked();
+function pendingBanner(){
+  const p = S.finance.tx.filter(t => t.pending);
+  if (!p.length) return '';
+  const sum = p.reduce((a,t) => a + t.amount, 0);
+  return `<div class="pend-banner"><div><b>${p.length === 1 ? '1 Einnahme wartet' : p.length + ' Einnahmen warten'} auf Bestätigung</b><span>Zusammen ${euro(sum)}. Sie zählen erst, wenn ein Elternteil sie freigibt.</span></div><button class="btn sm" data-act="pend-review">Eltern: prüfen</button></div>`;
+}
+function pendingDialog(){
+  const list = S.finance.tx.filter(t => t.pending);
+  if (!list.length){ if (dlg.open) closeDlg(); return; }
+  const form = openDlg(`
+    <h3>Einnahmen bestätigen</h3>
+    <p class="hint" style="margin:0">Bestätigte Einnahmen zählen ab sofort zu „Mein Geld“. Abgelehnte werden gelöscht und im Protokoll vermerkt.</p>
+    <div class="pend-list">${list.map(t => `<div class="pend-row"><div class="pend-info"><b>${esc(t.text || 'Geld bekommen')}</b><small>${fmtDay(t.date)}${t.cat ? ' · ' + esc(t.cat) : ''}</small></div><span class="num amt pos">+${euro(t.amount)}</span><div class="pend-acts"><button type="button" class="btn sm danger" data-pend="no" data-id="${esc(t.id)}">Ablehnen</button><button type="button" class="btn sm primary" data-pend="ok" data-id="${esc(t.id)}">Bestätigen</button></div></div>`).join('')}</div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Fertig</button>${list.length > 1 ? '<button type="button" class="btn primary" id="pend-all">Alle bestätigen</button>' : ''}</div>`, () => {});
+  form.addEventListener('click', e => {
+    const b = e.target.closest('[data-pend]');
+    if (b){
+      const t = S.finance.tx.find(x => x.id===b.dataset.id); if (!t) return;
+      if (b.dataset.pend==='ok'){ delete t.pending; save('finance'); toast('Bestätigt'); }
+      else { addLog('Abgelehnt: ' + txDesc(t)); S.finance.tx = S.finance.tx.filter(x => x.id!==t.id); suppressLog = true; save('finance'); suppressLog = false; prevFin = finSnap(); toast('Abgelehnt und gelöscht'); }
+      render(); pendingDialog();
+    } else if (e.target.id==='pend-all'){
+      S.finance.tx.forEach(t => { delete t.pending; }); save('finance'); toast('Alle bestätigt'); closeDlg();
+    }
+  });
 }
 
 /* ---------- UI-Grundlagen ---------- */
@@ -674,12 +913,13 @@ function settingsDialog(){
       <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid()?'':'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid()?'checked':''}><span>Kinder (ab 10)</span></label></div>
       <span style="font-size:.85rem;color:var(--muted);font-weight:400">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. Alle Daten bleiben beim Umschalten erhalten.</span>
     </div>
+    <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px"><input type="checkbox" name="confirmIncome" id="set-confirm" ${S.settings.confirmIncome!==false?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Einnahmen von Kindern bestätigen lassen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Im Kindermodus mit Eltern-PIN zählt „Geld bekommen“ erst, wenn ein Elternteil es freigibt.</span></span></label>
     <label style="display:flex;gap:10px;align-items:flex-start;font-weight:600;margin-top:4px" id="set-combined-row" ${isKid()?'hidden':''}><input type="checkbox" name="combined" id="set-combined" ${S.settings.combined?'checked':''} style="margin-top:3px;width:18px;height:18px;flex:none"><span>Bankkonto und Bargeld zusammenlegen<span style="display:block;font-weight:400;font-size:.85rem;color:var(--muted)">Nur ein Kontostand, ohne Auswahl des Kontos und ohne Ein- und Auszahlungen. Bestehende Buchungen bleiben erhalten; du kannst jederzeit zurückschalten.</span></span></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>
     <div class="pin-box">
       <div><span class="label">Eltern-PIN</span><span class="pin-state">${pinSet() ? 'Aktiv – Einstellungen, Taschengeld und Startbeträge sind geschützt.' : 'Aus – jeder kann die Einstellungen ändern.'}</span></div>
-      <div class="pin-btns">${pinSet() ? '<button type="button" class="btn sm" id="pin-change">PIN ändern</button><button type="button" class="btn sm danger" id="pin-remove">PIN entfernen</button>' : '<button type="button" class="btn sm" id="pin-setup">PIN festlegen</button>'}</div>
+      <div class="pin-btns"><button type="button" class="btn sm" id="log-open">Protokoll${logNew() ? ' (' + logNew() + ' neu)' : ''}</button>${pinSet() ? '<button type="button" class="btn sm" id="pin-change">PIN ändern</button><button type="button" class="btn sm danger" id="pin-remove">PIN entfernen</button>' : '<button type="button" class="btn sm" id="pin-setup">PIN festlegen</button>'}</div>
     </div>
     <div style="border-top:1px solid var(--line);padding-top:14px;display:flex;flex-direction:column;gap:10px">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px"><span class="label">Version</span><span class="num" style="font-weight:600">${APP_VERSION} <span style="color:var(--muted);font-weight:400">· ${CHANGELOG[0][1]}</span></span></div>
@@ -693,11 +933,13 @@ function settingsDialog(){
       S.settings.savings = shown.includes('sparen');
       S.settings.combined = f.combined.checked;
       S.settings.kid = f.mode.value === 'kid';
+      S.settings.confirmIncome = f.confirmIncome.checked;
       save('settings'); applyName(); toast('Einstellungen gespeichert');
     });
   const ps = form.querySelector('#pin-setup'), pc = form.querySelector('#pin-change'), pr = form.querySelector('#pin-remove');
   if (ps) ps.addEventListener('click', pinSetupDialog);
   if (pc) pc.addEventListener('click', pinSetupDialog);
+  const lo = form.querySelector('#log-open'); if (lo) lo.addEventListener('click', logDialog);
   if (pr) pr.addEventListener('click', () => { if (!armed(pr,'Wirklich entfernen?')) return; S.settings.pin = null; save('settings'); closeDlg(); toast('Eltern-PIN entfernt'); });
 }
 
@@ -731,6 +973,7 @@ const ACCT = {bank:'Bankkonto', cash:'Bargeld', save:'Sparen'};
 const DEFAULT_CATS = ['Lebensmittel','Haushalt','Wohnen','Auto & Tanken','Kinder','Freizeit','Gesundheit','Versicherungen','Kleidung','Geschenke','Gehalt','Kindergeld','Sonstiges'];
 
 function effect(t){
+  if (t.pending) return {bank:0,cash:0,save:0};
   const a = t.amount||0, c = t.account==='cash';
   switch(t.type){
     case 'einnahme': return c ? {bank:0,cash:a,save:0} : {bank:a,cash:0,save:0};
@@ -765,6 +1008,7 @@ function renderFinance(){
   const monthTx = all.filter(t => t.date.startsWith(ui.month) && touches(t, ui.acct) && !(one && isTransfer(t)));
   let inc=0, exp=0, tin=0, tout=0, sIn=0, sOut=0; const cats = {};
   monthTx.forEach(t => {
+    if (t.pending) return;
     if (t.type==='einnahme') inc += t.amount;
     if (t.type==='ausgabe'){ exp += t.amount; const c = t.cat || 'Ohne Kategorie'; cats[c] = (cats[c]||0) + t.amount; }
     if (t.type==='einzahlung') tin += t.amount;
@@ -782,7 +1026,7 @@ function renderFinance(){
       <span class="sub">${sub}</span>
     </button>`;
 
-  let html = `
+  let html = pendingBanner() + `
   ${one ? `<section class="accounts one ${sv?'has-save':''}" aria-label="Kontostand">
     ${sv ? `<div class="acct total-sub"><span class="label"><i></i>Kontostand</span><span class="bal ${cashTotal<0?'neg':''}">${euro(cashTotal)}</span><span class="sub">Bank und Bargeld</span></div>`
          + `<div class="acct total-sub"><span class="label"><i></i>Gesamt</span><span class="bal ${total<0?'neg':''}">${euro(total)}</span><span class="sub">inkl. ${euro(bal.save)} Sparen</span></div>`
@@ -857,11 +1101,11 @@ function renderLedger(list, running){
       : `<span class="tag ${t.account}"><i></i>${t.account==='cash'?'Bargeld':'Bank'}</span>`;
     const title = t.text || (t.type==='sparen' ? 'Aufs Sparen gelegt' : t.type==='entsparen' ? 'Vom Sparen genommen' : T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
     const run = !running[t.id] ? '' : ui.acct!=='all' ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : one ? `<span class="run">${euro(running[t.id].bank + running[t.id].cash)}</span>` : '';
-    html += `<button class="tx" data-act="edittx" data-id="${esc(t.id)}">
+    html += `<button class="tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
       <span class="ico ${T.cls}" aria-hidden="true">${T.sym}</span>
       <span class="t">${esc(title)}</span>
       <span class="amt ${amtCls}">${amtTxt}</span>
-      <span class="meta">${t.rec?'<span class="rec-tag" title="Regelmäßige Buchung">↻</span>':''}${acctTag}${t.cat?(one&&!isSave(t)?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat && !isSave(t) ? '' : '· '}${T.label}</span></span>
+      <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag" title="Regelmäßige Buchung">↻</span>':''}${acctTag}${t.cat?(one&&!isSave(t)?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat && !isSave(t) ? '' : '· '}${T.label}</span></span>
       ${run}
     </button>`;
   });
@@ -1210,6 +1454,7 @@ function renderKidFinance(){
   const list = sortTx(S.finance.tx.filter(t => t.date.startsWith(ui.month) && !isTransfer(t)));
   let got = 0, spent = 0; const cats = {};
   list.forEach(t => {
+    if (t.pending) return;
     if (t.type==='einnahme') got += t.amount;
     if (t.type==='ausgabe'){ spent += t.amount; const c = t.cat || 'Sonstiges'; cats[c] = (cats[c]||0) + t.amount; }
   });
@@ -1227,11 +1472,11 @@ function renderKidFinance(){
       const inn = t.type==='einnahme', sav = isSave(t);
       const title = t.text || (t.type==='sparen' ? 'Ins Sparschwein' : t.type==='entsparen' ? 'Aus dem Sparschwein' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
       const plus = inn || t.type==='entsparen';
-      rows += `<button class="tx kid-tx" data-act="edittx" data-id="${esc(t.id)}">
+      rows += `<button class="tx kid-tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
         <span class="ico ${sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
         <span class="t">${esc(title)}</span>
         <span class="amt ${sav?'neu':plus?'pos':'neg'}">${plus?'+':'−'}${euro(t.amount)}</span>
-        <span class="meta">${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
+        <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
       </button>`;
     });
   }
@@ -1241,6 +1486,7 @@ function renderKidFinance(){
     <span class="kid-bal num ${money<0?'neg-t':''}">${euro(money)}</span>
     ${sv ? `<span class="kid-sub">Dazu <b>${euro(piggy)}</b> im Sparschwein · zusammen <b>${euro(money+piggy)}</b></span>` : ''}
   </section>
+  ${pendingBanner()}
   <div class="kid-actions">
     <button class="kid-btn plus" data-act="kid-in"><span aria-hidden="true">+</span>Geld bekommen</button>
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
@@ -1294,7 +1540,8 @@ function kidTxDialog(t, type){
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
       ui.month = rec.date.slice(0,7);
-      save('finance'); toast(isNew ? (inn ? euro(amount)+' dazubekommen' : euro(amount)+' ausgegeben') : 'Geändert');
+      if (rec.type==='einnahme' && needsConfirm()) rec.pending = true;
+      save('finance'); toast(rec.pending ? 'Eingetragen – zählt, sobald Mama oder Papa es bestätigt' : isNew ? (inn ? euro(amount)+' dazubekommen' : euro(amount)+' ausgegeben') : 'Geändert');
     });
   const left = form.querySelector('#kid-left');
   if (left){
@@ -1662,6 +1909,7 @@ $('#main').addEventListener('click', e => {
   else if (a==='save') saveDialog();
   else if (a==='start') requirePin('Der Startbetrag', startDialog);
   else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
+  else if (a==='pend-review') requirePin('Das Bestätigen von Einnahmen', pendingDialog);
   else if (a==='kid-in') kidTxDialog(null, 'einnahme');
   else if (a==='kid-out') kidTxDialog(null, 'ausgabe');
   else if (a==='goal') goalDialog();
