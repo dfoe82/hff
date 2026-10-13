@@ -342,6 +342,7 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .kid-split > div{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:10px;background:var(--sunk);min-width:0}
 .kid-split b{font-size:1.15rem;overflow-wrap:anywhere}
 .kid-move{width:100%;justify-content:center;margin-top:10px;padding:12px}
+.kid-scan{position:relative;width:100%;justify-content:center;gap:8px;margin-top:10px;padding:14px;font-weight:700;border-style:dashed;border-width:1.5px}
 .fin-switch{margin:0 0 12px}
 .chip-add{border-style:dashed}
 .kv-steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
@@ -511,9 +512,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.7.0';
+const APP_VERSION = '2.7.1';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.7.1', '13.10.2026, 20:25 Uhr', ['Kindermodus: „Kassenbon scannen“ als eigener Knopf direkt unter „Geld bekommen“ und „Geld ausgegeben“']],
   ['2.7.0', '13.10.2026, 20:15 Uhr', ['Kassenbon scannen: Betrag, Datum, Geschäft und Kategorie werden vom Foto erkannt – die Texterkennung läuft komplett auf dem Gerät']],
   ['2.6.0', '13.10.2026, 19:49 Uhr', ['Einstellungen im iOS-Stil: Profilkarte mit Name und Modus, helle Symbol-Kacheln, einklappbare „Verwaltung“, Versionshistorie als eigener Eintrag']],
   ['2.5.0', '13.10.2026, 19:41 Uhr', ['Einstellungen neu geordnet: Übersicht mit Gruppen (Allgemein, Für Eltern bzw. Finanzen, Sicherheit & Daten, Info) und Unterseiten', 'Einstellungen wirken sofort – kein Speichern-Knopf mehr', 'Finanzen der Kinder auch in den Einstellungen verwalten']],
@@ -1892,6 +1894,7 @@ function renderKidFinance(){
     <button class="kid-btn plus" data-act="kid-in"><span aria-hidden="true">+</span>Geld bekommen</button>
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
   </div>
+  <label class="btn kid-scan">${CAM_ICON}<span>Kassenbon scannen</span><input type="file" accept="image/*" capture="environment" class="file-hidden" id="kid-main-scan"></label>
   ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move">⇄ Abheben oder einzahlen</button>' : ''}
   <div class="sec-head">
     <div class="monthbar">
@@ -1923,7 +1926,7 @@ function kidTxDialog(t, type, preset){
   if (t.cat && !cats.includes(t.cat)) cats.unshift(t.cat);
   const form = openDlg(`
     <h3>${inn ? 'Geld bekommen' : 'Geld ausgegeben'}</h3>
-    ${isNew && !inn ? (t.scan ? scanHint(t.scan) : scanButton('kid-scan', 'Kassenbon scannen')) : ''}
+    ${isNew && t.scan ? scanHint(t.scan) : ''}
     <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(t.amount)}" autofocus id="kid-amount"></label>
     ${mode==='both' ? `<div class="field"><span>${inn ? 'Wohin kommt das Geld?' : 'Womit hast du bezahlt?'}</span>
       <div class="seg"><label><input type="radio" name="account" value="cash" ${t.account!=='bank'?'checked':''}><span>${inn ? 'Ins Portemonnaie' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${t.account==='bank'?'checked':''}><span>${inn ? 'Aufs Konto' : 'Mit Karte / Konto'}</span></label></div></div>` : ''}
@@ -2741,7 +2744,7 @@ document.getElementById('updLater').addEventListener('click', () => { const v = 
 if (updatedFrom){ addLog('Update auf Version ' + APP_VERSION + (updatedFrom !== '0' ? ' (von ' + updatedFrom + ')' : '') + ' – Sicherungspunkt angelegt'); setTimeout(showWhatsNew, 500); }
 setTimeout(checkForUpdate, 3000);
 document.getElementById('bkLater').addEventListener('click', () => { lsSet('bkSnooze', Date.now() + (bkEvery()==='weekly' ? 2 : 1) * 864e5 * 0.9); updateBackupHint(); toast('Erinnerung verschoben'); });
-$('#main').addEventListener('change', e => { if (e.target.id === 'fin-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => txDialog(null, scanPreset(r))); return; } if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
+$('#main').addEventListener('change', e => { if (e.target.id === 'kid-main-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => kidTxDialog(null, 'ausgabe', scanPreset(r))); return; } if (e.target.id === 'fin-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => txDialog(null, scanPreset(r))); return; } if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden){ updateBackupHint(); checkForUpdate(); } });
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 setInterval(() => { if (ui.tab==='stundenplan' && !dlg.open) render(); }, 60000);
