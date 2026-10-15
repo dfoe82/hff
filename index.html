@@ -157,7 +157,7 @@ nav.tabs svg{width:18px;height:18px;flex:none}
 .tag.save{color:var(--save)} .tag.save i{transform:rotate(45deg) scale(.85)}
 .save-v{color:var(--save)}
 .save-btn{color:var(--save);border-color:color-mix(in srgb,var(--save) 45%,var(--line))}
-.tx .ico.transfer{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.tx .ico.transfer,.tx .ico.loan{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
 .tx .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tx .meta{font-size:.78rem;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap;align-items:center;grid-column:2}
 .tx .amt{font-family:var(--f-num);font-weight:600;text-align:right;white-space:nowrap}
@@ -283,6 +283,14 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .welcome .btn{justify-content:center}
 .kid-hero{display:flex;flex-direction:column;gap:4px;padding:20px 18px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
 .kid-bal{font-size:2.6rem;font-weight:600;line-height:1.1;overflow-wrap:anywhere}
+.kid-hero{position:relative}
+.kid-hero.has-atm > .label,.kid-hero.has-atm > .kid-bal{padding-right:112px}
+.kid-hero.has-atm > .kid-bal{white-space:nowrap}
+.kid-hero.has-atm > .kid-bal.lg{font-size:1.8rem}
+.kid-hero.has-atm > .kid-bal.xl{font-size:1.45rem}
+.hero-atm{position:absolute;top:12px;right:12px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 10px;border:1px solid var(--line);border-radius:14px;background:var(--sunk);color:var(--ink);font:inherit;font-size:.7rem;font-weight:700;cursor:pointer}
+.hero-atm:hover,.hero-atm:focus-visible{border-color:var(--accent)}
+.hero-atm .e{font-size:1.5rem;line-height:1}
 .kid-sub{font-size:.9rem;color:var(--muted)}
 .kid-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px}
 .kid-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:14px;padding:18px 10px;font-weight:700;font-size:1.02rem;color:#fff;min-height:64px}
@@ -291,6 +299,24 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .rs-list div{display:flex;justify-content:space-between;gap:10px}.rs-list b{white-space:nowrap}
 .rs-keep{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.rs-keep input{width:18px;height:18px;margin-top:2px;flex:none}
 .rs-keep span{display:flex;flex-direction:column}.rs-keep small{color:var(--muted)}
+.lend{margin-top:12px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line);overflow:hidden}
+.lend.is-open{display:grid;gap:10px;padding-bottom:14px}
+.lend-h{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;width:100%;padding:13px 14px;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;cursor:pointer}
+.lend-ht{display:flex;flex-direction:column;gap:2px;min-width:0}.lend-ht > b{font-size:1rem}.lend-ht small{color:var(--muted);font-size:.82rem}.lend-ht small b{font-family:var(--f-num)}.lend-chev{color:var(--muted)}
+.lend.is-open > :not(.lend-h){margin:0 14px}
+.lend-sum{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lend-sum div{padding:9px 10px;border-radius:12px;background:var(--sunk)}
+.lend-sum small{display:block;font-size:.68rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.lend-sum b{font-family:var(--f-num);font-size:1.05rem}
+.lend-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding-top:9px;border-top:1px solid var(--line)}
+.lend-who{display:grid;grid-template-columns:30px minmax(0,1fr);gap:10px;align-items:center;border:0;background:transparent;color:var(--ink);font:inherit;text-align:left;padding:0;cursor:pointer}
+.lend-who .i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--sunk);font-weight:700}
+.lend-who .i.out{color:var(--pos)}.lend-who .i.in{color:var(--neg)}
+.lend-who b{display:block;font-size:.95rem}.lend-who small{color:var(--muted);font-size:.8rem}
+.lend-empty{color:var(--muted);font-size:.88rem;margin:0}
+.lend-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lend-btns .btn{justify-content:center;padding:11px 8px;font-weight:700}
+.kv-loans{display:grid;gap:6px;margin:12px 0;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
+.kv-loans div{display:flex;justify-content:space-between;gap:10px}.kv-loans small{color:var(--muted)}
 .acc-ask{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .acc-pick{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
 .acc-pick:hover:not(:disabled),.acc-pick:focus-visible{border-color:var(--accent)}
@@ -523,9 +549,11 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.7.7';
+const APP_VERSION = '2.8.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.8.0', '15.10.2026, 22:23 Uhr', ['Kindermodus: neuer Bereich „Geliehen & verliehen“ unter „Kassenbon scannen“ – beim Start immer eingeklappt', 'Verleihen und Leihen mit Bargeld oder Bankkonto, Rückzahlung ganz oder in Teilen, freiwilliges Rückgabedatum', 'Verleihen geht nur mit Geld, das da ist – nichts rutscht ins Minus', 'Offene Posten auch in der Eltern-Ansicht']],
+  ['2.7.8', '15.10.2026, 22:15 Uhr', ['Kindermodus: Geldautomat als Knopf oben rechts in der Kachel „Mein Geld“']],
   ['2.7.7', '15.10.2026, 13:52 Uhr', ['Kindermodus: „Abheben oder einzahlen“ heißt jetzt „Geldautomat“', 'Beim Antippen kommt zuerst die Frage „Auszahlen oder einzahlen?“']],
   ['2.7.6', '15.10.2026, 08:24 Uhr', ['Kindermodus: „Bei null neu beginnen“ unter Einstellungen → Geld & Sparen – nur mit Eltern-PIN', 'Vorher wird automatisch ein Sicherungspunkt angelegt, der Neubeginn lässt sich also rückgängig machen']],
   ['2.7.5', '14.10.2026, 19:15 Uhr', ['Kindermodus: Auch das Portemonnaie kann nicht mehr ins Minus gehen – es kann nur ausgegeben werden, was da ist', 'Gilt auch für „In das Sparen legen“ und beim Ändern oder Löschen von Einnahmen']],
@@ -659,12 +687,12 @@ function addLog(txt){
   try { localStorage.setItem(LS+'log', JSON.stringify(S.log)); } catch(e){}
 }
 const logNew = () => S.log.items.filter(e => e.ts > (+(lsGet('logSeen')||0))).length;
-const txKind = t => ({einnahme:'Einnahme', ausgabe:'Ausgabe', einzahlung:'Einzahlung', auszahlung:'Auszahlung', sparen:'Sparen', entsparen:'Vom Sparen'})[t.type] || 'Buchung';
-const txSign = t => (t.type==='einnahme' || t.type==='entsparen') ? '+' : (t.type==='ausgabe' || t.type==='sparen') ? '−' : '';
-const txDesc = t => `${txKind(t)} ${txSign(t)}${euro(t.amount)}${t.text ? ' „' + t.text + '“' : ''} (${fmtShort(t.date)})`;
+const txKind = t => ({einnahme:'Einnahme', ausgabe:'Ausgabe', einzahlung:'Einzahlung', auszahlung:'Auszahlung', sparen:'Sparen', entsparen:'Vom Sparen', verliehen:'Verliehen', geliehen:'Geliehen', zurueckbekommen:'Zurückbekommen', zurueckgezahlt:'Zurückgezahlt'})[t.type] || 'Buchung';
+const txSign = t => (t.type==='einnahme' || t.type==='entsparen' || t.type==='geliehen' || t.type==='zurueckbekommen') ? '+' : (t.type==='ausgabe' || t.type==='sparen' || t.type==='verliehen' || t.type==='zurueckgezahlt') ? '−' : '';
+const txDesc = t => `${txKind(t)} ${txSign(t)}${euro(t.amount)}${t.text ? ' „' + t.text + '“' : ''}${t.who ? ' (' + t.who + ')' : ''} (${fmtShort(t.date)})`;
 function finSnap(){
   const F = S.finance, tx = {}, rec = {};
-  F.tx.forEach(t => tx[t.id] = {type:t.type, amount:t.amount, date:t.date, text:t.text||'', pending:!!t.pending, rec:t.rec||'', account:t.account||''});
+  F.tx.forEach(t => tx[t.id] = {type:t.type, amount:t.amount, date:t.date, text:t.text||'', who:t.who||'', pending:!!t.pending, rec:t.rec||'', account:t.account||''});
   (F.recurring||[]).forEach(r => rec[r.id] = {type:r.type, amount:r.amount, text:r.text||'', rhythm:r.rhythm, start:r.start, paused:!!r.paused, end:r.end||''});
   return {tx, rec, start: {bank:F.start.bank, cash:F.start.cash, save:F.start.save||0}};
 }
@@ -1369,7 +1397,11 @@ const TYPES = {
   einzahlung:{label:'Einzahlung',sym:'⇢', cls:'transfer', note:'Bargeld → Bank'},
   auszahlung:{label:'Auszahlung',sym:'⇠', cls:'transfer', note:'Bank → Bargeld'},
   sparen:    {label:'Sparen',    sym:'↓', cls:'sparen'},
-  entsparen: {label:'Vom Sparen',sym:'↑', cls:'sparen'}
+  entsparen: {label:'Vom Sparen',sym:'↑', cls:'sparen'},
+  verliehen: {label:'Verliehen', sym:'↗', cls:'loan'},
+  geliehen:  {label:'Geliehen',  sym:'↙', cls:'loan'},
+  zurueckbekommen:{label:'Zurückbekommen', sym:'↙', cls:'loan'},
+  zurueckgezahlt: {label:'Zurückgezahlt',  sym:'↗', cls:'loan'}
 };
 const ACCT = {bank:'Bankkonto', cash:'Bargeld', save:'Sparen'};
 const DEFAULT_CATS = ['Lebensmittel','Haushalt','Wohnen','Auto & Tanken','Kinder','Freizeit','Gesundheit','Versicherungen','Kleidung','Geschenke','Gehalt','Kindergeld','Sonstiges'];
@@ -1384,6 +1416,8 @@ function effect(t){
     case 'auszahlung': return {bank:-a,cash:a,save:0};
     case 'sparen':    return c ? {bank:0,cash:-a,save:a} : {bank:-a,cash:0,save:a};
     case 'entsparen': return c ? {bank:0,cash:a,save:-a} : {bank:a,cash:0,save:-a};
+    case 'geliehen': case 'zurueckbekommen': return c ? {bank:0,cash:a,save:0} : {bank:a,cash:0,save:0};
+    case 'verliehen': case 'zurueckgezahlt': return c ? {bank:0,cash:-a,save:0} : {bank:-a,cash:0,save:0};
   }
   return {bank:0,cash:0,save:0};
 }
@@ -1493,6 +1527,7 @@ function renderLedger(list, running){
       else if (t.type==='ausgabe'){ amtCls='neg'; amtTxt='−'+euro(t.amount); }
       else if (t.type==='sparen'){ amtCls='neu'; amtTxt='−'+euro(t.amount); }
       else if (t.type==='entsparen'){ amtCls='neu'; amtTxt='+'+euro(t.amount); }
+      else if (isLoan(t)){ amtCls='neu'; amtTxt=(loanPlus(t)?'+':'−')+euro(t.amount); }
       else { amtCls='neu'; amtTxt=euro(t.amount); }
     } else {
       const v = effect(t)[ui.acct];
@@ -1504,7 +1539,7 @@ function renderLedger(list, running){
       : one ? '' : (T.cls==='transfer')
       ? `<span class="tag ${t.type==='einzahlung'?'cash':'bank'}"><i></i>${t.type==='einzahlung'?'Bargeld':'Bank'}</span>→<span class="tag ${t.type==='einzahlung'?'bank':'cash'}"><i></i>${t.type==='einzahlung'?'Bank':'Bargeld'}</span>`
       : `<span class="tag ${t.account}"><i></i>${t.account==='cash'?'Bargeld':'Bank'}</span>`;
-    const title = t.text || (t.type==='sparen' ? 'Aufs Sparen gelegt' : t.type==='entsparen' ? 'Vom Sparen genommen' : T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
+    const title = isLoan(t) ? loanTitle(t) : t.text || (t.type==='sparen' ? 'Aufs Sparen gelegt' : t.type==='entsparen' ? 'Vom Sparen genommen' : T.cls==='transfer' ? (t.type==='einzahlung'?'Bargeld eingezahlt':'Geld abgehoben') : T.label);
     const run = !running[t.id] ? '' : ui.acct!=='all' ? `<span class="run">${euro(running[t.id][ui.acct])}</span>` : one ? `<span class="run">${euro(running[t.id].bank + running[t.id].cash)}</span>` : '';
     html += `<button class="tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
       <span class="ico ${T.cls}" aria-hidden="true">${T.sym}</span>
@@ -1525,7 +1560,7 @@ function txDialog(t, preset){
   const cats = [...new Set([...S.finance.tx.map(x=>x.cat).filter(Boolean), ...DEFAULT_CATS])];
   const one = isCombined();
   if (one && isTransfer(t)) t.type = 'ausgabe';
-  const typeRadios = Object.entries(TYPES).filter(([k]) => !isSave({type:k}) && (!one || !isTransfer({type:k}))).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
+  const typeRadios = Object.entries(TYPES).filter(([k]) => !isSave({type:k}) && !LOAN_TYPES.includes(k) && (!one || !isTransfer({type:k}))).map(([k,v]) => `<label><input type="radio" name="type" value="${k}" ${t.type===k?'checked':''}><span>${v.label}</span></label>`).join('');
   const form = openDlg(`
     <h3>${isNew?'Neue Buchung':'Buchung bearbeiten'}</h3>
     ${isNew ? (t.scan ? scanHint(t.scan) : scanButton('tx-scan', 'Kassenbon scannen')) : ''}
@@ -1933,14 +1968,14 @@ function renderKidFinance(){
     rows = `<div class="empty"><strong>Noch keine Einträge</strong>Tipp auf „Geld bekommen“, wenn du Taschengeld oder ein Geschenk bekommst, und auf „Geld ausgegeben“, wenn du etwas kaufst.</div>`;
   } else {
     list.slice().reverse().forEach(t => {
-      const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t);
-      const title = t.text || (t.type==='sparen' ? SVN.putLong : t.type==='entsparen' ? SVN.takeLong : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
-      const plus = inn || t.type==='entsparen';
+      const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t), ln = isLoan(t);
+      const title = ln ? loanTitle(t) : t.text || (t.type==='sparen' ? SVN.putLong : t.type==='entsparen' ? SVN.takeLong : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
+      const plus = inn || t.type==='entsparen' || (ln && loanPlus(t));
       const where = mode==='both' ? (mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : ACC_KID[t.account==='bank'?'bank':'cash']) : '';
       rows += `<button class="tx kid-tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
-        <span class="ico ${mv?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
+        <span class="ico ${mv||ln?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${ln?(loanPlus(t)?'↙':'↗'):mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
         <span class="t">${esc(title)}</span>
-        <span class="amt ${mv||sav?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
+        <span class="amt ${mv||sav||ln?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
         <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${where?'<span>· '+where+'</span>':''}${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
       </button>`;
     });
@@ -1951,9 +1986,10 @@ function renderKidFinance(){
       <div><span class="label">Konto</span><b class="num ${kidBalance(null,'bank')<0?'neg-t':''}">${euro(kidBalance(null,'bank'))}</b></div>
     </div>` : '';
   return `
-  <section class="kid-hero">
+  <section class="kid-hero${mode==='both' ? ' has-atm' : ''}">
+    ${mode==='both' ? '<button class="hero-atm" data-act="kid-move"><span class="e" aria-hidden="true">🏧</span>Geldautomat</button>' : ''}
     <span class="label">${label}</span>
-    <span class="kid-bal num ${money<0?'neg-t':''}">${euro(money)}</span>
+    <span class="kid-bal num ${money<0?'neg-t':''} ${mode==='both' ? (euro(money).length > 11 ? 'xl' : euro(money).length > 8 ? 'lg' : '') : ''}">${euro(money)}</span>
     ${split}
     ${sv ? `<span class="kid-sub">Dazu <b>${euro(piggy)}</b> ${SVN.imA} · zusammen <b>${euro(money+piggy)}</b></span>` : ''}
   </section>
@@ -1963,7 +1999,7 @@ function renderKidFinance(){
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
   </div>
   <label class="btn kid-scan">${CAM_ICON}<span>Kassenbon scannen</span><input type="file" accept="image/*" capture="environment" class="file-hidden" id="kid-main-scan"></label>
-  ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move"><span aria-hidden="true">🏧</span> Geldautomat</button>' : ''}
+  ${lendPanel()}
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -2122,6 +2158,173 @@ function kidMoveDialog(t, preType){
 }
 
 /* =========================================================
+   GELIEHEN & VERLIEHEN (Kindermodus)
+   ========================================================= */
+const LOAN_TYPES = ['verliehen','geliehen','zurueckbekommen','zurueckgezahlt'];
+const isLoan = t => LOAN_TYPES.includes(t.type);
+const loanPlus = t => t.type==='geliehen' || t.type==='zurueckbekommen';
+function loanTitle(t){
+  const w = t.who || '?';
+  return ({verliehen:'An ' + w + ' verliehen', geliehen:'Von ' + w + ' geliehen', zurueckbekommen:'Von ' + w + ' zurückbekommen', zurueckgezahlt:'An ' + w + ' zurückgezahlt'})[t.type] || 'Geliehen/verliehen';
+}
+// Offene Posten aus einer Buchungsliste
+function loanList(txs){
+  const loans = txs.filter(t => t.type==='verliehen' || t.type==='geliehen');
+  return loans.map(l => {
+    const back = txs.filter(t => t.loanId===l.id);
+    const paid = back.reduce((a,t) => a + t.amount, 0);
+    return {l, back, open: Math.max(0, l.amount - paid)};
+  });
+}
+const loanSums = items => items.reduce((s, x) => { if (x.open > 0){ if (x.l.type==='verliehen') s.out += x.open; else s.in += x.open; s.n++; } return s; }, {out:0, in:0, n:0});
+function lendPanel(){
+  const items = loanList(S.finance.tx), sum = loanSums(items);
+  const open = !!ui.lendOpen;
+  const openItems = items.filter(x => x.open > 0).sort((a,b) => a.l.date.localeCompare(b.l.date));
+  const t0 = today();
+  const head = `<button type="button" class="lend-h" data-act="lend-toggle" aria-expanded="${open}">
+      <span class="lend-ht"><b>🤝 Geliehen &amp; verliehen</b><small>${!sum.n ? 'Gerade nichts offen' : open ? sum.n + ' offen' : [sum.out ? 'bekomme ich noch <b class="pos-t">' + euro(sum.out) + '</b>' : '', sum.in ? 'muss ich zurückgeben <b class="neg-t">' + euro(sum.in) + '</b>' : ''].filter(Boolean).join(' · ')}</small></span>
+      <span class="lend-chev" aria-hidden="true">${open ? '▴' : '▾'}</span>
+    </button>`;
+  if (!open) return `<section class="lend">${head}</section>`;
+  return `<section class="lend is-open">${head}
+    <div class="lend-sum">
+      <div><small>Bekomme ich noch</small><b class="pos-t">${euro(sum.out)}</b></div>
+      <div><small>Muss ich zurückgeben</small><b class="neg-t">${euro(sum.in)}</b></div>
+    </div>
+    ${openItems.length ? openItems.map(({l, open: o}) => {
+      const out = l.type==='verliehen', late = l.due && l.due < t0;
+      const info = [(out ? 'verliehen' : 'geliehen'), euro(o) + (o < l.amount ? ' von ' + euro(l.amount) : ''), 'seit ' + fmtShort(l.date), l.due ? (late ? '<b class="neg-t">war bis ' + fmtShort(l.due) + '</b>' : 'bis ' + fmtShort(l.due)) : ''].filter(Boolean).join(' · ');
+      return `<div class="lend-row"><button type="button" class="lend-who" data-act="lend-open" data-id="${esc(l.id)}"><span class="i ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↗' : '↙'}</span><span><b>${esc(l.who)}</b><small>${info}</small></span></button><button type="button" class="btn sm" data-act="lend-back" data-id="${esc(l.id)}">${out ? 'Zurückbekommen' : 'Zurückgezahlt'}</button></div>`;
+    }).join('') : '<p class="lend-empty">Gerade ist nichts geliehen oder verliehen.</p>'}
+    <div class="lend-btns"><button type="button" class="btn" data-act="lend-new" data-dir="out">↗ Ich verleihe</button><button type="button" class="btn" data-act="lend-new" data-dir="in">↙ Ich leihe mir</button></div>
+  </section>`;
+}
+// Bargeld oder Bankkonto? (nur bei „Beides“)
+function loanAsk(dir){
+  const out = dir === 'out';
+  if (kidAcc() !== 'both'){
+    if (out && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld zum Verleihen.' : 'In deinem Portemonnaie ist gerade kein Geld zum Verleihen.'); return; }
+    return loanDialog(dir, kidAcc());
+  }
+  const cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
+  const noC = out && cash <= 0, noB = out && bank <= 0;
+  const form = openDlg(`
+    <h3>${out ? 'Geld verleihen' : 'Geld leihen'}</h3>
+    <p style="margin:0;font-weight:600">${out ? 'Woher nimmst du das Geld?' : 'Wohin kommt das Geld?'}</p>
+    ${noC && noB ? '<p class="hint warn" style="margin:0">Du hast gerade kein Geld, das du verleihen kannst.</p>' : ''}
+    <div class="acc-ask">
+      <button type="button" class="acc-pick" data-acc="cash" ${noC ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noC ? 'Kein Geld im Portemonnaie' : 'Im Portemonnaie: ' + euro(cash)}</small></button>
+      <button type="button" class="acc-pick" data-acc="bank" ${noB ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💳</span><b>Bankkonto</b><small>${noB ? 'Kein Geld auf dem Konto' : 'Auf dem Konto: ' + euro(bank)}</small></button>
+    </div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
+  form.querySelectorAll('.acc-pick').forEach(b => b.addEventListener('click', () => { if (!b.disabled) loanDialog(dir, b.dataset.acc); }));
+}
+function loanDialog(dir, acc){
+  const out = dir === 'out', mode = kidAcc();
+  const accTag = mode==='both' ? ` <span class="acc-tag">${acc==='bank' ? '💳 Bankkonto' : '💶 Bargeld'}</span>` : '';
+  const whos = [...new Set(S.finance.tx.filter(t => t.who).map(t => t.who))];
+  const form = openDlg(`
+    <h3>${out ? 'Geld verleihen' : 'Geld leihen'}${accTag}</h3>
+    <label class="field"><span>${out ? 'Wem leihst du Geld?' : 'Von wem leihst du dir Geld?'}</span><input name="who" list="lend-whos" placeholder="${out ? 'z. B. Ben' : 'z. B. Oma'}" autocomplete="off" autofocus id="lend-who"><datalist id="lend-whos">${whos.map(w => `<option value="${esc(w)}">`).join('')}</datalist></label>
+    <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" id="lend-amount"></label>
+    <p class="hint" id="lend-left" style="margin:0"></p>
+    <div class="row2">
+      <label class="field"><span>Wann?</span><input type="date" name="date" value="${today()}" id="lend-date"></label>
+      <label class="field"><span>Zurück bis (freiwillig)</span><input type="date" name="due" id="lend-due"></label>
+    </div>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+      const who = f.who.value.trim(), amount = parseAmt(f.amount.value), err = f.querySelector('#f-err');
+      if (!who){ err.textContent = out ? 'Bitte schreib auf, wem du das Geld leihst.' : 'Bitte schreib auf, von wem du das Geld hast.'; f.who.focus(); return false; }
+      if (!(amount > 0)){ err.textContent = 'Bitte trag ein, wie viel Geld es ist, z. B. 3,00.'; f.amount.focus(); return false; }
+      if (!f.date.value){ err.textContent = 'Bitte wähle ein Datum.'; return false; }
+      if (f.due.value && f.due.value < f.date.value){ err.textContent = 'Das Rückgabedatum liegt vor dem Datum.'; return false; }
+      if (out){
+        const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc);
+        if (amount > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} ${have > 0 ? 'sind nur ' + euro(have) : 'ist gerade kein Geld'}. Mehr kannst du nicht verleihen.`; f.amount.focus(); return false; }
+      }
+      const rec = {id: newId(), created: Date.now(), type: out ? 'verliehen' : 'geliehen', amount, date: f.date.value, who, text:'', cat:'', account: acc};
+      if (f.due.value) rec.due = f.due.value;
+      S.finance.tx.push(rec); ui.month = rec.date.slice(0,7); ui.lendOpen = true;
+      save('finance'); toast(out ? euro(amount) + ' an ' + who + ' verliehen' : euro(amount) + ' von ' + who + ' geliehen');
+    });
+  const left = form.querySelector('#lend-left');
+  const upd = () => {
+    const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc), a = parseAmt(form.amount.value);
+    const where = mode==='both' ? (acc==='bank' ? ' auf dem Konto' : ' im Portemonnaie') : (mode==='bank' ? ' auf dem Konto' : ' im Portemonnaie');
+    if (!(a > 0)){ left.textContent = `Du hast gerade ${euro(have)}${where}.`; left.className = 'hint'; return; }
+    if (out){ const r = have - a; left.textContent = r >= 0 ? `Danach hast du noch ${euro(r)}${where}. Die ${euro(a)} bekommst du zurück.` : `Geht nicht: Du hast nur ${euro(have)}${where}. ${pn.name} darf nicht ins Minus.`; left.className = r >= 0 ? 'hint' : 'hint warn'; }
+    else { left.textContent = `Danach hast du ${euro(have + a)}${where}. Die ${euro(a)} musst du zurückgeben.`; left.className = 'hint'; }
+  };
+  form.amount.addEventListener('input', upd); upd();
+}
+function loanBackDialog(id){
+  const item = loanList(S.finance.tx).find(x => x.l.id === id); if (!item) return;
+  const {l, open} = item, out = l.type==='verliehen', mode = kidAcc();
+  if (open <= 0){ loanInfoDialog(id); return; }
+  const defAcc = mode==='both' ? (l.account==='bank' ? 'bank' : 'cash') : mode;
+  const form = openDlg(`
+    <h3>${out ? 'Von ' + esc(l.who) + ' zurückbekommen' : 'An ' + esc(l.who) + ' zurückgezahlt'}</h3>
+    <div class="rs-list"><div><span>${out ? 'Verliehen' : 'Geliehen'} am ${fmtShort(l.date)}</span><b class="num">${euro(l.amount)}</b></div>${open < l.amount ? `<div><span>Davon noch offen</span><b class="num">${euro(open)}</b></div>` : ''}</div>
+    <div class="field"><span>${out ? 'Wie viel hat ' + esc(l.who) + ' zurückgegeben?' : 'Wie viel hast du zurückgegeben?'}</span>
+      <div class="seg"><label><input type="radio" name="part" value="all" checked><span>Alles (${euro(open)})</span></label><label><input type="radio" name="part" value="some"><span>Einen Teil</span></label></div></div>
+    <label class="field" id="lb-amtf" hidden><span>Betrag (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" id="lb-amount"></label>
+    ${mode==='both' ? `<div class="field"><span>${out ? 'Wohin kommt das Geld?' : 'Womit hast du zurückgezahlt?'}</span>
+      <div class="seg"><label><input type="radio" name="account" value="cash" ${defAcc!=='bank'?'checked':''}><span>${out ? 'Ins Portemonnaie' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${defAcc==='bank'?'checked':''}><span>${out ? 'Aufs Konto' : 'Vom Konto'}</span></label></div></div>` : ''}
+    <label class="field"><span>Wann?</span><input type="date" name="date" value="${today()}" id="lb-date"></label>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">${out ? 'Zurückbekommen' : 'Zurückgezahlt'}</button></div>`, f => {
+      const err = f.querySelector('#f-err');
+      const some = f.querySelector('input[name=part]:checked').value === 'some';
+      const amount = some ? parseAmt(f.amount.value) : open;
+      if (!(amount > 0)){ err.textContent = 'Bitte trag ein, wie viel es war.'; f.amount.focus(); return false; }
+      if (amount > open){ err.textContent = `Es sind nur noch ${euro(open)} offen.`; f.amount.focus(); return false; }
+      const acc = mode==='both' ? f.account.value : mode;
+      if (!out){
+        const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc);
+        if (amount > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} ${have > 0 ? 'sind nur ' + euro(have) : 'ist gerade kein Geld'}. ${pn.name} darf nicht ins Minus.`; return false; }
+      }
+      const rec = {id: newId(), created: Date.now(), type: out ? 'zurueckbekommen' : 'zurueckgezahlt', amount, date: f.date.value || today(), who: l.who, text:'', cat:'', account: acc, loanId: l.id};
+      S.finance.tx.push(rec); ui.month = rec.date.slice(0,7);
+      save('finance'); toast(amount >= open ? (out ? 'Alles zurückbekommen 👍' : 'Alles zurückgezahlt 👍') : euro(amount) + (out ? ' zurückbekommen' : ' zurückgezahlt') + ' – noch ' + euro(open - amount) + ' offen');
+    });
+  const amtF = form.querySelector('#lb-amtf');
+  form.querySelectorAll('input[name=part]').forEach(r => r.addEventListener('change', () => { amtF.hidden = r.value !== 'some' || !r.checked; if (!amtF.hidden) form.amount.focus(); }));
+}
+// Übersicht eines Postens mit Löschen
+function loanInfoDialog(id){
+  const tx0 = S.finance.tx.find(t => t.id === id); if (!tx0) return;
+  const lid = tx0.loanId || tx0.id;
+  const item = loanList(S.finance.tx).find(x => x.l.id === lid); if (!item) return;
+  const {l, back, open} = item, out = l.type==='verliehen', mode = kidAcc();
+  const accN = t => mode==='both' ? (t.account==='bank' ? ' · Konto' : ' · Portemonnaie') : '';
+  const form = openDlg(`
+    <h3>${out ? 'An ' + esc(l.who) + ' verliehen' : 'Von ' + esc(l.who) + ' geliehen'}</h3>
+    <div class="rs-list">
+      <div><span>${fmtShort(l.date)} ${out ? 'verliehen' : 'geliehen'}${accN(l)}</span><b class="num">${euro(l.amount)}</b></div>
+      ${back.map(t => `<div><span>${fmtShort(t.date)} ${out ? 'zurückbekommen' : 'zurückgezahlt'}${accN(t)}</span><b class="num">−${euro(t.amount)}</b></div>`).join('')}
+      <div style="border-top:1px solid var(--line);padding-top:6px"><span><b>${open > 0 ? 'Noch offen' : 'Erledigt'}</b></span><b class="num">${euro(open)}</b></div>
+    </div>
+    ${l.due ? `<p class="hint" style="margin:0">Zurück bis ${fmtShort(l.due)}</p>` : ''}
+    <p class="hint" style="margin:0">Löschen entfernt den ganzen Posten mit allen Rückzahlungen.</p>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><button type="button" class="btn danger" id="lend-del">Löschen</button><span class="spacer"></span>
+      <button type="button" class="btn ghost" data-close>Schließen</button>${open > 0 ? `<button type="button" class="btn primary" id="lend-backbtn">${out ? 'Zurückbekommen' : 'Zurückgezahlt'}</button>` : ''}</div>`, () => {});
+  const bb = form.querySelector('#lend-backbtn'); if (bb) bb.addEventListener('click', () => loanBackDialog(l.id));
+  const del = form.querySelector('#lend-del');
+  del.addEventListener('click', () => {
+    const ids = new Set([l.id, ...back.map(t => t.id)]);
+    const rest = S.finance.tx.filter(t => !ids.has(t.id));
+    const bal = acc => rest.reduce((s, t) => s + effect(t)[acc], S.finance.start[acc]);
+    const minus = mode==='both' ? (bal('cash') < 0 || bal('bank') < 0) : (bal('cash') + bal('bank') < 0);
+    if (minus){ form.querySelector('#f-err').textContent = 'Löschen geht nicht: Das Geld wurde schon ausgegeben, sonst würde etwas ins Minus rutschen.'; return; }
+    if (!armed(del, 'Wirklich löschen?')) return;
+    S.finance.tx = rest; save('finance'); closeDlg(); toast('Gelöscht');
+  });
+}
+
+/* =========================================================
    ELTERN: Finanzen der Kinder (aus deren Sicherung, nur ansehen)
    ========================================================= */
 function kidsSwitch(){
@@ -2244,14 +2447,14 @@ function renderKidOverview(k, live){
   const age = Date.now() - new Date(k.exported).getTime();
   const stale = age > 7*864e5;
   const rows = list.length ? list.map(t => {
-    const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t);
-    const title = t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
-    const plus = inn || t.type==='entsparen';
+    const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t), ln = isLoan(t);
+    const title = ln ? loanTitle(t) : t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
+    const plus = inn || t.type==='entsparen' || (ln && loanPlus(t));
     const where = mode==='both' && !mv ? (t.account==='bank' ? 'Konto' : 'Portemonnaie') : mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : '';
     return `<${live?'button':'div'} class="tx${live?'':' ro'}${t.pending?' is-pending':''}"${live ? ' data-act="edittx" data-id="' + esc(t.id) + '"' : ''}>
-      <span class="ico ${mv?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
+      <span class="ico ${mv||ln?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${ln?(loanPlus(t)?'↙':'↗'):mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
       <span class="t">${esc(title)}</span>
-      <span class="amt ${mv||sav?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
+      <span class="amt ${mv||sav||ln?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
       <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${where?'<span>· '+where+'</span>':''}${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
     </${live?'button':'div'}>`;
   }).join('') : `<div class="empty"><strong>Keine Einträge im ${MONTHS[m-1]}</strong>${live ? 'In diesem Monat wurde nichts eingetragen.' : 'Im Stand vom ' + esc(new Date(k.exported).toLocaleDateString('de-DE')) + ' hat ' + esc(k.name) + ' in diesem Monat nichts eingetragen.'}</div>`;
@@ -2270,6 +2473,8 @@ function renderKidOverview(k, live){
     ${hasSave ? `<div class="acct save"><span class="label"><i></i>${svName}</span><span class="bal">${euro(b.save)}</span><span class="sub">${g ? 'Ziel: ' + esc(g.name || 'Sparziel') + ' ' + Math.round(Math.max(0, Math.min(100, b.save / g.amount * 100))) + ' %' : 'gespart'}</span></div>` : ''}
     <div class="acct total-sub"><span class="label">Gesamt</span><span class="bal">${euro(money + b.save)}</span><span class="sub">${hasSave ? 'inkl. ' + svName : 'alles zusammen'}</span></div>
   </section>
+  ${(() => { const its = loanList(F.tx).filter(x => x.open > 0); if (!its.length) return ''; const sm = loanSums(its);
+    return `<div class="kv-loans"><span class="label">🤝 Geliehen &amp; verliehen</span>${its.map(({l, open}) => `<div><span>${l.type==='verliehen' ? 'An ' : 'Von '}${esc(l.who)} ${l.type==='verliehen' ? 'verliehen' : 'geliehen'} <small>seit ${fmtShort(l.date)}${l.due ? ' · bis ' + fmtShort(l.due) : ''}</small></span><b class="num ${l.type==='verliehen' ? 'pos-t' : 'neg-t'}">${l.type==='verliehen' ? '+' : '−'}${euro(open)}</b></div>`).join('')}<small class="kv-lsum">Bekommt noch ${euro(sm.out)} · muss zurückgeben ${euro(sm.in)}</small></div>`; })()}
   ${live ? pendingBanner() : pend.length ? `<div class="kv-pend">${pend.length === 1 ? '1 Einnahme wartet' : pend.length + ' Einnahmen warten'} auf Bestätigung (zusammen ${euro(pend.reduce((a,t)=>a+t.amount,0))}). Bestätigen kannst du sie auf dem Gerät des Kindes mit der Eltern-PIN.</div>` : ''}
   <div class="sec-head">
     <div class="monthbar">
@@ -2800,12 +3005,16 @@ $('#main').addEventListener('click', e => {
   if (a==='acct'){ if (b.dataset.k==='save'){ ui.tab = 'sparen'; window.scrollTo(0,0); } else ui.acct = b.dataset.k; render(); }
   else if (a==='month'){ const [y,m] = ui.month.split('-').map(Number); const d = new Date(y, m-1+Number(b.dataset.d), 1); ui.month = d.getFullYear()+'-'+pad(d.getMonth()+1); render(); }
   else if (a==='newtx') txDialog();
-  else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isSave(t) ? saveDialog(t) : (isKid() && (t.type==='einnahme'||t.type==='ausgabe')) ? kidTxDialog(t) : (isKid() && isTransfer(t)) ? kidMoveDialog(t) : txDialog(t)); }
+  else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isLoan(t) ? loanInfoDialog(t.id) : isSave(t) ? saveDialog(t) : (isKid() && (t.type==='einnahme'||t.type==='ausgabe')) ? kidTxDialog(t) : (isKid() && isTransfer(t)) ? kidMoveDialog(t) : txDialog(t)); }
   else if (a==='save') saveDialog();
   else if (a==='start') requirePin('Der Startbetrag', startDialog);
   else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
   else if (a==='pend-review') requirePin('Das Bestätigen von Einnahmen', pendingDialog);
   else if (a==='kid-move') kidAtmAsk();
+  else if (a==='lend-toggle'){ ui.lendOpen = !ui.lendOpen; render(); }
+  else if (a==='lend-new') loanAsk(b.dataset.dir);
+  else if (a==='lend-back') loanBackDialog(b.dataset.id);
+  else if (a==='lend-open') loanInfoDialog(b.dataset.id);
   else if (a==='send-parents') exportBackup('send');
   else if (a==='parent-view') requirePin('Die Eltern-Ansicht', () => { ui.parentView = true; render(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
   else if (a==='parent-exit'){ ui.parentView = false; unlockedUntil = 0; render(); window.scrollTo(0,0); toast('Zurück in der Kinderansicht – Einstellungen sind wieder gesperrt'); }
