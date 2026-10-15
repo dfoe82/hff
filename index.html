@@ -523,9 +523,10 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.7.6';
+const APP_VERSION = '2.7.7';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.7.7', '15.10.2026, 13:52 Uhr', ['Kindermodus: „Abheben oder einzahlen“ heißt jetzt „Geldautomat“', 'Beim Antippen kommt zuerst die Frage „Auszahlen oder einzahlen?“']],
   ['2.7.6', '15.10.2026, 08:24 Uhr', ['Kindermodus: „Bei null neu beginnen“ unter Einstellungen → Geld & Sparen – nur mit Eltern-PIN', 'Vorher wird automatisch ein Sicherungspunkt angelegt, der Neubeginn lässt sich also rückgängig machen']],
   ['2.7.5', '14.10.2026, 19:15 Uhr', ['Kindermodus: Auch das Portemonnaie kann nicht mehr ins Minus gehen – es kann nur ausgegeben werden, was da ist', 'Gilt auch für „In das Sparen legen“ und beim Ändern oder Löschen von Einnahmen']],
   ['2.7.4', '14.10.2026, 17:10 Uhr', ['Kindermodus mit Portemonnaie und Konto: Nach „Geld bekommen“, „Geld ausgegeben“ oder dem Kassenbon-Scan kommt zuerst die Frage „Bargeld oder Bankkonto?“']],
@@ -1233,7 +1234,7 @@ function settingsDialog(page){
   if (page === 'money'){
     body += `<div class="set-grp"><div class="set-gl">Wo hat das Kind sein Geld?</div><div class="set-card set-pad">
       <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div>
-    </div><p class="set-note">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann abheben und einzahlen.</p></div>
+    </div><p class="set-note">Bei „Beides“ sieht das Kind Portemonnaie und Konto getrennt und kann am „Geldautomaten“ aus- und einzahlen.</p></div>
     <div class="set-grp"><div class="set-gl">Gespartes heißt</div><div class="set-card set-pad">
       <div class="seg"><label><input type="radio" name="kidSave" value="schwein" ${S.settings.kidSave!=='konto'?'checked':''}><span>Sparschwein</span></label><label><input type="radio" name="kidSave" value="konto" ${S.settings.kidSave==='konto'?'checked':''}><span>Sparkonto</span></label></div>
     </div></div>
@@ -1933,7 +1934,7 @@ function renderKidFinance(){
   } else {
     list.slice().reverse().forEach(t => {
       const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t);
-      const title = t.text || (t.type==='sparen' ? SVN.putLong : t.type==='entsparen' ? SVN.takeLong : t.type==='auszahlung' ? 'Vom Konto abgehoben' : t.type==='einzahlung' ? 'Aufs Konto eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
+      const title = t.text || (t.type==='sparen' ? SVN.putLong : t.type==='entsparen' ? SVN.takeLong : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
       const plus = inn || t.type==='entsparen';
       const where = mode==='both' ? (mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : ACC_KID[t.account==='bank'?'bank':'cash']) : '';
       rows += `<button class="tx kid-tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
@@ -1962,7 +1963,7 @@ function renderKidFinance(){
     <button class="kid-btn minus" data-act="kid-out"><span aria-hidden="true">−</span>Geld ausgegeben</button>
   </div>
   <label class="btn kid-scan">${CAM_ICON}<span>Kassenbon scannen</span><input type="file" accept="image/*" capture="environment" class="file-hidden" id="kid-main-scan"></label>
-  ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move">⇄ Abheben oder einzahlen</button>' : ''}
+  ${mode==='both' ? '<button class="btn kid-move" data-act="kid-move"><span aria-hidden="true">🏧</span> Geldautomat</button>' : ''}
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -2072,14 +2073,27 @@ function kidTxDialog(t, type, preset){
     if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Gelöscht'); });
 }
 // Abheben (Konto → Portemonnaie) oder Einzahlen (Portemonnaie → Konto)
-function kidMoveDialog(t){
-  const isNew = !t;
-  t = t ? clone(t) : {type:'auszahlung', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
+// Geldautomat: zuerst fragen, ob aus- oder eingezahlt wird
+function kidAtmAsk(){
+  const cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
   const form = openDlg(`
-    <h3>Abheben oder einzahlen</h3>
-    <div class="seg" role="radiogroup" aria-label="Richtung">
-      <label><input type="radio" name="type" value="auszahlung" ${t.type==='auszahlung'?'checked':''}><span>Vom Konto abheben</span></label>
-      <label><input type="radio" name="type" value="einzahlung" ${t.type==='einzahlung'?'checked':''}><span>Aufs Konto einzahlen</span></label>
+    <h3>🏧 Geldautomat</h3>
+    <p style="margin:0;font-weight:600">Was möchtest du machen?</p>
+    <div class="acc-ask">
+      <button type="button" class="acc-pick" data-mv="auszahlung" ${bank <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Auszahlen</b><small>${bank <= 0 ? 'Kein Geld auf dem Konto' : 'Konto → Portemonnaie<br>Auf dem Konto: ' + euro(bank)}</small></button>
+      <button type="button" class="acc-pick" data-mv="einzahlung" ${cash <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">🏦</span><b>Einzahlen</b><small>${cash <= 0 ? 'Kein Geld im Portemonnaie' : 'Portemonnaie → Konto<br>Im Portemonnaie: ' + euro(cash)}</small></button>
+    </div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
+  form.querySelectorAll('.acc-pick').forEach(b => b.addEventListener('click', () => { if (!b.disabled) kidMoveDialog(null, b.dataset.mv); }));
+}
+function kidMoveDialog(t, preType){
+  const isNew = !t;
+  t = t ? clone(t) : {type: preType || 'auszahlung', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
+  const form = openDlg(`
+    <h3>${preType ? (preType==='auszahlung' ? 'Auszahlen <span class="acc-tag">Konto → Portemonnaie</span>' : 'Einzahlen <span class="acc-tag">Portemonnaie → Konto</span>') : '🏧 Geldautomat'}</h3>
+    <div class="seg" role="radiogroup" aria-label="Richtung" ${preType ? 'hidden' : ''}>
+      <label><input type="radio" name="type" value="auszahlung" ${t.type==='auszahlung'?'checked':''}><span>Auszahlen</span></label>
+      <label><input type="radio" name="type" value="einzahlung" ${t.type==='einzahlung'?'checked':''}><span>Einzahlen</span></label>
     </div>
     <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(t.amount)}" autofocus id="mv-amount"></label>
     <p class="hint" id="mv-left" style="margin:0"></p>
@@ -2096,7 +2110,7 @@ function kidMoveDialog(t){
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
       ui.month = rec.date.slice(0,7);
-      save('finance'); toast(rec.type==='auszahlung' ? euro(amount)+' vom Konto abgehoben' : euro(amount)+' aufs Konto eingezahlt');
+      save('finance'); toast(rec.type==='auszahlung' ? euro(amount)+' ausgezahlt' : euro(amount)+' eingezahlt');
     });
   const upd = () => {
     const from = form.type.value==='auszahlung' ? 'bank' : 'cash';
@@ -2231,7 +2245,7 @@ function renderKidOverview(k, live){
   const stale = age > 7*864e5;
   const rows = list.length ? list.map(t => {
     const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t);
-    const title = t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Vom Konto abgehoben' : t.type==='einzahlung' ? 'Aufs Konto eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
+    const title = t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
     const plus = inn || t.type==='entsparen';
     const where = mode==='both' && !mv ? (t.account==='bank' ? 'Konto' : 'Portemonnaie') : mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : '';
     return `<${live?'button':'div'} class="tx${live?'':' ro'}${t.pending?' is-pending':''}"${live ? ' data-act="edittx" data-id="' + esc(t.id) + '"' : ''}>
@@ -2791,7 +2805,7 @@ $('#main').addEventListener('click', e => {
   else if (a==='start') requirePin('Der Startbetrag', startDialog);
   else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
   else if (a==='pend-review') requirePin('Das Bestätigen von Einnahmen', pendingDialog);
-  else if (a==='kid-move') kidMoveDialog();
+  else if (a==='kid-move') kidAtmAsk();
   else if (a==='send-parents') exportBackup('send');
   else if (a==='parent-view') requirePin('Die Eltern-Ansicht', () => { ui.parentView = true; render(); window.scrollTo(0,0); if (!pinSet()) toast('Tipp: Mit einer Eltern-PIN ist diese Ansicht geschützt.'); });
   else if (a==='parent-exit'){ ui.parentView = false; unlockedUntil = 0; render(); window.scrollTo(0,0); toast('Zurück in der Kinderansicht – Einstellungen sind wieder gesperrt'); }
