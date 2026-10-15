@@ -287,6 +287,10 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .kid-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px}
 .kid-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:0;border-radius:14px;padding:18px 10px;font-weight:700;font-size:1.02rem;color:#fff;min-height:64px}
 .kid-btn span{font-size:1.6rem;line-height:1;font-family:var(--f-num)}
+.rs-list{display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:var(--sunk)}
+.rs-list div{display:flex;justify-content:space-between;gap:10px}.rs-list b{white-space:nowrap}
+.rs-keep{display:flex;gap:10px;align-items:flex-start;cursor:pointer}.rs-keep input{width:18px;height:18px;margin-top:2px;flex:none}
+.rs-keep span{display:flex;flex-direction:column}.rs-keep small{color:var(--muted)}
 .acc-ask{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .acc-pick{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
 .acc-pick:hover:not(:disabled),.acc-pick:focus-visible{border-color:var(--accent)}
@@ -519,9 +523,11 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.7.4';
+const APP_VERSION = '2.7.6';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.7.6', '15.10.2026, 08:24 Uhr', ['Kindermodus: „Bei null neu beginnen“ unter Einstellungen → Geld & Sparen – nur mit Eltern-PIN', 'Vorher wird automatisch ein Sicherungspunkt angelegt, der Neubeginn lässt sich also rückgängig machen']],
+  ['2.7.5', '14.10.2026, 19:15 Uhr', ['Kindermodus: Auch das Portemonnaie kann nicht mehr ins Minus gehen – es kann nur ausgegeben werden, was da ist', 'Gilt auch für „In das Sparen legen“ und beim Ändern oder Löschen von Einnahmen']],
   ['2.7.4', '14.10.2026, 17:10 Uhr', ['Kindermodus mit Portemonnaie und Konto: Nach „Geld bekommen“, „Geld ausgegeben“ oder dem Kassenbon-Scan kommt zuerst die Frage „Bargeld oder Bankkonto?“']],
   ['2.7.3', '13.10.2026, 23:20 Uhr', ['Kindermodus: Vom Bankkonto kann nicht mehr ausgegeben werden, als drauf ist – das Konto geht nicht ins Minus', 'Gilt auch für „In das Sparen legen“ vom Konto', 'Ausgaben vom Konto sind wieder möglich (Änderung aus 2.7.2 zurückgenommen)']],
   ['2.7.1', '13.10.2026, 20:25 Uhr', ['Kindermodus: „Kassenbon scannen“ als eigener Knopf direkt unter „Geld bekommen“ und „Geld ausgegeben“']],
@@ -1054,9 +1060,9 @@ function showWhatsNew(){
 function snapsHtml(){
   const list = readSnaps();
   if (!list.length) return '';
-  return `<div class="snap-box"><span class="label">Sicherungspunkte vor Updates</span>
+  return `<div class="snap-box"><span class="label">Sicherungspunkte</span>
     ${list.map((sp, i) => ({sp, i})).reverse().map(({sp, i}) => `<div class="snap-row"><div><b>${esc(sp.label)}</b><small>${esc(new Date(sp.ts).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}))}</small></div><button type="button" class="btn sm" data-snap="${i}">Zurückholen</button></div>`).join('')}
-    <span class="snap-note">Werden auf diesem Gerät gespeichert und helfen, falls eine neue Version Probleme macht. Gegen das Löschen der App hilft nur „Jetzt sichern“.</span>
+    <span class="snap-note">Werden auf diesem Gerät gespeichert und helfen, falls eine neue Version Probleme macht oder der Neubeginn bei null ein Versehen war. Gegen das Löschen der App hilft nur „Jetzt sichern“.</span>
   </div>`;
 }
 function snapRestore(i){
@@ -1149,7 +1155,8 @@ const SET_ICONS = {
   lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/>',
   list:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/>',
-  euro:'<path d="M18 7a7 7 0 1 0 0 10"/><path d="M4 10h9M4 14h9"/>'
+  euro:'<path d="M18 7a7 7 0 1 0 0 10"/><path d="M4 10h9M4 14h9"/>',
+  reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><circle cx="12" cy="12" r="2.5"/>'
 };
 const setIcon = (name, color) => `<span class="set-ic" style="--ic:${color}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${SET_ICONS[name] || ''}</svg></span>`;
 function setRow(o){
@@ -1235,7 +1242,10 @@ function settingsDialog(page){
     </div></div>
     <div class="set-grp"><div class="set-gl">Start</div><div class="set-card">
       ${setRow({act:'start', ic:'euro', c:'var(--accent)', t:'Startbetrag', v: euro(S.finance.start.bank + S.finance.start.cash)})}
-    </div></div>`;
+    </div></div>
+    <div class="set-grp"><div class="set-gl">Neu anfangen</div><div class="set-card">
+      ${setRow({act:'kid-reset', ic:'reset', c:'var(--neg)', t:'Bei null neu beginnen', s:'Nur für Eltern · alles wird auf 0 € gesetzt'})}
+    </div><p class="set-note">Löscht alle Einträge${savingsOn() ? ' und das ' + esc(SV().name) : ''}. Vorher wird ein Sicherungspunkt angelegt.</p></div>`;
   }
 
   if (page === 'fixed'){
@@ -1302,6 +1312,7 @@ function settingsDialog(page){
     else if (a === 'log') logDialog();
     else if (a === 'backup') backupDialog();
     else if (a === 'start') startDialog();
+    else if (a === 'kid-reset') kidResetStart();
     else if (a === 'kid-add') kidAddDialog();
     else if (a === 'kid-view'){ ui.finView = b.dataset.id; lsSet('finView', ui.finView); ui.tab = 'finanzen'; lsSet('tab','finanzen'); closeDlg(); window.scrollTo(0,0); }
     else if (a === 'kid-remove'){ if (!armed(b, 'Wirklich?')) return; const k = S.kids.items.find(x => x.id === b.dataset.id); S.kids.items = S.kids.items.filter(x => x.id !== b.dataset.id); save('kids'); if (k) addLog('Finanzen von ' + k.name + ' entfernt'); if (ui.finView === b.dataset.id){ ui.finView = 'me'; lsSet('finView','me'); } render(); settingsDialog('kids'); toast('Entfernt'); }
@@ -1586,9 +1597,9 @@ function saveDialog(t, preset){
       const type = f.type.value;
       if (type==='entsparen' && amount > avail){ err.textContent = `Auf dem Sparen sind nur ${euro(avail)}. Bitte einen kleineren Betrag eingeben.`; f.amount.focus(); return false; }
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type, amount, date: f.date.value, text: f.text.value.trim(), cat:'', account: one ? (t.account || 'bank') : f.account.value};
-      if (isKid() && type==='sparen' && (kidAcc()==='bank' || (kidAcc()==='both' && rec.account==='bank'))){
-        const onBank = kidBalance(t.id, kidAcc()==='both' ? 'bank' : null);
-        if (amount > onBank){ err.textContent = `Auf deinem Konto sind nur ${euro(Math.max(0,onBank))}. Das Konto darf nicht ins Minus.`; f.amount.focus(); return false; }
+      if (isKid() && type==='sparen'){
+        const have = kidBalance(t.id, kidPlace(rec.account)), pn = kidPlaceName(rec.account);
+        if (amount > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} sind nur ${euro(Math.max(0,have))}. ${pn.name} darf nicht ins Minus.`; f.amount.focus(); return false; }
       }
       if (t.rec) rec.rec = t.rec;
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
@@ -1850,6 +1861,49 @@ function kidBalance(excludeId, acct){
   const start = acct ? S.finance.start[acct] : S.finance.start.bank + S.finance.start.cash;
   return S.finance.tx.reduce((sum,t) => { if (t.id===excludeId) return sum; const e = effect(t); return sum + (acct ? e[acct] : e.bank + e.cash); }, start);
 }
+// Wo liegt das Geld einer Kinder-Buchung? null = alles zusammen (nur ein Ort)
+const kidPlace = acc => kidAcc()==='both' ? (acc==='bank' ? 'bank' : 'cash') : null;
+const kidPlaceName = acc => { const m = kidAcc(); const b = m==='both' ? acc==='bank' : m==='bank'; return b ? {in:'auf deinem Konto', name:'Das Konto'} : {in:'in deinem Portemonnaie', name:'Das Portemonnaie'}; };
+// Bei null neu beginnen – nur mit Eltern-PIN
+function kidResetStart(){
+  if (!pinSet()){
+    const form = openDlg(`
+      <h3>Bei null neu beginnen</h3>
+      <p style="margin:0">Das darf nur ein Elternteil machen. Dafür muss auf diesem Gerät zuerst eine <b>Eltern-PIN</b> festgelegt sein.</p>
+      <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button type="button" class="btn primary" id="rs-pin">Eltern-PIN festlegen</button></div>`, () => {});
+    form.querySelector('#rs-pin').addEventListener('click', () => settingsDialog('pin'));
+    return;
+  }
+  requirePin('Das Neu-Beginnen bei null', kidResetDialog, true);
+}
+function kidResetDialog(){
+  const mode = kidAcc(), sv = savingsOn(), SVN = SV();
+  const n = S.finance.tx.length, nRec = (S.finance.recurring || []).length;
+  const rows = [];
+  if (mode === 'both'){ rows.push(['Portemonnaie', kidBalance(null,'cash')], ['Konto', kidBalance(null,'bank')]); }
+  else rows.push([mode === 'bank' ? 'Konto' : 'Portemonnaie', kidBalance()]);
+  if (sv || savingsBalance()) rows.push([SVN.name, savingsBalance()]);
+  const form = openDlg(`
+    <h3>Bei null neu beginnen?</h3>
+    <div class="rs-list">${rows.map(([l, v]) => `<div><span>${esc(l)}</span><b class="num">${euro(v)} → 0,00 €</b></div>`).join('')}</div>
+    <p style="margin:0">${n === 1 ? 'Der eine Eintrag wird' : 'Alle ' + n + ' Einträge werden'} gelöscht (bekommen, ausgegeben, abgehoben, eingezahlt${sv ? ', gespart' : ''}). Danach steht alles auf 0 €.</p>
+    ${nRec ? `<label class="rs-keep"><input type="checkbox" id="rs-keep" checked><span><b>Taschengeld & feste Beträge behalten</b><small>${nRec} ${nRec === 1 ? 'Eintrag läuft' : 'Einträge laufen'} ab dem nächsten Termin weiter</small></span></label>` : ''}
+    <p class="hint" style="margin:0">Vorher wird automatisch ein Sicherungspunkt angelegt. Unter „Sichern & Wiederherstellen“ lässt sich der alte Stand zurückholen.</p>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn danger" type="submit" id="rs-go">Auf 0 € setzen</button></div>`, f => {
+      const go = f.querySelector('#rs-go');
+      if (!armed(go, 'Wirklich? Nochmal tippen')) return false;
+      const keep = !f.querySelector('#rs-keep') || f.querySelector('#rs-keep').checked;
+      if (!makeSnapshot('Vor dem Neubeginn bei null', false)){ f.querySelector('#f-err').textContent = 'Der Sicherungspunkt konnte nicht angelegt werden (Speicher voll). Bitte erst über „Jetzt sichern“ eine Sicherung machen.'; return false; }
+      S.finance.tx = [];
+      S.finance.start = {bank:0, cash:0, save:0};
+      if (!keep) S.finance.recurring = [];
+      suppressLog = true; save('finance'); suppressLog = false; prevFin = finSnap();
+      addLog('Bei null neu begonnen' + (n ? ' (' + n + ' Einträge gelöscht)' : '') + (!keep && nRec ? ', feste Beträge entfernt' : ''));
+      ui.month = today().slice(0,7); ui.parentView = false;
+      render(); toast('Alles steht jetzt auf 0 €');
+    });
+}
 function renderKidFinance(){
   if (ui.parentView){
     if (isUnlocked()) return renderKidOverview({id:'live', name: appName(), exported: new Date().toISOString(), finance: S.finance,
@@ -1931,14 +1985,18 @@ function renderKidFinance(){
 }
 // Bei Portemonnaie + Konto: zuerst fragen, ob Bargeld oder Bankkonto
 function kidAskAccount(type, preset){
-  if (kidAcc() !== 'both') return kidTxDialog(null, type, preset);
+  if (kidAcc() !== 'both'){
+    if (type==='ausgabe' && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld.' : 'In deinem Portemonnaie ist gerade kein Geld.'); return; }
+    return kidTxDialog(null, type, preset);
+  }
   const inn = type === 'einnahme', cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
-  const noBank = !inn && bank <= 0;
+  const noBank = !inn && bank <= 0, noCash = !inn && cash <= 0;
   const form = openDlg(`
     <h3>${inn ? 'Geld bekommen' : 'Geld ausgegeben'}</h3>
     <p style="margin:0;font-weight:600">${inn ? 'Wohin kommt das Geld?' : 'Wie hast du bezahlt?'}</p>
+    ${noCash && noBank ? '<p class="hint warn" style="margin:0">Du hast gerade kein Geld, das du ausgeben kannst.</p>' : ''}
     <div class="acc-ask">
-      <button type="button" class="acc-pick" data-acc="cash"><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>Im Portemonnaie: ${euro(cash)}</small></button>
+      <button type="button" class="acc-pick" data-acc="cash" ${noCash ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noCash ? 'Kein Geld im Portemonnaie' : 'Im Portemonnaie: ' + euro(cash)}</small></button>
       <button type="button" class="acc-pick" data-acc="bank" ${noBank ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💳</span><b>Bankkonto</b><small>${noBank ? 'Kein Geld auf dem Konto' : 'Auf dem Konto: ' + euro(bank)}</small></button>
     </div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
@@ -1977,11 +2035,10 @@ function kidTxDialog(t, type, preset){
       if (!f.date.value){ err.textContent = 'Bitte wähle ein Datum.'; return false; }
       const catEl = f.querySelector('input[name=cat]:checked');
       const acc = mode==='both' ? f.account.value : (isNew ? mode : (t.account || mode));
-      // Bankkonto darf nicht ins Minus gehen
-      if (!inn && (mode==='bank' || (mode==='both' && acc==='bank'))){
-        const onBank = kidBalance(t.id, mode==='both' ? 'bank' : null);
-        if (amount > onBank){ err.textContent = onBank > 0 ? `Auf deinem Konto sind nur ${euro(onBank)}. Mehr kannst du vom Konto nicht ausgeben.` : 'Auf deinem Konto ist kein Geld. Vom Konto kannst du gerade nichts ausgeben.'; f.amount.focus(); return false; }
-      }
+      // Weder Konto noch Portemonnaie dürfen ins Minus gehen
+      const have = kidBalance(t.id, kidPlace(acc)), pn = kidPlaceName(acc);
+      if (!inn && amount > have){ err.textContent = have > 0 ? `${pn.in[0].toUpperCase() + pn.in.slice(1)} sind nur ${euro(have)}. Mehr kannst du nicht ausgeben.` : `${pn.in[0].toUpperCase() + pn.in.slice(1)} ist gerade kein Geld.`; f.amount.focus(); return false; }
+      if (inn && !isNew && !t.pending && have + amount < 0){ err.textContent = `So wenig geht nicht: ${pn.name} würde sonst ins Minus rutschen, weil das Geld schon ausgegeben ist.`; f.amount.focus(); return false; }
       if (mode==='both') lsSet('kidLastAcc', acc);
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type: t.type, amount, date: f.date.value, text: f.text.value.trim(), cat: catEl ? catEl.value : '', account: acc};
       if (t.rec) rec.rec = t.rec;
@@ -2001,8 +2058,8 @@ function kidTxDialog(t, type, preset){
       const a = parseAmt(form.amount.value);
       if (!(a > 0)){ left.textContent = `Du hast gerade ${euro(avail)}${where}.`; left.className = 'hint'; return; }
       const rest = avail - a;
-      const bankAcc = mode==='bank' || acc==='bank';
-      left.textContent = rest >= 0 ? `Danach hast du noch ${euro(rest)}${where}.` : bankAcc ? `Geht nicht: Auf dem Konto sind nur ${euro(avail)}. Das Konto darf nicht ins Minus.` : `Achtung: Dafür fehlen dir ${euro(-rest)}. Du hast nur ${euro(avail)}${where}.`;
+      const pn = kidPlaceName(acc || mode);
+      left.textContent = rest >= 0 ? `Danach hast du noch ${euro(rest)}${where}.` : `Geht nicht: Du hast nur ${euro(avail)}${where}. ${pn.name} darf nicht ins Minus.`;
       left.className = rest >= 0 ? 'hint' : 'hint warn';
     };
     form.amount.addEventListener('input', upd);
@@ -2010,7 +2067,9 @@ function kidTxDialog(t, type, preset){
     upd();
   }
   const del = form.querySelector('#kid-del');
-  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Gelöscht'); });
+  if (del) del.addEventListener('click', () => {
+    if (t.type==='einnahme' && !t.pending && kidBalance(t.id, kidPlace(t.account)) < 0){ form.querySelector('#f-err').textContent = `Löschen geht nicht: ${kidPlaceName(t.account).name} würde sonst ins Minus rutschen, weil das Geld schon ausgegeben ist.`; return; }
+    if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Gelöscht'); });
 }
 // Abheben (Konto → Portemonnaie) oder Einzahlen (Portemonnaie → Konto)
 function kidMoveDialog(t){
