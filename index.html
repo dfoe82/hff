@@ -317,6 +317,53 @@ body.single .toast{bottom:calc(24px + env(safe-area-inset-bottom,0px))}
 .lend-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}.lend-btns .btn{justify-content:center;padding:11px 8px;font-weight:700}
 .kv-loans{display:grid;gap:6px;margin:12px 0;padding:12px 14px;border-radius:var(--r);background:var(--surface);border:1px solid var(--line)}
 .kv-loans div{display:flex;justify-content:space-between;gap:10px}.kv-loans small{color:var(--muted)}
+.it-list{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);max-height:46vh;overflow-y:auto}
+.it-row{display:grid;grid-template-columns:minmax(0,1fr) 82px 28px;gap:6px;align-items:center;padding:6px 8px;border-top:1px solid var(--line)}
+.it-row:first-child{border-top:0}
+.it-row input{font:inherit;font-size:.92rem;padding:7px 8px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--ink);min-width:0;width:100%}
+.it-row input:focus{border-color:var(--accent);background:var(--sunk);outline:none}
+.it-row .it-amt{text-align:right;font-family:var(--f-num);font-weight:600}
+.it-x{border:0;background:var(--sunk);border-radius:50%;width:26px;height:26px;color:var(--muted);font-size:.8rem;cursor:pointer}
+.it-sum{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;font-weight:700;background:var(--sunk)}
+.it-sum.ok{background:color-mix(in srgb,var(--pos) 14%,transparent);color:var(--pos)}
+.it-sum.warn{background:color-mix(in srgb,var(--neg) 12%,transparent);color:var(--neg)}
+.it-cats{display:grid;border:1px solid var(--line);border-radius:12px;background:var(--surface);max-height:44vh;overflow-y:auto}
+.it-cat{display:grid;gap:6px;padding:10px;border-top:1px solid var(--line)}.it-cat:first-child{border-top:0}
+.it-cat .top{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}.it-cat .top b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.it-cat .top span{font-weight:600;white-space:nowrap}
+.it-sel{font:inherit;font-size:.88rem;padding:7px 8px;border:1px solid var(--line);border-radius:8px;background:var(--sunk);color:var(--ink)}
+.mini-chips{display:flex;gap:6px;flex-wrap:wrap}
+.mini-chips label{cursor:pointer}.mini-chips input{position:absolute;opacity:0;pointer-events:none}
+.mini-chips span{display:inline-block;font-size:.76rem;padding:5px 10px;border-radius:999px;background:var(--sunk);color:var(--muted);font-weight:600}
+.mini-chips input:checked + span{background:var(--accent);color:var(--accent-ink)}
+.mini-chips input:focus-visible + span{outline:2px solid var(--accent);outline-offset:1px}
+.it-groups{display:grid;gap:5px;padding:10px 12px;border-radius:12px;background:var(--sunk)}
+.it-groups div{display:flex;justify-content:space-between;gap:10px;font-size:.92rem}.it-groups .tot{border-top:1px solid var(--line);padding-top:5px;font-weight:700}
+.ocr-raw{margin:0;padding:10px 12px;border-top:1px solid var(--line);font:.78rem/1.4 var(--f-num);white-space:pre-wrap;max-height:30vh;overflow:auto}
+.split-btn{justify-self:start}
+#f-split{display:grid}
+.scan-tips{margin:0;padding:8px 12px 10px 30px;border-top:1px solid var(--line);font-size:.86rem;color:var(--muted);display:grid;gap:4px}
+.pos-det{border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+.pos-det summary{padding:10px 12px;font-weight:600;font-size:.9rem;cursor:pointer}
+.pos-list{display:grid;border-top:1px solid var(--line);max-height:30vh;overflow-y:auto}
+.pos-list div{display:flex;justify-content:space-between;gap:10px;padding:7px 12px;border-top:1px solid var(--line);font-size:.9rem}.pos-list div:first-child{border-top:0}
+.bel-box{display:grid;gap:8px;padding:10px 12px;border:1px dashed var(--line);border-radius:12px}
+.bel-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bel-add{position:relative}
+.bel-st{font-size:.82rem;color:var(--muted)}
+.bel-keep{display:flex;gap:10px;align-items:center;font-weight:600;font-size:.92rem;cursor:pointer}.bel-keep input{width:18px;height:18px;flex:none}
+.bel-keep small{color:var(--muted);font-weight:400}
+.bel-g{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+.bel-gt{display:inline-block;margin-top:3px;font-size:.74rem;font-weight:700;color:var(--pos)}.bel-gt.old{color:var(--muted)}
+dialog.bel-dlg{border:0;padding:0;border-radius:18px;background:var(--surface);color:var(--ink);width:min(560px,94vw);max-height:92vh}
+dialog.bel-dlg::backdrop{background:rgba(0,0,0,.6)}
+.bel-v{display:grid;gap:10px;padding:16px}
+.bel-head{display:flex;flex-direction:column}.bel-head small{color:var(--muted)}
+.bel-img{max-height:64vh;overflow:auto;border-radius:12px;background:var(--sunk);display:grid;place-items:center;min-height:120px}
+.bel-img img{display:block;max-width:100%;max-height:64vh;cursor:zoom-in}
+.bel-img.zoom{place-items:start}.bel-img.zoom img{max-width:none;max-height:none;width:200%;cursor:zoom-out}
+.bel-pdf{display:flex;flex-direction:column;align-items:center;gap:6px;padding:30px 16px;font-size:1.2rem;text-align:center}.bel-pdf small{font-size:.82rem;color:var(--muted)}
+.bel-act{display:flex;gap:8px;align-items:center}
+.bel-row .set-ic{font-size:1rem}
 .acc-ask{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .acc-pick{display:flex;flex-direction:column;align-items:center;gap:4px;padding:18px 8px;border:1.5px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
 .acc-pick:hover:not(:disabled),.acc-pick:focus-visible{border-color:var(--accent)}
@@ -554,9 +601,18 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.9.0';
+const APP_VERSION = '2.12.1';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.12.1', '20.10.2026, 07:33 Uhr', ['Kassenbon: gewölbte und schräg fotografierte Bons werden abschnittsweise gerade gezogen, damit Namen und Preise in einer Zeile landen', 'Ausschnitt nur noch um die Schrift herum (auch auf hellem Untergrund) – mehr Auflösung für die Preise', 'Artikelliste endet sicherer vor dem Zahlungsteil, auch wenn „Zu zahlen“ schlecht lesbar ist']],
+  ['2.12.0', '20.10.2026, 06:40 Uhr', ['Kassenbon-Erkennung deutlich verbessert: der Bon wird automatisch aus dem Foto ausgeschnitten, vergrößert und in Schwarz/Weiß umgewandelt (gleicht Schatten aus)', 'Passen die Positionen nicht zur Summe, liest die App den Bon ein zweites Mal anders und nimmt das bessere Ergebnis', 'Falsch gelesene Kommas (z. B. „1769“ statt „1,69“) werden über die Summe korrigiert; fehlt genau ein Preis, wird er aus der Summe ergänzt', 'Fototipps im Scan-Fenster']],
+  ['2.11.4', '19.10.2026, 13:37 Uhr', ['Neuer Knopf „🧾 Positionen / nach Kategorien aufteilen“ bei jeder neuen Ausgabe – auch wenn der Scan keine Positionen erkannt hat, lassen sich Positionen selbst eintragen und aufteilen']],
+  ['2.11.3', '19.10.2026, 13:27 Uhr', ['Kassenbon: Positionen werden zuverlässiger erkannt (Texterkennung liest den Bon jetzt zeilenweise, mehr Schreibweisen von Preisen und Steuerkennzeichen, Preis in eigener Zeile oder Spalte)', 'Nach dem Scannen lässt sich der erkannte Text anzeigen und kopieren – hilft bei der Fehlersuche']],
+  ['2.11.2', '19.10.2026, 09:43 Uhr', ['Kindermodus: „Portemonnaie“ heißt jetzt überall „Bargeld“']],
+  ['2.11.1', '19.10.2026, 09:40 Uhr', ['Fehler behoben: Startbetrag landete bei „nur Portemonnaie“ bzw. „nur Bankkonto“ intern im falschen Topf – nach dem Umstellen auf „Beides“ stand dann z. B. Portemonnaie +15 € und Konto −15 €', 'Startbetrag-Fenster zeigt bei „Beides“ einen Hinweis, wenn ein Topf ins Minus geht']],
+  ['2.11.0', '19.10.2026, 08:27 Uhr', ['Belege aufbewahren: Foto vom gescannten Kassenbon am Eintrag speichern, oder ein Foto bzw. eine PDF-Rechnung anhängen', 'Garantie-Datum je Beleg (mit „+ 2 Jahre“)', 'Großansicht mit Zoom und „Teilen / in Dateien sichern“', 'Neue Liste „Belege & Garantie“ in den Einstellungen', 'Sicherung wahlweise mit Belegen']],
+  ['2.10.0', '19.10.2026, 07:58 Uhr', ['Kassenbon: einzelne Positionen werden erkannt und lassen sich vor dem Speichern prüfen, ändern, löschen oder ergänzen', 'Kontrolle, ob die Positionen zur Summe vom Bon passen', 'Speichern als ein Eintrag mit Positionen oder aufgeteilt nach Kategorien (mit Vorschlägen)', 'Positionen sind später beim Eintrag aufklappbar']],
+  ['2.9.1', '17.10.2026, 15:24 Uhr', ['Startbetrag wird nur noch beim ersten Start abgefragt (mit Auswahl Erwachsene oder Kind)', 'Danach liegt er in den Einstellungen: Kindermodus unter Für Eltern → Geld & Sparen, Erwachsenenmodus unter Finanzen', 'Knopf „Startbetrag“ bzw. „Anfangsbestände“ auf der Finanzseite entfernt']],
   ['2.9.0', '16.10.2026, 03:03 Uhr', ['Einstellungen aufgeräumt: im Kindermodus alles für Eltern in einem Block „Für Eltern“ mit PIN-Hinweis', 'Kein eingeklappter Block „Verwaltung“ mehr – neue Protokoll-Einträge als roter Hinweis', 'Erwachsenenmodus: Gruppen Finanzen, Daten und Sicherheit; „Regelmäßige Buchungen“ jetzt auch in den Einstellungen', 'Geld & Sparen: Gruppen Konten, Regeln und Kontostand', 'Versionshistorie als kleine Zeile ganz unten']],
   ['2.8.0', '15.10.2026, 22:23 Uhr', ['Kindermodus: neuer Bereich „Geliehen & verliehen“ unter „Kassenbon scannen“ – beim Start immer eingeklappt', 'Verleihen und Leihen mit Bargeld oder Bankkonto, Rückzahlung ganz oder in Teilen, freiwilliges Rückgabedatum', 'Verleihen geht nur mit Geld, das da ist – nichts rutscht ins Minus', 'Offene Posten auch in der Eltern-Ansicht']],
   ['2.7.8', '15.10.2026, 22:15 Uhr', ['Kindermodus: Geldautomat als Knopf oben rechts in der Kachel „Mein Geld“']],
@@ -733,7 +789,7 @@ function logSettingsDiff(){
   if (o.combined !== cur.combined) addLog('Konten zusammenlegen: ' + (cur.combined ? 'an' : 'aus'));
   if (o.confirm !== cur.confirm) addLog('Bestätigung von Einnahmen: ' + (cur.confirm ? 'an' : 'aus'));
   if (o.name !== cur.name) addLog('Name der App geändert');
-  if (o.kacc !== cur.kacc) addLog('Geld des Kindes: ' + ({cash:'Portemonnaie', bank:'Bankkonto', both:'Portemonnaie und Bankkonto'})[cur.kacc]);
+  if (o.kacc !== cur.kacc) addLog('Geld des Kindes: ' + ({cash:'Bargeld', bank:'Bankkonto', both:'Bargeld und Bankkonto'})[cur.kacc]);
   if (o.ksave !== cur.ksave) addLog('Gespartes heißt jetzt: ' + (cur.ksave==='konto' ? 'Sparkonto' : 'Sparschwein'));
 }
 function logDialog(){
@@ -808,16 +864,22 @@ async function ensureWraps(pin, code){
   readyBk = null;
 }
 const bkName = () => (appName().toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'') || 'organizer')+'-sicherung.json';
+const bkWithBelege = () => lsGet('bkBelege') !== false && belegIds().length > 0;
+async function backupDataFull(){
+  const d = backupData();
+  if (bkWithBelege()){ try { const all = await belegAll(), ids = new Set(belegIds()); d.belege = {}; Object.keys(all).forEach(k => { if (ids.has(k)) d.belege[k] = all[k]; }); } catch(e){} }
+  return d;
+}
 async function buildBackupFile(){
-  if (!pinSet()) return new File([JSON.stringify(backupData(), null, 2)], bkName(), {type:'application/json'});
+  if (!pinSet()) return new File([JSON.stringify(await backupDataFull())], bkName(), {type:'application/json'});
   if (!cryptoOk()) throw new Error('nocrypto');
   const wk = S.settings.pin.wk, k = lsGet('bkKey');
   if (!wk || !k) throw new Error('nokey');
-  const data = await aesEnc(await aesKey(unb64(k)), new TextEncoder().encode(JSON.stringify(backupData())));
+  const data = await aesEnc(await aesKey(unb64(k)), new TextEncoder().encode(JSON.stringify(await backupDataFull())));
   const out = {app:'haushaltsplaner', enc:1, format:2, appVersion:APP_VERSION, exported:new Date().toISOString(), hinweis:'Verschlüsselte Sicherung – nur mit Eltern-PIN oder Notfall-Code lesbar.', salt:wk.salt, wp:wk.wp, wr:wk.wr, data};
   return new File([JSON.stringify(out)], bkName(), {type:'application/json'});
 }
-const bkStamp = () => String(lsGet('changed')||0) + ':' + (pinSet() ? (S.settings.pin.wk ? S.settings.pin.wk.salt : 'x') : '0') + ':' + appName();
+const bkStamp = () => String(lsGet('changed')||0) + ':' + (lsGet('belegChanged')||0) + ':' + (bkWithBelege() ? 1 : 0) + ':' + (pinSet() ? (S.settings.pin.wk ? S.settings.pin.wk.salt : 'x') : '0') + ':' + appName();
 async function prepareBackup(){
   const st = bkStamp();
   if (readyBk && readyBk.stamp === st) return readyBk.file;
@@ -889,6 +951,7 @@ function unlockBackupDialog(d){
     });
 }
 function applyBackup(inner, outer){
+  if (inner.belege && typeof inner.belege === 'object'){ Object.keys(inner.belege).forEach(k => { const b = inner.belege[k]; if (b && b.data) belegPut(k, b).catch(() => {}); }); }
   suppressLog = true;
   KEYS.forEach(k => {
     if (k==='log'){ if (inner.log) S.log = normalize('log', inner.log); return; }
@@ -918,6 +981,7 @@ function backupDialog(){
     </div>
     <p style="margin:0;color:var(--muted);font-size:.88rem">Letzte Sicherung: <b>${last ? new Date(last).toLocaleString('de-DE',{dateStyle:'medium',timeStyle:'short'}) : 'noch keine'}</b></p>
     <label class="field"><span>An Sicherung erinnern</span><select id="bk-every">${Object.entries(BK_EVERY).map(([k,[l]]) => `<option value="${k}" ${bkEvery()===k?'selected':''}>${l}${k==='daily'?' (empfohlen)':''}</option>`).join('')}</select></label>
+    ${belegIds().length ? `<label class="bel-keep"><input type="checkbox" id="bk-bel" ${lsGet('bkBelege') !== false ? 'checked' : ''}><span>Belege mitsichern (${belegIds().length}) <small id="bk-belsize"></small></span></label>` : ''}
     <button type="button" class="btn primary" id="bk-export" style="justify-content:center">Jetzt sichern</button>
     ${isUnlocked() ? `<label class="btn" style="justify-content:center;position:relative">Sicherung wiederherstellen …
       <input type="file" accept=".json,application/json" id="bk-file" style="position:absolute;inset:0;opacity:0;cursor:pointer"></label>` : '<button type="button" class="btn" id="bk-unlock" style="justify-content:center">Sicherung wiederherstellen … (Eltern-PIN)</button>'}
@@ -925,6 +989,11 @@ function backupDialog(){
     ${snapsHtml()}
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Schließen</button></div>`, () => {});
   form.querySelector('#bk-export').addEventListener('click', exportBackup);
+  const bkb = form.querySelector('#bk-bel');
+  if (bkb){
+    bkb.addEventListener('change', () => { lsSet('bkBelege', bkb.checked); readyBk = null; prepareBackup().catch(()=>{}); });
+    belegAll().then(all => { const ids = new Set(belegIds()); const n = Object.keys(all).filter(k => ids.has(k)).reduce((s, k) => s + belegSize(all[k]), 0); const el = form.querySelector('#bk-belsize'); if (el) el.textContent = '· ca. ' + fmtSize(n * 1.34); }).catch(()=>{});
+  }
   form.querySelector('#bk-every').addEventListener('change', e => { lsSet('bkEvery', e.target.value); updateBackupHint(); toast(e.target.value==='off' ? 'Erinnerung ausgeschaltet' : 'Erinnerung: ' + BK_EVERY[e.target.value][0].toLowerCase()); });
   const bf = form.querySelector('#bk-file'); if (bf) bf.addEventListener('change', e => { const f = e.target.files[0]; if (f) importBackup(f); });
   form.querySelectorAll('[data-snap]').forEach(btn => btn.addEventListener('click', () => requirePin('Das Zurückholen eines Sicherungspunkts', () => snapRestore(+btn.dataset.snap))));
@@ -1176,8 +1245,9 @@ function applyName(){
   const m = document.querySelector('meta[name="apple-mobile-web-app-title"]'); if (m) m.setAttribute('content', n);
 }
 /* ---------- Einstellungen: Übersicht mit Unterseiten ---------- */
-const SET_PAGES = ['main','profile','name','mode','sections','money','fixed','kids','pin','version'];
-const SET_TITLES = {main:'Einstellungen', profile:'Name & Modus', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Versionshistorie'};
+const SET_PAGES = ['main','profile','name','mode','sections','money','fixed','kids','pin','version','belege'];
+const SET_TITLES = {main:'Einstellungen', profile:'Name & Modus', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', belege:'Belege & Garantie', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Versionshistorie'};
+const belegCountTxt = () => { const n = belegIds().length, g = S.finance.tx.filter(t => t.beleg && t.garantie && t.garantie >= today()).length; return n ? n + (n === 1 ? ' Beleg' : ' Belege') + (g ? ' · ' + g + ' mit Garantie' : '') : 'Fotos von Kassenbons und Rechnungen'; };
 const SET_ICONS = {
   grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
   eye:'<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
@@ -1191,6 +1261,7 @@ const SET_ICONS = {
   list:'<path d="M8 6h12M8 12h12M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
   history:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 3"/>',
   euro:'<path d="M18 7a7 7 0 1 0 0 10"/><path d="M4 10h9M4 14h9"/>',
+  receipt:'<path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6M9 16h3"/>',
   reset:'<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><circle cx="12" cy="12" r="2.5"/>'
 };
 const setIcon = (name, color) => `<span class="set-ic" style="--ic:${color}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${SET_ICONS[name] || ''}</svg></span>`;
@@ -1236,20 +1307,23 @@ function settingsDialog(page){
     if (kid){
       body += setGroup('Daten',
         setRow({act:'backup', ic:'download', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}) +
-        setRow({act:'send', ic:'send', c:'var(--s5)', t:'An Eltern senden', s:'Per AirDrop oder Nachricht'}));
+        setRow({act:'send', ic:'send', c:'var(--s5)', t:'An Eltern senden', s:'Per AirDrop oder Nachricht'}) +
+        setRow({page:'belege', ic:'receipt', c:'var(--warn)', t:'Belege', s: belegCountTxt()}));
       body += `<div class="set-grp"><div class="set-gl set-gl-row">🔒 Für Eltern <span class="set-pinb ${pinSet() ? 'on' : 'off'}">${pinSet() ? 'PIN aktiv' : 'PIN aus'}</span></div><div class="set-card">
         ${setRow({act:'parent', ic:'eye', c:'var(--pos)', t:'Eltern-Ansicht', s:'Finanzen ausführlich ansehen'})}
         ${setRow({page:'fixed', ic:'repeat', c:'var(--s3)', t:'Taschengeld & feste Beträge', s: fixedSub})}
-        ${setRow({page:'money', ic:'wallet', c:'var(--bank)', t:'Geld & Sparen', s: ({cash:'Portemonnaie', bank:'Bankkonto', both:'Portemonnaie & Konto'})[kidAcc()] + ' · ' + SV().name})}
+        ${setRow({page:'money', ic:'wallet', c:'var(--bank)', t:'Geld & Sparen', s: ({cash:'Bargeld', bank:'Bankkonto', both:'Bargeld & Konto'})[kidAcc()] + ' · ' + SV().name})}
         ${setRow({page:'pin', ic:'lock', c:'var(--neg)', t:'Eltern-PIN', s: pinSet() ? 'PIN ändern, Notfall-Code' : 'Noch keine PIN festgelegt'})}
         ${setRow({act:'log', ic:'list', c:'var(--muted)', t:'Protokoll', s:'Wer hat was geändert', v: newTag})}
       </div><p class="set-note">${pinSet() ? 'Die Einstellungen sind mit der Eltern-PIN geschützt.' : 'Tipp: Mit einer Eltern-PIN kann das Kind hier nichts ändern.'}</p></div>`;
     } else {
       body += setGroup('Finanzen',
         setToggle({id:'set-combined', ic:'swap', c:'var(--bank)', t:'Bank & Bargeld zusammenlegen', s:'Nur ein Kontostand', on: !!S.settings.combined}) +
+        setRow({act:'start', ic:'euro', c:'var(--accent)', t: isCombined() ? 'Anfangsbestand' : 'Anfangsbestände', s:'Stand, mit dem du angefangen hast', v: euro(S.finance.start.bank + S.finance.start.cash)}) +
         setRow({page:'fixed', ic:'repeat', c:'var(--s3)', t:'Regelmäßige Buchungen', s: fixedSub, v: fixedList.length ? String(fixedList.length) : ''}) +
         setRow({page:'kids', ic:'users', c:'var(--s6)', t:'Finanzen der Kinder', s: S.kids.items.length ? S.kids.items.length + (S.kids.items.length === 1 ? ' Kind · ' : ' Kinder · ') + esc(S.kids.items.map(k => k.name).join(', ')) : 'Sicherung eines Kindes einlesen'}));
-      body += setGroup('Daten', setRow({act:'backup', ic:'download', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}));
+      body += setGroup('Daten', setRow({act:'backup', ic:'download', c:'var(--warn)', t:'Sichern & Wiederherstellen', s:'Letzte Sicherung: ' + ago(last)}) +
+        setRow({page:'belege', ic:'receipt', c:'var(--s5)', t:'Belege & Garantie', s: belegCountTxt()}));
       body += setGroup('Sicherheit',
         setRow({page:'pin', ic:'lock', c:'var(--neg)', t:'Eltern-PIN', s: pinSet() ? 'Aktiv' : 'Aus'}) +
         setRow({act:'log', ic:'list', c:'var(--muted)', t:'Protokoll', s:'Wer hat was geändert', v: newTag}));
@@ -1276,10 +1350,10 @@ function settingsDialog(page){
   if (page === 'money'){
     body += `<div class="set-grp"><div class="set-gl">Konten</div><div class="set-card set-pad">
       <span class="set-sub">Wo hat das Kind sein Geld?</span>
-      <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Portemonnaie</span></label><label><input type="radio" name="kidAccounts" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div>
+      <div class="seg"><label><input type="radio" name="kidAccounts" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Bargeld</span></label><label><input type="radio" name="kidAccounts" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kidAccounts" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div>
       <span class="set-sub">Gespartes heißt</span>
       <div class="seg"><label><input type="radio" name="kidSave" value="schwein" ${S.settings.kidSave!=='konto'?'checked':''}><span>Sparschwein</span></label><label><input type="radio" name="kidSave" value="konto" ${S.settings.kidSave==='konto'?'checked':''}><span>Sparkonto</span></label></div>
-    </div><p class="set-note">Bei „Beides“ gibt es Portemonnaie, Konto und den Geldautomaten.</p></div>
+    </div><p class="set-note">Bei „Beides“ gibt es Bargeld, Konto und den Geldautomaten.</p></div>
     <div class="set-grp"><div class="set-gl">Regeln</div><div class="set-card">
       ${setToggle({id:'set-confirm', t:'Von Eltern bestätigen lassen', s:'„Geld bekommen“ zählt erst nach Freigabe (nur mit Eltern-PIN)', on: S.settings.confirmIncome !== false})}
     </div></div>
@@ -1289,6 +1363,7 @@ function settingsDialog(page){
     </div><p class="set-note">„Bei null neu beginnen“ löscht alle Einträge${savingsOn() ? ' und das ' + esc(SV().name) : ''} und legt vorher einen Sicherungspunkt an.</p></div>`;
   }
 
+  if (page === 'belege') body += belegePage();
   if (page === 'fixed'){
     body += `<div class="set-grp set-rec">${renderRecurringPanel()}<p class="set-note">${kid ? 'Zum Beispiel das Taschengeld jeden Monat am 1. Es wird dann automatisch eingetragen. Das Kind kann diese Beträge nicht selbst ändern, wenn eine Eltern-PIN gesetzt ist.' : 'Zum Beispiel Miete, Kindergeld oder Taschengeld. Wird am Stichtag automatisch gebucht.'}</p></div>`;
   }
@@ -1340,6 +1415,7 @@ function settingsDialog(page){
       return false;
     });
   form.classList.add('set-dlg'); dlg.classList.add('is-set');
+  if (page === 'belege') belegePageWire(form);
 
   // Navigation und Aktionen
   form.addEventListener('click', e => {
@@ -1354,6 +1430,7 @@ function settingsDialog(page){
     else if (a === 'backup') backupDialog();
     else if (a === 'start') startDialog();
     else if (a === 'kid-reset') kidResetStart();
+    else if (a === 'bel-open'){ const t = S.finance.tx.find(x => x.id === b.dataset.id); if (t) belegViewer(t.beleg, t); }
     else if (a === 'kid-add') kidAddDialog();
     else if (a === 'kid-view'){ ui.finView = b.dataset.id; lsSet('finView', ui.finView); ui.tab = 'finanzen'; lsSet('tab','finanzen'); closeDlg(); window.scrollTo(0,0); }
     else if (a === 'kid-remove'){ if (!armed(b, 'Wirklich?')) return; const k = S.kids.items.find(x => x.id === b.dataset.id); S.kids.items = S.kids.items.filter(x => x.id !== b.dataset.id); save('kids'); if (k) addLog('Finanzen von ' + k.name + ' entfernt'); if (ui.finView === b.dataset.id){ ui.finView = 'me'; lsSet('finView','me'); } render(); settingsDialog('kids'); toast('Entfernt'); }
@@ -1493,7 +1570,6 @@ function renderFinance(){
       <button class="icon-btn" data-act="month" data-d="1" aria-label="Nächster Monat">›</button>
     </div>
     <span style="margin-right:auto"></span>
-    <button class="btn ghost sm" data-act="start">${one?'Anfangsbestand':'Anfangsbestände'}</button>
     ${scanButton('fin-scan', 'Beleg scannen')}
     <button class="btn primary" data-act="newtx">+ Buchung</button>
   </div>
@@ -1557,7 +1633,7 @@ function renderLedger(list, running){
       <span class="ico ${T.cls}" aria-hidden="true">${T.sym}</span>
       <span class="t">${esc(title)}</span>
       <span class="amt ${amtCls}">${amtTxt}</span>
-      <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag" title="Regelmäßige Buchung">↻</span>':''}${acctTag}${t.cat?(one&&!isSave(t)?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat && !isSave(t) ? '' : '· '}${T.label}</span></span>
+      <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag" title="Regelmäßige Buchung">↻</span>':''}${t.beleg?'<span class="rec-tag" title="Beleg gespeichert">📎</span>':''}${acctTag}${t.cat?(one&&!isSave(t)?'<span>':'<span>· ')+esc(t.cat)+'</span>':''}<span>${one && !t.cat && !isSave(t) ? '' : '· '}${T.label}</span></span>
       ${run}
     </button>`;
   });
@@ -1586,6 +1662,9 @@ function txDialog(t, preset){
       <label class="field"><span>Datum</span><input type="date" name="date" value="${esc(t.date)}" id="tx-date"></label>
     </div>
     <label class="field"><span>Beschreibung</span><input name="text" value="${esc(t.text)}" placeholder="z. B. Wocheneinkauf" id="tx-text"></label>
+    ${itemsDetails(t.items)}
+    ${isNew && !(t.items && t.items.length) ? '<div id="f-split"><button type="button" class="btn sm split-btn" id="split-open">🧾 Positionen / nach Kategorien aufteilen</button></div>' : ''}
+    <div id="f-bel">${belegBlock(t)}</div>
     <label class="field" id="f-cat"><span>Kategorie</span><input name="cat" list="catlist" value="${esc(t.cat)}" placeholder="z. B. Lebensmittel" id="tx-cat">
       <datalist id="catlist">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist></label>
     <div class="err" id="f-err"></div>
@@ -1601,21 +1680,25 @@ function txDialog(t, preset){
       const type = f.type.value;
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type, amount, date: f.date.value, text: f.text.value.trim(), cat: (type==='einnahme'||type==='ausgabe') ? f.cat.value.trim() : '' };
       if (type==='einnahme'||type==='ausgabe') rec.account = one ? (t.account || 'bank') : f.account.value;
+      if (t.items && t.items.length && type==='ausgabe') rec.items = t.items;
+      if (!isTransfer({type})) belegApply(f, t, belSt, rec); else if (t.beleg) belegMaybeDelete(t.beleg, rec.id);
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
       ui.month = rec.date.slice(0,7);
       save('finance'); toast(isNew?'Buchung gespeichert':'Änderung gespeichert');
     });
-  const txs = form.querySelector('#tx-scan'); if (txs) txs.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, r => txDialog(null, scanPreset(r))); });
+  const belSt = belegWire(form, t);
+  const spl = form.querySelector('#split-open'); if (spl) spl.addEventListener('click', () => openSplitFrom(form, t));
+  const txs = form.querySelector('#tx-scan'); if (txs) txs.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, afterScan); });
   const sync2 = () => {
     const type = form.type.value, tr = type==='einzahlung'||type==='auszahlung';
-    form.querySelector('#f-acct').hidden = tr || one; form.querySelector('#f-cat').hidden = tr;
+    form.querySelector('#f-acct').hidden = tr || one; form.querySelector('#f-cat').hidden = tr; form.querySelector('#f-bel').hidden = tr; const fs = form.querySelector('#f-split'); if (fs) fs.hidden = type !== 'ausgabe';
     const h = form.querySelector('#f-hint'); h.hidden = !tr;
     if (tr) h.textContent = type==='einzahlung' ? 'Bargeld wird aufs Bankkonto eingezahlt: Bargeld sinkt, Bankkonto steigt.' : 'Geld wird vom Bankkonto abgehoben: Bankkonto sinkt, Bargeld steigt.';
   };
   form.querySelectorAll('input[name=type]').forEach(r => r.addEventListener('change', sync2)); sync2();
   const del = form.querySelector('[data-act=del]');
-  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
+  if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); belegMaybeDelete(t.beleg); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
 }
 function saveDialog(t, preset){
   const isNew = !t, one = isCombined();
@@ -1659,19 +1742,42 @@ function saveDialog(t, preset){
   const del = form.querySelector('#sv-del');
   if (del) del.addEventListener('click', () => { if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Buchung gelöscht'); });
 }
-function startDialog(){
+// Erster Start: Für wen ist die App? Danach den Startbetrag abfragen
+function firstSetupDialog(){
+  const form = openDlg(`
+    <h3>Los geht's</h3>
+    <div class="field"><span>Für wen ist die App auf diesem Gerät?</span>
+      <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid() ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid() ? 'checked' : ''}><span>Kind (ab 10)</span></label></div></div>
+    <div class="field" id="fs-acc" ${isKid() ? '' : 'hidden'}><span>Wo hat das Kind sein Geld?</span>
+      <div class="seg"><label><input type="radio" name="kacc" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Bargeld</span></label><label><input type="radio" name="kacc" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kacc" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div></div>
+    <p class="hint" style="margin:0">Das lässt sich später in den Einstellungen ändern.</p>
+    <div class="dlg-actions"><span class="spacer"></span><button class="btn primary" type="submit">Weiter</button></div>`, f => {
+      const kid = f.querySelector('input[name=mode]:checked').value === 'kid';
+      S.settings.kid = kid;
+      if (kid) S.settings.kidAccounts = f.querySelector('input[name=kacc]:checked').value;
+      save('settings'); applyName(); render();
+      setTimeout(() => startDialog(true), 0);
+    });
+  form.querySelectorAll('input[name=mode]').forEach(r => r.addEventListener('change', () => { form.querySelector('#fs-acc').hidden = form.querySelector('input[name=mode]:checked').value !== 'kid'; }));
+}
+function startDialog(first){
+  const firstHint = first ? `<p class="hint" style="margin:0">Das wird nur jetzt beim ersten Start gefragt. Später findest du es in den Einstellungen${isKid() ? ' unter „Für Eltern“ → „Geld & Sparen“' : ' unter „Finanzen“'}.</p>` : '';
+  const cancelLbl = first ? 'Später' : 'Abbrechen';
   if (isCombined()){
     openDlg(`
     <h3>${isKid() ? 'Startbetrag' : 'Anfangsbestand'}</h3>
-    <p class="hint">${isKid() ? (kidAcc()==='bank' ? 'Wie viel Geld war auf deinem Konto, bevor du angefangen hast, hier etwas einzutragen? Schau zum Beispiel auf den Kontoauszug.' : 'Wie viel Geld hattest du, bevor du angefangen hast, hier etwas einzutragen? Zähl einfach dein Geld im Portemonnaie.') : 'Der Betrag, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.'}</p>
+    <p class="hint">${isKid() ? (kidAcc()==='bank' ? 'Wie viel Geld war auf deinem Konto, bevor du angefangen hast, hier etwas einzutragen? Schau zum Beispiel auf den Kontoauszug.' : 'Wie viel Geld hattest du, bevor du angefangen hast, hier etwas einzutragen? Zähl einfach dein Bargeld.') : 'Der Betrag, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.'}</p>
     <label class="field"><span>Kontostand am Start (€)</span><input class="amount-in" name="total" inputmode="decimal" value="${amtInput(S.finance.start.bank + S.finance.start.cash)}" placeholder="0,00" autofocus id="st-total"></label>
+    ${firstHint}
     <div class="err" id="f-err"></div>
-    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>${cancelLbl}</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const v = f.total.value.trim() ? parseAmt(f.total.value) : 0;
       if (isNaN(v)){ f.querySelector('#f-err').textContent = 'Bitte einen Betrag wie 1250,00 eingeben (minus für Dispo).'; return false; }
       const sv = f.save ? (f.save.value.trim() ? parseAmt(f.save.value) : 0) : (S.finance.start.save||0);
       if (isNaN(sv)){ f.querySelector('#f-err').textContent = 'Bitte beim Sparen einen Betrag wie 500,00 eingeben.'; return false; }
-      S.finance.start.bank = v - S.finance.start.cash; S.finance.start.save = sv; save('finance'); toast('Anfangsbestand gespeichert');
+      if (isKid()){ const toCash = kidAcc() === 'cash'; S.finance.start.cash = toCash ? v : 0; S.finance.start.bank = toCash ? 0 : v; }
+      else S.finance.start.bank = v - S.finance.start.cash;
+      S.finance.start.save = sv; save('finance'); toast(isKid() ? 'Startbetrag gespeichert' : 'Anfangsbestand gespeichert');
     });
     return;
   }
@@ -1680,12 +1786,14 @@ function startDialog(){
     <p class="hint">Der Stand, mit dem du startest – also bevor deine erste Buchung hier eingetragen ist.</p>
     <div class="row2">
       <label class="field"><span>${isKid() ? 'Konto (€)' : 'Bankkonto (€)'}</span><input class="amount-in" name="bank" inputmode="decimal" value="${amtInput(S.finance.start.bank)}" placeholder="0,00" id="st-bank"></label>
-      <label class="field"><span>${isKid() ? 'Portemonnaie (€)' : 'Bargeld (€)'}</span><input class="amount-in" name="cash" inputmode="decimal" value="${amtInput(S.finance.start.cash)}" placeholder="0,00" id="st-cash"></label>
+      <label class="field"><span>${isKid() ? 'Bargeld (€)' : 'Bargeld (€)'}</span><input class="amount-in" name="cash" inputmode="decimal" value="${amtInput(S.finance.start.cash)}" placeholder="0,00" id="st-cash"></label>
     </div>
+    ${firstHint}
     <div class="err" id="f-err"></div>
-    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>${cancelLbl}</button><button class="btn primary" type="submit">Speichern</button></div>`, f => {
       const b = f.bank.value.trim() ? parseAmt(f.bank.value) : 0, c = f.cash.value.trim() ? parseAmt(f.cash.value) : 0;
       if (isNaN(b)||isNaN(c)){ f.querySelector('#f-err').textContent = 'Bitte Beträge wie 1250,00 eingeben (minus für Dispo).'; return false; }
+      if (isKid() && (b < 0 || c < 0)){ f.querySelector('#f-err').textContent = 'Im Kindermodus kann der Startbetrag nicht im Minus sein.'; return false; }
       const sv = f.save ? (f.save.value.trim() ? parseAmt(f.save.value) : 0) : (S.finance.start.save||0);
       if (isNaN(sv)){ f.querySelector('#f-err').textContent = 'Bitte beim Sparen einen Betrag wie 500,00 eingeben.'; return false; }
       S.finance.start = {bank:b, cash:c, save:sv}; save('finance'); toast('Anfangsbestände gespeichert');
@@ -1904,14 +2012,14 @@ const KID_CATS = {
 };
 // Wo hat das Kind sein Geld? 'cash' = Portemonnaie, 'bank' = Bankkonto, 'both' = beides
 const kidAcc = () => ['cash','bank','both'].includes(S.settings.kidAccounts) ? S.settings.kidAccounts : 'cash';
-const ACC_KID = {cash:'Portemonnaie', bank:'Konto'};
+const ACC_KID = {cash:'Bargeld', bank:'Konto'};
 function kidBalance(excludeId, acct){
   const start = acct ? S.finance.start[acct] : S.finance.start.bank + S.finance.start.cash;
   return S.finance.tx.reduce((sum,t) => { if (t.id===excludeId) return sum; const e = effect(t); return sum + (acct ? e[acct] : e.bank + e.cash); }, start);
 }
 // Wo liegt das Geld einer Kinder-Buchung? null = alles zusammen (nur ein Ort)
 const kidPlace = acc => kidAcc()==='both' ? (acc==='bank' ? 'bank' : 'cash') : null;
-const kidPlaceName = acc => { const m = kidAcc(); const b = m==='both' ? acc==='bank' : m==='bank'; return b ? {in:'auf deinem Konto', name:'Das Konto'} : {in:'in deinem Portemonnaie', name:'Das Portemonnaie'}; };
+const kidPlaceName = acc => { const m = kidAcc(); const b = m==='both' ? acc==='bank' : m==='bank'; return b ? {in:'auf deinem Konto', name:'Das Konto'} : {in:'beim Bargeld', name:'Das Bargeld'}; };
 // Bei null neu beginnen – nur mit Eltern-PIN
 function kidResetStart(){
   if (!pinSet()){
@@ -1928,8 +2036,8 @@ function kidResetDialog(){
   const mode = kidAcc(), sv = savingsOn(), SVN = SV();
   const n = S.finance.tx.length, nRec = (S.finance.recurring || []).length;
   const rows = [];
-  if (mode === 'both'){ rows.push(['Portemonnaie', kidBalance(null,'cash')], ['Konto', kidBalance(null,'bank')]); }
-  else rows.push([mode === 'bank' ? 'Konto' : 'Portemonnaie', kidBalance()]);
+  if (mode === 'both'){ rows.push(['Bargeld', kidBalance(null,'cash')], ['Konto', kidBalance(null,'bank')]); }
+  else rows.push([mode === 'bank' ? 'Konto' : 'Bargeld', kidBalance()]);
   if (sv || savingsBalance()) rows.push([SVN.name, savingsBalance()]);
   const form = openDlg(`
     <h3>Bei null neu beginnen?</h3>
@@ -1983,18 +2091,18 @@ function renderKidFinance(){
       const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t), ln = isLoan(t);
       const title = ln ? loanTitle(t) : t.text || (t.type==='sparen' ? SVN.putLong : t.type==='entsparen' ? SVN.takeLong : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
       const plus = inn || t.type==='entsparen' || (ln && loanPlus(t));
-      const where = mode==='both' ? (mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : ACC_KID[t.account==='bank'?'bank':'cash']) : '';
+      const where = mode==='both' ? (mv ? (t.type==='auszahlung' ? 'Konto → Bargeld' : 'Bargeld → Konto') : ACC_KID[t.account==='bank'?'bank':'cash']) : '';
       rows += `<button class="tx kid-tx${t.pending?' is-pending':''}" data-act="edittx" data-id="${esc(t.id)}">
         <span class="ico ${mv||ln?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${ln?(loanPlus(t)?'↙':'↗'):mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
         <span class="t">${esc(title)}</span>
         <span class="amt ${mv||sav||ln?'neu':plus?'pos':'neg'}">${mv?'':plus?'+':'−'}${euro(t.amount)}</span>
-        <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${where?'<span>· '+where+'</span>':''}${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}</span>
+        <span class="meta">${t.pending?'<span class="pend-tag">wartet auf Bestätigung</span>':''}${t.rec?'<span class="rec-tag">↻</span>':''}<span>${fmtDay(t.date)}</span>${where?'<span>· '+where+'</span>':''}${t.cat && !sav?'<span>· '+esc(t.cat)+'</span>':''}${t.items && t.items.length ? '<span>· 🧾 '+t.items.length+'</span>' : ''}${t.beleg ? '<span>· 📎</span>' : ''}</span>
       </button>`;
     });
   }
   const label = mode==='bank' ? 'Mein Konto' : 'Mein Geld';
   const split = mode==='both' ? `<div class="kid-split">
-      <div><span class="label">Portemonnaie</span><b class="num ${kidBalance(null,'cash')<0?'neg-t':''}">${euro(kidBalance(null,'cash'))}</b></div>
+      <div><span class="label">Bargeld</span><b class="num ${kidBalance(null,'cash')<0?'neg-t':''}">${euro(kidBalance(null,'cash'))}</b></div>
       <div><span class="label">Konto</span><b class="num ${kidBalance(null,'bank')<0?'neg-t':''}">${euro(kidBalance(null,'bank'))}</b></div>
     </div>` : '';
   return `
@@ -2018,8 +2126,6 @@ function renderKidFinance(){
       <span class="m">${MONTHS[m-1]} ${y}</span>
       <button class="icon-btn" data-act="month" data-d="1" aria-label="Nächster Monat">›</button>
     </div>
-    <span style="margin-right:auto"></span>
-    <button class="btn ghost sm" data-act="start">Startbetrag</button>
   </div>
   <p class="kid-sentence">${sentence}</p>
   <div class="fin-grid">
@@ -2035,7 +2141,7 @@ function renderKidFinance(){
 // Bei Portemonnaie + Konto: zuerst fragen, ob Bargeld oder Bankkonto
 function kidAskAccount(type, preset){
   if (kidAcc() !== 'both'){
-    if (type==='ausgabe' && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld.' : 'In deinem Portemonnaie ist gerade kein Geld.'); return; }
+    if (type==='ausgabe' && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld.' : 'Du hast gerade kein Bargeld.'); return; }
     return kidTxDialog(null, type, preset);
   }
   const inn = type === 'einnahme', cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
@@ -2045,7 +2151,7 @@ function kidAskAccount(type, preset){
     <p style="margin:0;font-weight:600">${inn ? 'Wohin kommt das Geld?' : 'Wie hast du bezahlt?'}</p>
     ${noCash && noBank ? '<p class="hint warn" style="margin:0">Du hast gerade kein Geld, das du ausgeben kannst.</p>' : ''}
     <div class="acc-ask">
-      <button type="button" class="acc-pick" data-acc="cash" ${noCash ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noCash ? 'Kein Geld im Portemonnaie' : 'Im Portemonnaie: ' + euro(cash)}</small></button>
+      <button type="button" class="acc-pick" data-acc="cash" ${noCash ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noCash ? 'Kein Bargeld da' : 'Bargeld: ' + euro(cash)}</small></button>
       <button type="button" class="acc-pick" data-acc="bank" ${noBank ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💳</span><b>Bankkonto</b><small>${noBank ? 'Kein Geld auf dem Konto' : 'Auf dem Konto: ' + euro(bank)}</small></button>
     </div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
@@ -2069,9 +2175,12 @@ function kidTxDialog(t, type, preset){
     ${isNew && t.scan ? scanHint(t.scan) : ''}
     <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" value="${amtInput(t.amount)}" autofocus id="kid-amount"></label>
     ${mode==='both' ? `<div class="field" ${asked ? 'hidden' : ''}><span>${inn ? 'Wohin kommt das Geld?' : 'Womit hast du bezahlt?'}</span>
-      <div class="seg"><label><input type="radio" name="account" value="cash" ${t.account!=='bank'?'checked':''}><span>${inn ? 'Ins Portemonnaie' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${t.account==='bank'?'checked':''}><span>${inn ? 'Aufs Konto' : 'Mit Karte / Konto'}</span></label></div></div>` : ''}
+      <div class="seg"><label><input type="radio" name="account" value="cash" ${t.account!=='bank'?'checked':''}><span>${inn ? 'Als Bargeld' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${t.account==='bank'?'checked':''}><span>${inn ? 'Aufs Konto' : 'Mit Karte / Konto'}</span></label></div></div>` : ''}
     ${inn ? '' : `<p class="hint" id="kid-left" style="margin:0"></p>`}
     <label class="field"><span>${inn ? 'Von wem oder wofür?' : 'Was hast du gekauft?'}</span><input name="text" value="${esc(t.text)}" placeholder="${inn ? 'z. B. Taschengeld, Geburtstag von Oma' : 'z. B. Eis, Comic, Kino'}" id="kid-text"></label>
+    ${itemsDetails(t.items)}
+    ${!inn && isNew && !(t.items && t.items.length) ? '<button type="button" class="btn sm split-btn" id="split-open">🧾 Positionen / nach Kategorien aufteilen</button>' : ''}
+    ${inn ? '' : belegBlock(t)}
     <div class="field"><span>Was passt am besten?</span>
       <div class="cat-chips">${cats.map(c => `<label><input type="radio" name="cat" value="${esc(c)}" ${t.cat===c?'checked':''}><span>${esc(c)}</span></label>`).join('')}</div>
     </div>
@@ -2090,6 +2199,8 @@ function kidTxDialog(t, type, preset){
       if (inn && !isNew && !t.pending && have + amount < 0){ err.textContent = `So wenig geht nicht: ${pn.name} würde sonst ins Minus rutschen, weil das Geld schon ausgegeben ist.`; f.amount.focus(); return false; }
       if (mode==='both') lsSet('kidLastAcc', acc);
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type: t.type, amount, date: f.date.value, text: f.text.value.trim(), cat: catEl ? catEl.value : '', account: acc};
+      if (t.items && t.items.length) rec.items = t.items;
+      if (!inn) belegApply(f, t, belSt, rec);
       if (t.rec) rec.rec = t.rec;
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
@@ -2097,13 +2208,15 @@ function kidTxDialog(t, type, preset){
       if (rec.type==='einnahme' && needsConfirm()) rec.pending = true;
       save('finance'); toast(rec.pending ? 'Eingetragen – zählt, sobald Mama oder Papa es bestätigt' : isNew ? (inn ? euro(amount)+' dazubekommen' : euro(amount)+' ausgegeben') : 'Geändert');
     });
-  const ks = form.querySelector('#kid-scan'); if (ks) ks.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, r => kidAskAccount('ausgabe', scanPreset(r))); });
+  const ks = form.querySelector('#kid-scan'); if (ks) ks.addEventListener('change', e => { const f = e.target.files[0]; if (f) scanReceipt(f, afterScan); });
+  const belSt = inn ? null : belegWire(form, t);
+  const spl = form.querySelector('#split-open'); if (spl) spl.addEventListener('click', () => openSplitFrom(form, t));
   const left = form.querySelector('#kid-left');
   if (left){
     const upd = () => {
       const acc = mode==='both' ? form.querySelector('input[name=account]:checked').value : null;
       const avail = kidBalance(t.id, acc);
-      const where = acc ? (acc==='bank' ? ' auf dem Konto' : ' im Portemonnaie') : '';
+      const where = acc ? (acc==='bank' ? ' auf dem Konto' : ' an Bargeld') : '';
       const a = parseAmt(form.amount.value);
       if (!(a > 0)){ left.textContent = `Du hast gerade ${euro(avail)}${where}.`; left.className = 'hint'; return; }
       const rest = avail - a;
@@ -2118,7 +2231,7 @@ function kidTxDialog(t, type, preset){
   const del = form.querySelector('#kid-del');
   if (del) del.addEventListener('click', () => {
     if (t.type==='einnahme' && !t.pending && kidBalance(t.id, kidPlace(t.account)) < 0){ form.querySelector('#f-err').textContent = `Löschen geht nicht: ${kidPlaceName(t.account).name} würde sonst ins Minus rutschen, weil das Geld schon ausgegeben ist.`; return; }
-    if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); save('finance'); closeDlg(); toast('Gelöscht'); });
+    if (!armed(del,'Wirklich löschen?')) return; S.finance.tx = S.finance.tx.filter(x=>x.id!==t.id); belegMaybeDelete(t.beleg); save('finance'); closeDlg(); toast('Gelöscht'); });
 }
 // Abheben (Konto → Portemonnaie) oder Einzahlen (Portemonnaie → Konto)
 // Geldautomat: zuerst fragen, ob aus- oder eingezahlt wird
@@ -2128,8 +2241,8 @@ function kidAtmAsk(){
     <h3>🏧 Geldautomat</h3>
     <p style="margin:0;font-weight:600">Was möchtest du machen?</p>
     <div class="acc-ask">
-      <button type="button" class="acc-pick" data-mv="auszahlung" ${bank <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Auszahlen</b><small>${bank <= 0 ? 'Kein Geld auf dem Konto' : 'Konto → Portemonnaie<br>Auf dem Konto: ' + euro(bank)}</small></button>
-      <button type="button" class="acc-pick" data-mv="einzahlung" ${cash <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">🏦</span><b>Einzahlen</b><small>${cash <= 0 ? 'Kein Geld im Portemonnaie' : 'Portemonnaie → Konto<br>Im Portemonnaie: ' + euro(cash)}</small></button>
+      <button type="button" class="acc-pick" data-mv="auszahlung" ${bank <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Auszahlen</b><small>${bank <= 0 ? 'Kein Geld auf dem Konto' : 'Konto → Bargeld<br>Auf dem Konto: ' + euro(bank)}</small></button>
+      <button type="button" class="acc-pick" data-mv="einzahlung" ${cash <= 0 ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">🏦</span><b>Einzahlen</b><small>${cash <= 0 ? 'Kein Bargeld da' : 'Bargeld → Konto<br>Bargeld: ' + euro(cash)}</small></button>
     </div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
   form.querySelectorAll('.acc-pick').forEach(b => b.addEventListener('click', () => { if (!b.disabled) kidMoveDialog(null, b.dataset.mv); }));
@@ -2138,7 +2251,7 @@ function kidMoveDialog(t, preType){
   const isNew = !t;
   t = t ? clone(t) : {type: preType || 'auszahlung', amount:0, date: (today().startsWith(ui.month)? today() : ui.month+'-01'), text:''};
   const form = openDlg(`
-    <h3>${preType ? (preType==='auszahlung' ? 'Auszahlen <span class="acc-tag">Konto → Portemonnaie</span>' : 'Einzahlen <span class="acc-tag">Portemonnaie → Konto</span>') : '🏧 Geldautomat'}</h3>
+    <h3>${preType ? (preType==='auszahlung' ? 'Auszahlen <span class="acc-tag">Konto → Bargeld</span>' : 'Einzahlen <span class="acc-tag">Bargeld → Konto</span>') : '🏧 Geldautomat'}</h3>
     <div class="seg" role="radiogroup" aria-label="Richtung" ${preType ? 'hidden' : ''}>
       <label><input type="radio" name="type" value="auszahlung" ${t.type==='auszahlung'?'checked':''}><span>Auszahlen</span></label>
       <label><input type="radio" name="type" value="einzahlung" ${t.type==='einzahlung'?'checked':''}><span>Einzahlen</span></label>
@@ -2153,7 +2266,7 @@ function kidMoveDialog(t, preType){
       if (!(amount > 0)){ err.textContent = 'Bitte trag ein, wie viel Geld es war.'; f.amount.focus(); return false; }
       const from = f.type.value==='auszahlung' ? 'bank' : 'cash';
       const avail = kidBalance(t.id, from);
-      if (amount > avail){ err.textContent = `So viel ist ${from==='bank' ? 'auf dem Konto' : 'im Portemonnaie'} nicht. Du hast dort ${euro(avail)}.`; return false; }
+      if (amount > avail){ err.textContent = `So viel ist ${from==='bank' ? 'auf dem Konto' : 'an Bargeld'} nicht da. Du hast dort ${euro(avail)}.`; return false; }
       const rec = {id: t.id || newId(), created: t.created || Date.now(), type: f.type.value, amount, date: f.date.value || today(), text: ''};
       const i = S.finance.tx.findIndex(x => x.id===rec.id);
       if (i>=0) S.finance.tx[i] = rec; else S.finance.tx.push(rec);
@@ -2162,7 +2275,7 @@ function kidMoveDialog(t, preType){
     });
   const upd = () => {
     const from = form.type.value==='auszahlung' ? 'bank' : 'cash';
-    form.querySelector('#mv-left').textContent = `${from==='bank' ? 'Auf dem Konto' : 'Im Portemonnaie'} hast du gerade ${euro(kidBalance(t.id, from))}.`;
+    form.querySelector('#mv-left').textContent = `${from==='bank' ? 'Auf dem Konto' : 'An Bargeld'} hast du gerade ${euro(kidBalance(t.id, from))}.`;
   };
   form.querySelectorAll('input[name=type]').forEach(r => r.addEventListener('change', upd)); upd();
   const del = form.querySelector('#mv-del');
@@ -2216,7 +2329,7 @@ function lendPanel(){
 function loanAsk(dir){
   const out = dir === 'out';
   if (kidAcc() !== 'both'){
-    if (out && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld zum Verleihen.' : 'In deinem Portemonnaie ist gerade kein Geld zum Verleihen.'); return; }
+    if (out && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld zum Verleihen.' : 'Du hast gerade kein Bargeld zum Verleihen.'); return; }
     return loanDialog(dir, kidAcc());
   }
   const cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
@@ -2226,7 +2339,7 @@ function loanAsk(dir){
     <p style="margin:0;font-weight:600">${out ? 'Woher nimmst du das Geld?' : 'Wohin kommt das Geld?'}</p>
     ${noC && noB ? '<p class="hint warn" style="margin:0">Du hast gerade kein Geld, das du verleihen kannst.</p>' : ''}
     <div class="acc-ask">
-      <button type="button" class="acc-pick" data-acc="cash" ${noC ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noC ? 'Kein Geld im Portemonnaie' : 'Im Portemonnaie: ' + euro(cash)}</small></button>
+      <button type="button" class="acc-pick" data-acc="cash" ${noC ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💶</span><b>Bargeld</b><small>${noC ? 'Kein Bargeld da' : 'Bargeld: ' + euro(cash)}</small></button>
       <button type="button" class="acc-pick" data-acc="bank" ${noB ? 'disabled' : ''}><span class="acc-ico" aria-hidden="true">💳</span><b>Bankkonto</b><small>${noB ? 'Kein Geld auf dem Konto' : 'Auf dem Konto: ' + euro(bank)}</small></button>
     </div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button></div>`, () => false);
@@ -2264,7 +2377,7 @@ function loanDialog(dir, acc){
   const left = form.querySelector('#lend-left');
   const upd = () => {
     const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc), a = parseAmt(form.amount.value);
-    const where = mode==='both' ? (acc==='bank' ? ' auf dem Konto' : ' im Portemonnaie') : (mode==='bank' ? ' auf dem Konto' : ' im Portemonnaie');
+    const where = mode==='both' ? (acc==='bank' ? ' auf dem Konto' : ' an Bargeld') : (mode==='bank' ? ' auf dem Konto' : ' an Bargeld');
     if (!(a > 0)){ left.textContent = `Du hast gerade ${euro(have)}${where}.`; left.className = 'hint'; return; }
     if (out){ const r = have - a; left.textContent = r >= 0 ? `Danach hast du noch ${euro(r)}${where}. Die ${euro(a)} bekommst du zurück.` : `Geht nicht: Du hast nur ${euro(have)}${where}. ${pn.name} darf nicht ins Minus.`; left.className = r >= 0 ? 'hint' : 'hint warn'; }
     else { left.textContent = `Danach hast du ${euro(have + a)}${where}. Die ${euro(a)} musst du zurückgeben.`; left.className = 'hint'; }
@@ -2283,7 +2396,7 @@ function loanBackDialog(id){
       <div class="seg"><label><input type="radio" name="part" value="all" checked><span>Alles (${euro(open)})</span></label><label><input type="radio" name="part" value="some"><span>Einen Teil</span></label></div></div>
     <label class="field" id="lb-amtf" hidden><span>Betrag (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" id="lb-amount"></label>
     ${mode==='both' ? `<div class="field"><span>${out ? 'Wohin kommt das Geld?' : 'Womit hast du zurückgezahlt?'}</span>
-      <div class="seg"><label><input type="radio" name="account" value="cash" ${defAcc!=='bank'?'checked':''}><span>${out ? 'Ins Portemonnaie' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${defAcc==='bank'?'checked':''}><span>${out ? 'Aufs Konto' : 'Vom Konto'}</span></label></div></div>` : ''}
+      <div class="seg"><label><input type="radio" name="account" value="cash" ${defAcc!=='bank'?'checked':''}><span>${out ? 'Als Bargeld' : 'Bargeld'}</span></label><label><input type="radio" name="account" value="bank" ${defAcc==='bank'?'checked':''}><span>${out ? 'Aufs Konto' : 'Vom Konto'}</span></label></div></div>` : ''}
     <label class="field"><span>Wann?</span><input type="date" name="date" value="${today()}" id="lb-date"></label>
     <div class="err" id="f-err"></div>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">${out ? 'Zurückbekommen' : 'Zurückgezahlt'}</button></div>`, f => {
@@ -2310,7 +2423,7 @@ function loanInfoDialog(id){
   const lid = tx0.loanId || tx0.id;
   const item = loanList(S.finance.tx).find(x => x.l.id === lid); if (!item) return;
   const {l, back, open} = item, out = l.type==='verliehen', mode = kidAcc();
-  const accN = t => mode==='both' ? (t.account==='bank' ? ' · Konto' : ' · Portemonnaie') : '';
+  const accN = t => mode==='both' ? (t.account==='bank' ? ' · Konto' : ' · Bargeld') : '';
   const form = openDlg(`
     <h3>${out ? 'An ' + esc(l.who) + ' verliehen' : 'Von ' + esc(l.who) + ' geliehen'}</h3>
     <div class="rs-list">
@@ -2462,7 +2575,7 @@ function renderKidOverview(k, live){
     const inn = t.type==='einnahme', sav = isSave(t), mv = isTransfer(t), ln = isLoan(t);
     const title = ln ? loanTitle(t) : t.text || (t.type==='sparen' ? 'Aufs ' + svName : t.type==='entsparen' ? 'Vom ' + svName : t.type==='auszahlung' ? 'Geldautomat: ausgezahlt' : t.type==='einzahlung' ? 'Geldautomat: eingezahlt' : inn ? 'Geld bekommen' : 'Geld ausgegeben');
     const plus = inn || t.type==='entsparen' || (ln && loanPlus(t));
-    const where = mode==='both' && !mv ? (t.account==='bank' ? 'Konto' : 'Portemonnaie') : mv ? (t.type==='auszahlung' ? 'Konto → Portemonnaie' : 'Portemonnaie → Konto') : '';
+    const where = mode==='both' && !mv ? (t.account==='bank' ? 'Konto' : 'Bargeld') : mv ? (t.type==='auszahlung' ? 'Konto → Bargeld' : 'Bargeld → Konto') : '';
     return `<${live?'button':'div'} class="tx${live?'':' ro'}${t.pending?' is-pending':''}"${live ? ' data-act="edittx" data-id="' + esc(t.id) + '"' : ''}>
       <span class="ico ${mv||ln?'transfer':sav?'sparen':inn?'einnahme':'ausgabe'}" aria-hidden="true">${ln?(loanPlus(t)?'↙':'↗'):mv?'⇄':sav?(t.type==='sparen'?'↓':'↑'):inn?'+':'−'}</span>
       <span class="t">${esc(title)}</span>
@@ -2481,7 +2594,7 @@ function renderKidOverview(k, live){
   </div>
   ${!live && stale ? `<div class="kv-warn">Dieser Stand ist ${Math.floor(age/864e5)} Tage alt. Für aktuelle Zahlen eine neue Sicherung vom Gerät des Kindes einlesen.</div>` : ''}
   <section class="accounts kv-cards" aria-label="Kontostände von ${esc(k.name)}">
-    <div class="acct total-sub"><span class="label">${mode==='bank' ? 'Konto' : 'Verfügbar'}</span><span class="bal ${money<0?'neg':''}">${euro(money)}</span><span class="sub">${mode==='both' ? `Portemonnaie ${euro(b.cash)} · Konto ${euro(b.bank)}` : mode==='bank' ? 'Bankkonto' : 'Portemonnaie'}</span></div>
+    <div class="acct total-sub"><span class="label">${mode==='bank' ? 'Konto' : 'Verfügbar'}</span><span class="bal ${money<0?'neg':''}">${euro(money)}</span><span class="sub">${mode==='both' ? `Bargeld ${euro(b.cash)} · Konto ${euro(b.bank)}` : mode==='bank' ? 'Bankkonto' : 'Bargeld'}</span></div>
     ${hasSave ? `<div class="acct save"><span class="label"><i></i>${svName}</span><span class="bal">${euro(b.save)}</span><span class="sub">${g ? 'Ziel: ' + esc(g.name || 'Sparziel') + ' ' + Math.round(Math.max(0, Math.min(100, b.save / g.amount * 100))) + ' %' : 'gespart'}</span></div>` : ''}
     <div class="acct total-sub"><span class="label">Gesamt</span><span class="bal">${euro(money + b.save)}</span><span class="sub">${hasSave ? 'inkl. ' + svName : 'alles zusammen'}</span></div>
   </section>
@@ -2573,6 +2686,8 @@ async function getOcrWorker(onProgress){
   if (ocrWorker) return ocrWorker;
   await loadOcrLib();
   ocrWorker = await Tesseract.createWorker('deu', 1, { logger: m => { if (m && typeof m.progress === 'number') onProgress(m.status, m.progress); } });
+  // Kassenbons: eine Spalte mit unterschiedlich großen Zeilen, Leerzeichen beibehalten
+  try { await ocrWorker.setParameters({ tessedit_pageseg_mode: '4', preserve_interword_spaces: '1' }); } catch(e){}
   return ocrWorker;
 }
 // Foto verkleinern und in Graustufen umwandeln – das macht die Erkennung schneller und genauer
@@ -2609,7 +2724,8 @@ const SHOPS = [
   [/\bthalia\b/i,'Thalia','Freizeit'], [/\bsmyths\b|\bspielwaren\b/i,'Spielwaren','Kinder'], [/\bfressnapf\b/i,'Fressnapf','Haushalt']
 ];
 function parseReceipt(text){
-  const lines = String(text || '').split(/\r?\n/).map(l => l.replace(/\s+/g, ' ').trim()).filter(Boolean);
+  // Zeilen säubern: Störzeichen am Zeilenende (z. B. „¢“, „‘“, „|“, einzelne Kleinbuchstaben) entfernen
+  const lines = String(text || '').split(/\r?\n/).map(l => l.replace(/\s+/g, ' ').trim().replace(/(\s+[^\sA-Z0-9€*%]{1,2})+$/, '').replace(/^[^\wÄÖÜäöü€-]{1,2}\s+/, '').trim()).filter(Boolean);
   const amounts = l => { const out = []; const re = /(\d{1,5})\s?[,.]\s?(\d{2})(?![\d])/g; let m; while ((m = re.exec(l))) out.push(parseInt(m[1],10)*100 + parseInt(m[2],10)); return out; };
   const EXCL = /(zwischen\s*summe|netto|mwst|m\.?w\.?st|ust\b|steuer|gegeben|r(ü|ue)ckgeld|wechselgeld|zur(ü|ue)ck|rabatt|ersparnis|gespart|punkte|payback|pfandbon)/i;
   const P1 = /(zu\s*zahlen|zahlbetrag|summe|gesamtbetrag|gesamt|endbetrag|rechnungsbetrag|total|betrag\s*eur|eur\s*gesamt)/i;
@@ -2624,8 +2740,20 @@ function parseReceipt(text){
     });
     return found.length ? Math.max(...found) : 0;
   };
-  let amount = pick(P1), sure = !!amount;
-  if (!amount) amount = pick(P2);
+  // Kandidaten für die Summe sammeln – die Summe steht meist mehrfach auf dem Bon (Summe, Kartenzahlung, „EUR 14,62“)
+  const cand = new Map();
+  const add = (v, w) => { if (v > 0) cand.set(v, (cand.get(v) || 0) + w); };
+  const P3 = /^(eur|fur|€)\s*\d/i;
+  lines.forEach((l, i) => {
+    if (EXCL.test(l)) return;
+    const w = P1.test(l) ? 3 : P2.test(l) ? 2 : P3.test(l) ? 2 : 0;
+    if (!w) return;
+    let a = amounts(l);
+    if (!a.length && lines[i+1] && !EXCL.test(lines[i+1])) a = amounts(lines[i+1]);
+    if (a.length) add(a[a.length - 1], w);
+  });
+  const ranked = [...cand.entries()].sort((x, y) => y[1] - x[1] || y[0] - x[0]).map(x => x[0]);
+  let amount = ranked[0] || 0, sure = !!amount && (cand.get(amount) >= 3);
   if (!amount){ const all = []; lines.forEach(l => { if (!EXCL.test(l)) all.push(...amounts(l)); }); amount = all.length ? Math.max(...all) : 0; }
   // Datum
   let date = '';
@@ -2653,7 +2781,166 @@ function parseReceipt(text){
     const cand = lines.slice(0, 6).find(l => /[a-zäöüß]{3,}/i.test(l) && (l.replace(/[^\d]/g,'').length / l.length) < 0.3 && !/(beleg|kasse|bon\b|str\.|stra(ß|ss)e|tel|www|http|@|ust|steuer|filiale)/i.test(l));
     if (cand) shop = cand.replace(/[^\wäöüÄÖÜß&' .-]/g, '').trim().slice(0, 30);
   }
-  return {amount, sure, date, shop, cat, lines: lines.length};
+  let pi = parseItems(lines, amount, shop);
+  // Passen die Positionen zu einem anderen Summen-Kandidaten, diesen nehmen
+  if (pi.items.length && Math.abs(itemsSum(pi.items) - amount) >= 1){
+    for (const c of ranked.slice(1, 4)){ const q = parseItems(lines, c, shop); if (q.items.length && Math.abs(itemsSum(q.items) - c) < 1 && !q.filled){ amount = c; pi = q; sure = true; break; } }
+  }
+  return {amount, sure, date, shop, cat, lines: lines.length, items: pi.items, filled: pi.filled};
+}
+// Bon-Foto für die Texterkennung aufbereiten: Papier ausschneiden, passend skalieren, Graustufen + Schwarz/Weiß
+function loadImg(file){
+  return new Promise((res, rej) => { const url = URL.createObjectURL(file), img = new Image(); img.onload = () => { URL.revokeObjectURL(url); res(img); }; img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); }; img.src = url; });
+}
+function findPaper(img){
+  // Kleine Kopie, helle Fläche (Papier) suchen
+  const W = img.naturalWidth || img.width, H = img.naturalHeight || img.height, sc = Math.min(1, 360 / Math.max(W, H));
+  const w = Math.max(1, Math.round(W * sc)), h = Math.max(1, Math.round(H * sc));
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); g.drawImage(img, 0, 0, w, h);
+  let d; try { d = g.getImageData(0, 0, w, h).data; } catch(e){ return null; }
+  const lum = new Float32Array(w * h), hist = new Array(256).fill(0);
+  for (let i = 0; i < w * h; i++){ const y = 0.299*d[i*4] + 0.587*d[i*4+1] + 0.114*d[i*4+2]; lum[i] = y; hist[y|0]++; }
+  // Otsu-Schwelle
+  let sum = 0; for (let t = 0; t < 256; t++) sum += t * hist[t];
+  let sB = 0, wB = 0, best = 0, thr = 160;
+  for (let t = 0; t < 256; t++){ wB += hist[t]; if (!wB) continue; const wF = w*h - wB; if (!wF) break; sB += t * hist[t]; const mB = sB / wB, mF = (sum - sB) / wF, v = wB * wF * (mB - mF) * (mB - mF); if (v > best){ best = v; thr = t; } }
+  const run = (frac, len) => { let bs = -1, bl = 0, cs = -1; for (let i = 0; i <= len; i++){ const on = i < len && frac[i] > 0.45; if (on && cs < 0) cs = i; if (!on && cs >= 0){ if (i - cs > bl){ bl = i - cs; bs = cs; } cs = -1; } } return bl ? [bs, bs + bl] : null; };
+  const colF = new Array(w).fill(0), rowF = new Array(h).fill(0);
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (lum[y*w + x] > thr){ colF[x]++; rowF[y]++; }
+  const cx = run(colF.map(v => v / h), w); if (!cx) return null;
+  const pw = cx[1] - cx[0];
+  for (let y = 0; y < h; y++){ let n = 0; for (let x = cx[0]; x < cx[1]; x++) if (lum[y*w + x] > thr) n++; rowF[y] = n / pw; }
+  const cy = run(rowF, h); if (!cy) return null;
+  const bw = (cx[1] - cx[0]) / w, bh = (cy[1] - cy[0]) / h;
+  if (bw * bh < 0.12 || bw > 0.98 && bh > 0.98) return null;
+  // Nur ausschneiden, wenn sich das Papier deutlich vom Untergrund abhebt (sonst wird evtl. Text abgeschnitten)
+  let si = 0, ni = 0, so = 0, no = 0;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++){ const v = lum[y*w + x]; if (x >= cx[0] && x < cx[1] && y >= cy[0] && y < cy[1]){ si += v; ni++; } else { so += v; no++; } }
+  if (!no || !ni || si/ni - so/no < 35) return null;
+  const m = 0.015;
+  return {x: Math.max(0, (cx[0]/w - m)) * W, y: Math.max(0, (cy[0]/h - m)) * H, w: Math.min(1, bw + 2*m) * W, h: Math.min(1, bh + 2*m) * H};
+}
+function renderReceipt(img, box, targetW){
+  let sc = targetW / box.w; sc = Math.min(sc, 4200 / box.h, 3);
+  const cw = Math.max(1, Math.round(box.w * sc)), ch = Math.max(1, Math.round(box.h * sc));
+  const gray = document.createElement('canvas'); gray.width = cw; gray.height = ch;
+  const g = gray.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(img, box.x, box.y, box.w, box.h, 0, 0, cw, ch);
+  let d; try { d = g.getImageData(0, 0, cw, ch); } catch(e){ return {gray, bin: gray, sc}; }
+  const p = d.data, n = cw * ch, L = new Uint8ClampedArray(n);
+  for (let i = 0; i < n; i++){ const y = 0.299*p[i*4] + 0.587*p[i*4+1] + 0.114*p[i*4+2]; L[i] = y; p[i*4] = p[i*4+1] = p[i*4+2] = y; }
+  g.putImageData(d, 0, 0);
+  // Schwarz/Weiß mit örtlicher Schwelle (Bradley): gleicht Schatten und Wölbung aus
+  const bin = document.createElement('canvas'); bin.width = cw; bin.height = ch;
+  const bg = bin.getContext('2d'), out = bg.createImageData(cw, ch), o = out.data;
+  const I = new Float64Array((cw + 1) * (ch + 1));
+  for (let y = 1; y <= ch; y++){ let row = 0; for (let x = 1; x <= cw; x++){ row += L[(y-1)*cw + x-1]; I[y*(cw+1) + x] = I[(y-1)*(cw+1) + x] + row; } }
+  const s2 = Math.max(8, Math.round(cw / 24)), T = 0.16;
+  for (let y = 0; y < ch; y++){
+    const y1 = Math.max(0, y - s2), y2 = Math.min(ch - 1, y + s2);
+    for (let x = 0; x < cw; x++){
+      const x1 = Math.max(0, x - s2), x2 = Math.min(cw - 1, x + s2), cnt = (x2 - x1 + 1) * (y2 - y1 + 1);
+      const s = I[(y2+1)*(cw+1) + x2+1] - I[y1*(cw+1) + x2+1] - I[(y2+1)*(cw+1) + x1] + I[y1*(cw+1) + x1];
+      const v = L[y*cw + x] * cnt <= s * (1 - T) ? 0 : 255, k = (y*cw + x) * 4;
+      o[k] = o[k+1] = o[k+2] = v; o[k+3] = 255;
+    }
+  }
+  bg.putImageData(out, 0, 0);
+  return {gray, bin, sc};
+}
+// Schrift-Bereich im Schwarz/Weiß-Bild finden (ohne Ränder, Schattenkanten und Linien)
+function inkBox(bin){
+  const w = bin.width, h = bin.height, f = Math.min(1, 600 / w), sw = Math.round(w * f), sh = Math.round(h * f);
+  const c = document.createElement('canvas'); c.width = sw; c.height = sh; const g = c.getContext('2d'); g.drawImage(bin, 0, 0, sw, sh);
+  let d; try { d = g.getImageData(0, 0, sw, sh).data; } catch(e){ return null; }
+  const ink = (x, y) => d[(y*sw + x)*4] < 140;
+  const col = new Array(sw).fill(0), row = new Array(sh).fill(0);
+  for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) if (ink(x, y)){ col[x]++; row[y]++; }
+  const okC = col.map(v => v / sh > 0.004 && v / sh < 0.45), okR = row.map(v => v / sw > 0.01 && v / sw < 0.6);
+  // Größten zusammenhängenden Bereich mit Schrift nehmen (kleine Lücken erlaubt)
+  const span = (ok, val, n, gap) => {
+    let best = null, a = -1, last = -1, sum = 0;
+    const close = () => { if (a >= 0 && (!best || sum > best.s)) best = {a, b: last + 1, s: sum}; };
+    for (let i = 0; i < n; i++){ if (!ok[i]) continue; if (a >= 0 && i - last > gap){ close(); a = -1; sum = 0; } if (a < 0) a = i; last = i; sum += val[i]; }
+    close(); return best ? [best.a, best.b] : null;
+  };
+  const cx = span(okC, col, sw, Math.round(sw * 0.06)), cy = span(okR, row, sh, Math.round(sh * 0.08)); if (!cx || !cy) return null;
+  const mx = 0.03 * sw, my = 0.015 * sh;
+  return {x: Math.max(0, cx[0] - mx) / f, y: Math.max(0, cy[0] - my) / f, w: Math.min(sw, cx[1] - cx[0] + 2*mx) / f, h: Math.min(sh, cy[1] - cy[0] + 2*my) / f};
+}
+// Schräglage je Höhenabschnitt schätzen (gewölbte Bons sind oben anders schief als unten)
+function skewBands(bin, nb){
+  const w = bin.width, h = bin.height, f = Math.min(1, 500 / w), sw = Math.round(w * f), sh = Math.round(h * f);
+  const c = document.createElement('canvas'); c.width = sw; c.height = sh; const g = c.getContext('2d'); g.drawImage(bin, 0, 0, sw, sh);
+  let d; try { d = g.getImageData(0, 0, sw, sh).data; } catch(e){ return null; }
+  const colN = new Array(sw).fill(0);
+  for (let y = 0; y < sh; y++) for (let x = 0; x < sw; x++) if (d[(y*sw + x)*4] < 128) colN[x]++;
+  const est = (y0, y1) => {
+    const xs = [], ys = [];
+    for (let y = y0; y < y1; y++) for (let x = Math.round(sw*0.04); x < sw*0.96; x++) if (colN[x] / sh < 0.3 && d[(y*sw + x)*4] < 128){ xs.push(x); ys.push(y); }
+    if (xs.length < 150) return null;
+    let best = 0, bestS = -1;
+    for (let a = -6; a <= 6.001; a += 0.25){
+      const t = Math.tan(a * Math.PI / 180), prof = new Float64Array(sh + 2*sw + 2);
+      for (let i = 0; i < xs.length; i++){ const yy = Math.round(ys[i] - xs[i] * t) + sw; if (yy >= 0 && yy < prof.length) prof[yy]++; }
+      let sc = 0; for (let i = 0; i < prof.length; i++) sc += prof[i] * prof[i];
+      if (sc > bestS){ bestS = sc; best = a; }
+    }
+    return best;
+  };
+  const all = est(0, sh) || 0, out = [];
+  for (let b = 0; b < nb; b++){ const v = est(Math.floor(b * sh / nb), Math.floor((b + 1) * sh / nb)); out.push(v === null ? all : v); }
+  // glätten (Median aus Nachbarn)
+  return out.map((v, i) => { const q = [out[i-1] ?? v, v, out[i+1] ?? v].sort((a, b) => a - b); return q[1]; });
+}
+// Zeilen gerade ziehen: jede Spalte je nach Höhe passend verschieben
+function straighten(src, bands){
+  const w = src.width, h = src.height, nb = bands.length;
+  const g0 = src.getContext('2d'); let d; try { d = g0.getImageData(0, 0, w, h); } catch(e){ return src; }
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'), o = g.createImageData(w, h);
+  const sp = d.data, op = o.data, xc = w / 2;
+  const tanAt = y => { const pos = y / h * nb - 0.5, i = Math.max(0, Math.min(nb - 1, Math.floor(pos))), j = Math.min(nb - 1, i + 1), t = Math.max(0, Math.min(1, pos - i)); return Math.tan(((1 - t) * bands[i] + t * bands[j]) * Math.PI / 180); };
+  const tans = new Float32Array(h); for (let y = 0; y < h; y++) tans[y] = tanAt(y);
+  for (let y = 0; y < h; y++){
+    const t = tans[y];
+    for (let x = 0; x < w; x++){
+      const sy = Math.round(y + (x - xc) * t), k = (y*w + x) * 4;
+      if (sy < 0 || sy >= h){ op[k] = op[k+1] = op[k+2] = 255; op[k+3] = 255; continue; }
+      const q = (sy*w + x) * 4; op[k] = sp[q]; op[k+1] = sp[q+1]; op[k+2] = sp[q+2]; op[k+3] = 255;
+    }
+  }
+  g.putImageData(o, 0, 0); return c;
+}
+function rotateCanvas(src, deg){
+  const r = deg * Math.PI / 180, cs = Math.abs(Math.cos(r)), sn = Math.abs(Math.sin(r));
+  const w = Math.round(src.width * cs + src.height * sn), h = Math.round(src.width * sn + src.height * cs);
+  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); g.translate(w/2, h/2); g.rotate(r); g.drawImage(src, -src.width/2, -src.height/2);
+  return c;
+}
+async function prepareReceipt(file){
+  const img = await loadImg(file);
+  const W = img.naturalWidth, H = img.naturalHeight;
+  const box = findPaper(img) || {x:0, y:0, w:W, h:H};
+  let out = renderReceipt(img, box, 1500);
+  // Nur den Bereich mit Schrift nehmen und dafür größer rechnen
+  const ib = inkBox(out.bin);
+  if (ib && (ib.w < out.bin.width * 0.85 || ib.h < out.bin.height * 0.85)){
+    const box2 = {x: box.x + ib.x / out.sc, y: box.y + ib.y / out.sc, w: ib.w / out.sc, h: ib.h / out.sc};
+    if (box2.w > W * 0.15 && box2.h > H * 0.1) out = renderReceipt(img, box2, 1500);
+  }
+  // Schief fotografierte Bons gerade drehen
+  const bands = skewBands(out.bin, 8);
+  if (bands && bands.some(v => Math.abs(v) >= 0.5)){ out = {gray: straighten(out.gray, bands), bin: straighten(out.bin, bands)}; }
+  return {gray: out.gray, bin: out.bin};
+}
+// Wie gut passt ein Ergebnis? Positionen = Summe ist am besten
+function receiptScore(r){
+  if (!r) return -1;
+  const s = itemsSum(r.items || []), n = (r.items || []).length;
+  let sc = n;
+  if (r.amount && n){ if (Math.abs(s - r.amount) < 1) sc += 100 - (r.filled ? 20 : 0); else sc -= Math.min(50, Math.abs(s - r.amount) / 100); }
+  if (r.amount) sc += 5;
+  return sc;
 }
 function scanReceipt(file, done){
   let cancelled = false;
@@ -2662,6 +2949,7 @@ function scanReceipt(file, done){
     <div class="scan-bar"><i id="scan-bar"></i></div>
     <p class="hint" id="scan-st" style="margin:0">${window.Tesseract || ocrWorker ? 'Texterkennung startet …' : 'Texterkennung wird geladen. Beim ersten Mal sind das einige MB, danach geht es schneller und auch ohne Internet.'}</p>
     <p class="hint" style="margin:0">Das Foto bleibt auf diesem Gerät. Es wird nichts hochgeladen.</p>
+    <details class="pos-det"><summary>📷 Tipps für ein gutes Foto</summary><ul class="scan-tips"><li>Bon glatt streichen und auf einen dunklen Untergrund legen</li><li>Von oben fotografieren, Handy parallel zum Bon</li><li>Helles Licht ohne Schatten vom Handy, kein Blitz</li><li>Nur den Teil mit den Artikeln und der Summe aufs Bild – lieber näher ran</li><li>Lange Bons in zwei Fotos aufteilen</li></ul></details>
     <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" id="scan-cancel">Abbrechen</button></div>`, () => false);
   const bar = $('#scan-bar'), st = $('#scan-st');
   $('#scan-cancel').addEventListener('click', () => { cancelled = true; dlg.close(); });
@@ -2669,12 +2957,26 @@ function scanReceipt(file, done){
   const prog = (status, p) => { if (cancelled) return; const recog = status === 'recognizing text'; bar.style.width = Math.round((recog ? 40 + p*60 : p*40)) + '%'; if (phase[status]) st.textContent = phase[status] + (recog ? ' ' + Math.round(p*100) + ' %' : ''); };
   (async () => {
     try {
-      const img = await prepareImage(file);
+      st.textContent = 'Foto wird aufbereitet …';
+      const pic = await prepareReceipt(file);
+      let photo = null; try { photo = canvasToBeleg(pic.gray); } catch(e){}
       const w = await getOcrWorker(prog);
       if (cancelled) return;
-      const { data } = await w.recognize(img);
+      const pass = async (canvas, psm) => {
+        try { if (w.setParameters) await w.setParameters({ tessedit_pageseg_mode: psm, preserve_interword_spaces: '1' }); } catch(e){}
+        const { data } = await w.recognize(canvas);
+        const txt = String((data && data.text) || '');
+        const res = parseReceipt(txt); res.text = txt.trim(); return res;
+      };
+      let r = await pass(pic.bin, '4');
       if (cancelled) return;
-      const r = parseReceipt(data && data.text);
+      const good = x => x.amount && x.items.length && Math.abs(itemsSum(x.items) - x.amount) < 1 && !x.filled;
+      if (!good(r)){
+        st.textContent = 'Zweiter Durchgang für ein besseres Ergebnis …'; bar.style.width = '40%';
+        try { const r2 = await pass(pic.gray, '6'); if (receiptScore(r2) > receiptScore(r)) r = r2; } catch(e){}
+        if (cancelled) return;
+      }
+      if (photo) r.photo = photo;
       dlg.close();
       if (!r.amount && !r.shop){ toast('Auf dem Foto wurde kein Betrag erkannt. Bitte den Bon gerade und gut beleuchtet fotografieren.'); }
       done(r);
@@ -2685,14 +2987,413 @@ function scanReceipt(file, done){
     }
   })();
 }
+/* =========================================================
+   BELEGE: Fotos von Kassenbons und Rechnungen (IndexedDB)
+   ========================================================= */
+const BDB = 'organizer-belege';
+let bdbP = null;
+function bdb(){
+  if (bdbP) return bdbP;
+  bdbP = new Promise((res, rej) => {
+    if (!window.indexedDB) return rej(new Error('noidb'));
+    const rq = indexedDB.open(BDB, 1);
+    rq.onupgradeneeded = () => rq.result.createObjectStore('b');
+    rq.onsuccess = () => res(rq.result);
+    rq.onerror = () => { bdbP = null; rej(rq.error); };
+  });
+  return bdbP;
+}
+function bdbDo(mode, fn){
+  return bdb().then(db => new Promise((res, rej) => {
+    const tx = db.transaction('b', mode), r = fn(tx.objectStore('b'));
+    tx.oncomplete = () => res(r && r.result); tx.onerror = () => rej(tx.error); tx.onabort = () => rej(tx.error);
+  }));
+}
+const belegTouched = () => { lsSet('belegChanged', Date.now()); readyBk = null; };
+const belegPut = (id, data) => bdbDo('readwrite', st => st.put(data, id)).then(belegTouched);
+const belegGet = id => bdbDo('readonly', st => st.get(id));
+const belegDel = id => bdbDo('readwrite', st => st.delete(id)).then(belegTouched);
+function belegAll(){
+  return bdb().then(db => new Promise((res, rej) => {
+    const out = {}, tx = db.transaction('b', 'readonly'), rq = tx.objectStore('b').openCursor();
+    rq.onsuccess = () => { const c = rq.result; if (c){ out[c.key] = c.value; c.continue(); } };
+    tx.oncomplete = () => res(out); tx.onerror = () => rej(tx.error);
+  }));
+}
+const belegIds = () => [...new Set(S.finance.tx.map(t => t.beleg).filter(Boolean))];
+function belegMaybeDelete(id, exceptTxId){ if (id && !S.finance.tx.some(x => x.beleg === id && x.id !== exceptTxId)) belegDel(id).catch(() => {}); }
+let persistAsked = false;
+function askPersist(){ if (persistAsked) return; persistAsked = true; try { if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {}); } catch(e){} }
+// Bild verkleinern (Belegfoto) – max. 1600 px, JPEG
+function canvasToBeleg(src){
+  const max = 1600, w = src.width, h = src.height, sc = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas'); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+  c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+  return {type:'image/jpeg', data: c.toDataURL('image/jpeg', 0.72), ts: Date.now()};
+}
+function fileToBeleg(file){
+  return new Promise((res, rej) => {
+    if (file.type === 'application/pdf' || /\.pdf$/i.test(file.name)){
+      if (file.size > 8e6) return rej(new Error('big'));
+      const r = new FileReader(); r.onload = () => res({type:'application/pdf', data: r.result, ts: Date.now(), name: file.name}); r.onerror = () => rej(new Error('read')); r.readAsDataURL(file); return;
+    }
+    const url = URL.createObjectURL(file), img = new Image();
+    img.onload = () => { URL.revokeObjectURL(url); res(canvasToBeleg(img)); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('img')); };
+    img.src = url;
+  });
+}
+const belegSize = b => b && b.data ? Math.round(b.data.length * 0.75) : 0;
+const fmtSize = n => n >= 1e6 ? (n/1e6).toLocaleString('de-DE', {maximumFractionDigits:1}) + ' MB' : Math.max(1, Math.round(n/1e3)) + ' KB';
+function addYears(isoD, y){ const d = parseIso(isoD || today()); d.setFullYear(d.getFullYear() + y); return iso(d); }
+// Block im Buchungsdialog
+function belegBlock(t){
+  const has = !!t.beleg, scanned = !t.beleg && !!t.photo;
+  return `<div class="bel-box">
+    <div class="bel-top">
+      ${has ? `<button type="button" class="btn sm" id="bel-view">📎 Beleg ansehen</button><button type="button" class="btn sm ghost" id="bel-rm">Beleg entfernen</button>`
+        : scanned ? `<label class="bel-keep"><input type="checkbox" id="bel-keep" checked><span>📎 Foto vom Beleg aufbewahren</span></label>`
+        : `<label class="btn sm bel-add">📎 Beleg anhängen<input type="file" accept="image/*,application/pdf" class="file-hidden" id="bel-file"></label>`}
+      <span class="bel-st" id="bel-st"></span>
+    </div>
+    <div class="bel-g" id="bel-g" ${has || scanned ? '' : 'hidden'}>
+      <label class="field"><span>Garantie bis (freiwillig)</span><input type="date" name="garantie" value="${esc(t.garantie || '')}" id="bel-gar"></label>
+      <button type="button" class="btn sm ghost" id="bel-2y">+ 2 Jahre</button>
+    </div>
+  </div>`;
+}
+function belegWire(form, t){
+  const st = {data: (!t.beleg && t.photo) || null, remove: false};
+  const g = form.querySelector('#bel-g'), gar = form.querySelector('#bel-gar'), stx = form.querySelector('#bel-st');
+  const v = form.querySelector('#bel-view'); if (v) v.addEventListener('click', () => belegViewer(t.beleg, t));
+  const rm = form.querySelector('#bel-rm');
+  if (rm) rm.addEventListener('click', () => { st.remove = !st.remove; rm.textContent = st.remove ? 'Doch behalten' : 'Beleg entfernen'; stx.textContent = st.remove ? 'wird beim Speichern entfernt' : ''; g.hidden = st.remove; });
+  const keep = form.querySelector('#bel-keep'); if (keep) keep.addEventListener('change', () => { g.hidden = !keep.checked; });
+  const fi = form.querySelector('#bel-file');
+  if (fi) fi.addEventListener('change', e => {
+    const f = e.target.files[0]; if (!f) return; stx.textContent = 'wird vorbereitet …';
+    fileToBeleg(f).then(d => { st.data = d; stx.textContent = '✓ ' + (d.type === 'application/pdf' ? 'PDF' : 'Foto') + ' angehängt (' + fmtSize(belegSize(d)) + ')'; g.hidden = false; })
+      .catch(err => { stx.textContent = err && err.message === 'big' ? 'Die PDF ist zu groß (max. 8 MB).' : 'Die Datei konnte nicht gelesen werden.'; });
+  });
+  const y2 = form.querySelector('#bel-2y'); if (y2) y2.addEventListener('click', () => { const d = form.querySelector('[name=date]'); gar.value = addYears(d && d.value, 2); });
+  return st;
+}
+function belegApply(form, t, st, rec){
+  const gar = form.querySelector('#bel-gar'), keep = form.querySelector('#bel-keep');
+  if (t.beleg && !st.remove) rec.beleg = t.beleg;
+  else if (st.data && (!keep || keep.checked)){
+    const id = 'b' + newId(); rec.beleg = id; askPersist();
+    belegPut(id, st.data).catch(() => toast('Der Beleg konnte nicht gespeichert werden. Ist der Speicher voll?'));
+  }
+  if (rec.beleg && gar && gar.value) rec.garantie = gar.value;
+  if (t.beleg && st.remove) belegMaybeDelete(t.beleg, rec.id);
+}
+// Großansicht (eigenes Fenster über dem Dialog)
+function belegName(t){ return ('Beleg ' + [t && (t.text || t.cat), t && t.date].filter(Boolean).join(' ')).replace(/[\\/:*?"<>|]+/g, '').trim(); }
+function belegViewer(id, t){
+  let d = document.getElementById('bel-dlg');
+  if (!d){ d = document.createElement('dialog'); d.id = 'bel-dlg'; d.className = 'bel-dlg'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); }
+  const g = t && t.garantie ? `<span class="bel-gt ${t.garantie < today() ? 'old' : ''}">Garantie ${t.garantie < today() ? 'abgelaufen am' : 'bis'} ${new Date(t.garantie + 'T12:00:00').toLocaleDateString('de-DE')}</span>` : '';
+  d.innerHTML = `<div class="bel-v">
+    <div class="bel-head"><b>${esc(t ? (t.text || t.cat || 'Beleg') : 'Beleg')}</b><small>${t ? esc(new Date(t.date + 'T12:00:00').toLocaleDateString('de-DE')) + ' · ' + euro(t.amount) : ''}</small>${g}</div>
+    <div class="bel-img" id="bel-img"><p class="hint">Wird geladen …</p></div>
+    <p class="hint" style="margin:0">Tippe auf das Foto zum Vergrößern.</p>
+    <div class="bel-act"><button type="button" class="btn" id="bv-share">Teilen / in Dateien sichern</button><span class="spacer"></span><button type="button" class="btn primary" id="bv-close">Schließen</button></div>
+  </div>`;
+  d.showModal();
+  d.querySelector('#bv-close').addEventListener('click', () => d.close());
+  belegGet(id).then(b => {
+    const box = d.querySelector('#bel-img');
+    if (!b){ box.innerHTML = '<p class="hint">Dieser Beleg ist auf diesem Gerät nicht vorhanden. Er war vielleicht nicht in der Sicherung enthalten.</p>'; d.querySelector('#bv-share').disabled = true; return; }
+    if (b.type === 'application/pdf') box.innerHTML = '<div class="bel-pdf">📄 PDF-Dokument<small>Zum Ansehen auf „Teilen / in Dateien sichern“ tippen und die Datei öffnen.</small></div>';
+    else { box.innerHTML = `<img src="${b.data}" alt="Foto vom Beleg">`; box.querySelector('img').addEventListener('click', () => box.classList.toggle('zoom')); }
+    d.querySelector('#bv-share').addEventListener('click', () => belegShare(b, belegName(t)));
+  }).catch(() => { d.querySelector('#bel-img').innerHTML = '<p class="hint">Der Beleg konnte nicht geladen werden.</p>'; });
+}
+async function belegShare(b, name){
+  try {
+    const blob = await (await fetch(b.data)).blob();
+    const file = new File([blob], name + (b.type === 'application/pdf' ? '.pdf' : '.jpg'), {type: b.type});
+    if (navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title: name}); return; }
+    const url = URL.createObjectURL(blob), a = document.createElement('a'); a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 4000);
+  } catch(e){ if (e && e.name === 'AbortError') return; toast('Der Beleg konnte nicht geteilt werden.'); }
+}
+// Einstellungen: Liste aller Belege
+function belegePage(){
+  const list = S.finance.tx.filter(t => t.beleg).sort((a, b) => b.date.localeCompare(a.date) || (b.created||0) - (a.created||0));
+  const seen = new Set(), t0 = today();
+  const rows = list.filter(t => { const k = t.beleg; if (seen.has(k)) return false; seen.add(k); return true; }).map(t => {
+    const same = list.filter(x => x.beleg === t.beleg), amt = same.reduce((s, x) => s + x.amount, 0);
+    const g = t.garantie ? (t.garantie < t0 ? '<span class="bel-gt old">Garantie abgelaufen</span>' : `<span class="bel-gt">Garantie bis ${fmtShort(t.garantie)}${t.garantie.slice(0,4) !== t0.slice(0,4) ? ' ' + t.garantie.slice(0,4) : ''}</span>`) : '';
+    return `<button type="button" class="set-it bel-row" data-do="bel-open" data-id="${esc(t.id)}"><span class="set-ic" style="--ic:var(--warn)" aria-hidden="true">📎</span>
+      <span class="set-tx"><b>${esc(t.text || t.cat || 'Beleg')}</b><small>${esc(fmtShort(t.date))} ${t.date.slice(0,4)} · ${euro(amt)}${same.length > 1 ? ' · ' + same.length + ' Einträge' : ''}</small>${g}</span>
+      <span class="set-val"></span><span class="set-chev" aria-hidden="true">›</span></button>`;
+  }).join('');
+  const gOpen = list.filter(t => t.garantie && t.garantie >= t0).length;
+  return `<div class="set-grp"><div class="set-gl">${seen.size} ${seen.size === 1 ? 'Beleg' : 'Belege'}${gOpen ? ' · ' + gOpen + ' mit Garantie' : ''}</div><div class="set-card">${rows || '<div class="set-it set-noic"><span class="set-tx"><b>Noch keine Belege</b><small>Beim Scannen „Foto vom Beleg aufbewahren“ anhaken oder bei einem Eintrag „Beleg anhängen“ tippen.</small></span></div>'}</div>
+    <p class="set-note" id="bel-space">Belege liegen nur auf diesem Gerät. Mit „Jetzt sichern“ (mit Belegen) oder „Teilen / in Dateien sichern“ bist du gegen Verlust abgesichert.</p></div>
+    <div class="set-grp" id="bel-clean"></div>`;
+}
+function belegePageWire(form){
+  const ids = new Set(belegIds());
+  belegAll().then(all => {
+    const keys = Object.keys(all), orphan = keys.filter(k => !ids.has(k));
+    const size = keys.reduce((s, k) => s + belegSize(all[k]), 0);
+    const sp = form.querySelector('#bel-space'); if (sp) sp.textContent = `Belege brauchen ${fmtSize(size)} auf diesem Gerät. ` + sp.textContent;
+    const cl = form.querySelector('#bel-clean');
+    if (cl && orphan.length) cl.innerHTML = `<div class="set-card"><button type="button" class="set-it set-noic" id="bel-orph"><span class="set-tx"><b>${orphan.length} nicht mehr verwendete ${orphan.length === 1 ? 'Beleg' : 'Belege'} löschen</b><small>Gehören zu keinem Eintrag mehr, z. B. nach „Bei null neu beginnen“</small></span><span class="set-val"></span><span class="set-chev">›</span></button></div>`;
+    const ob = form.querySelector('#bel-orph');
+    if (ob) ob.addEventListener('click', () => { if (!armed(ob.querySelector('b'), 'Wirklich löschen?')) return; Promise.all(orphan.map(belegDel)).then(() => { toast('Aufgeräumt'); settingsDialog('belege'); }); });
+  }).catch(() => {});
+}
+
+/* ---------- Positionen vom Kassenbon ---------- */
+const ITEM_SKIP = /(zwischen\s*summe|summe|gesamt|zu\s*zahlen|zahlbetrag|endbetrag|total|netto|brutto|mwst|m\.?w\.?st|ust\b|steuer|gegeben|r(ü|ue)ckgeld|wechselgeld|bar\b|ec[- ]?cash|karte|girocard|visa|mastercard|maestro|kontaktlos|bezahlt|betrag|posten|artikel\s*anzahl|payback|punkte|bon[- ]?nr|beleg|kasse|terminal|trace|datum|uhrzeit|tse|signatur|seriennr)/i;
+function niceName(n){
+  n = n.replace(/\s+/g, ' ').replace(/^[*#\-–\s]+|[*#\s]+$/g, '').trim();
+  const letters = n.replace(/[^A-Za-zÄÖÜäöüß]/g, '');
+  if (letters && letters === letters.toUpperCase()) n = n.toLowerCase().replace(/(^|[\s\-\/(])([a-zäöüß])/g, (m, a, b) => a + b.toUpperCase());
+  return n.slice(0, 40);
+}
+function parseItems(lines, total, shop){
+  // Artikel stehen vor der Summe; auch bei schlecht gelesener Summenzeile spätestens vor Zahlungs-/Kartenteil aufhören
+  let end = lines.findIndex(l => /(zahlen|summe|gesamtbetrag|gesamt|endbetrag|total|k-?u-?n-?d-?e|terminal|kartenzahlung|girocard|ec[- ]?cash|bar\s*gegeben|gegeben)/i.test(l) && !/zwischen/i.test(l));
+  if (end < 0) end = lines.length;
+  const LET = /[A-Za-zÄÖÜäöüß]/;
+  const letters = x => x.replace(/[^A-Za-zÄÖÜäöüß]/g, '').length;
+  const TAIL = String.raw`\s*(?:€|eur)?(?:\s*[A-Z0-9*#]{1,2})?\s*\*?\s*$`;
+  const ITEM = new RegExp(String.raw`^(.*?[A-Za-zÄÖÜäöüß].*?)\s+(-?)\s?(\d{1,4})\s?[,.]\s?(\d{2})(?!\d)\s*(-?)` + TAIL, 'i');
+  const ITEM_NOSEP = new RegExp(String.raw`^(.*?[A-Za-zÄÖÜäöüß].*?)\s+(\d{3,5})` + TAIL, 'i');   // Komma nicht erkannt, z. B. „1769“
+  const PRICE_ONLY = new RegExp(String.raw`^\s*(?:€|eur)?\s*(-?)\s?(\d{1,4})\s?[,.]\s?(\d{2})(?!\d)\s*(-?)` + TAIL, 'i');
+  const HEAD = /(str\.|stra(ß|ss)e|weg\b|platz\b|\b\d{5}\b|tel|fax|www|http|@|filiale|markt\b|gmbh|kg\b|ust|steuer|öffnungs|danke|willkommen|kunden)/i;
+  const shopRe = shop ? new RegExp(shop.replace(/[^\wäöüß]/gi, '').split('').join('\\s*'), 'i') : null;
+  const cents = (sg1, a, b, sg2) => { let v = parseInt(a,10)*100 + parseInt(b,10); return (sg1 === '-' || sg2 === '-') ? -v : v; };
+  const okName = n => !ITEM_SKIP.test(n) && letters(n) >= 2 && !(/^\d+\s*(stk|st|x)\b/i.test(n) && letters(n) < 4);
+  const clean = n => n.replace(/\s+\d+\s?[,.]\s?\d{2}\s*(?:€|eur)?\s*$/i, '').replace(/\s+\d+\s*(?:stk\.?\s*)?[x×]\s*$/i, '').replace(/\s+[0-9A-Z]$/, '').trim();
+  const out = [], nameOnly = [], priceOnly = [];
+  for (let i = 0; i < end; i++){
+    const l = lines[i];
+    let m = l.match(ITEM);
+    if (m){ const name = clean(m[1]); if (okName(name)){ const a = cents(m[2], m[3], m[4], m[5]); if (a) out.push({n: niceName(name), a, at: i}); } continue; }
+    m = l.match(PRICE_ONLY);
+    if (m){ priceOnly.push({i, a: cents(m[1], m[2], m[3], m[4])}); continue; }
+    m = l.match(ITEM_NOSEP);
+    if (m && okName(clean(m[1])) && !HEAD.test(l)){
+      const dg = m[2], alts = [parseInt(dg, 10)];                       // „1769“ → 17,69
+      if (dg.length >= 4 && /[7142]/.test(dg[dg.length-3])) alts.push(parseInt(dg.slice(0, -3) + dg.slice(-2), 10));   // Komma als Ziffer gelesen → 1,69
+      out.push({n: niceName(clean(m[1])), a: alts[0], alts, at: i}); continue;
+    }
+    if (LET.test(l) && okName(l) && !/\d{1,2}[.:]\d{2}[.:]\d{2,4}/.test(l) && !HEAD.test(l) && !(shopRe && shopRe.test(l) && letters(l) <= shop.length + 2)) nameOnly.push({i, n: l});
+  }
+  // Namen ohne Preis + Preise in eigenen Zeilen: direkt darunter oder als eigene Spalte
+  const seq = [...nameOnly.map(x => ({t:'N', i:x.i, n:x.n})), ...priceOnly.map(q => ({t:'P', i:q.i, a:q.a}))].sort((x, y) => x.i - y.i);
+  const usedN = new Set();
+  let k = 0;
+  while (k < seq.length){
+    if (seq[k].t !== 'N'){ k++; continue; }
+    let j = k; while (j < seq.length && seq[j].t === 'N') j++;
+    let m2 = j; while (m2 < seq.length && seq[m2].t === 'P') m2++;
+    const names = seq.slice(k, j), prices = seq.slice(j, m2);
+    if (prices.length === 1 && names[names.length-1].i + 1 === prices[0].i){ const nm = names[names.length-1]; usedN.add(nm.i); if (prices[0].a) out.push({n: niceName(clean(nm.n)), a: prices[0].a, at: nm.i}); }
+    else if (prices.length >= 2){ const c = Math.min(names.length, prices.length), ns = names.slice(names.length - c); for (let q = 0; q < c; q++){ usedN.add(ns[q].i); if (prices[q].a) out.push({n: niceName(clean(ns[q].n)), a: prices[q].a, at: ns[q].i}); } }
+    k = Math.max(m2, j);
+  }
+  // Übrige Namen ohne Preis: aufeinanderfolgende Zeilen gehören zu einem Artikel
+  const groups = [];
+  nameOnly.filter(x => !usedN.has(x.i)).forEach(x => { const g = groups[groups.length-1]; if (g && g.last + 1 === x.i){ g.last = x.i; g.lines.push(x.n); } else groups.push({first: x.i, last: x.i, lines: [x.n]}); });
+  // Mit der Summe abgleichen: mehrdeutige Preise auflösen, genau einen fehlenden Preis ergänzen
+  let filled = false;
+  if (total > 0 && out.length){
+    const amb = out.filter(x => x.alts && x.alts.length > 1).slice(0, 6);
+    let best = null;
+    for (let mask = 0; mask < (1 << amb.length); mask++){
+      amb.forEach((x, b) => { x.a = x.alts[(mask >> b) & 1]; });
+      const sum = out.reduce((s, x) => s + x.a, 0), rest = total - sum;
+      const sc = Math.abs(rest) < 1 ? 3 : (rest > 0 && groups.length === 1 ? 2 : 0);
+      if (!best || sc > best.sc || (sc === best.sc && Math.abs(rest) < Math.abs(best.rest))) best = {sc, rest, mask};
+    }
+    amb.forEach((x, b) => { x.a = x.alts[(best.mask >> b) & 1]; });
+    if (best.sc === 2){
+      const g = groups[0], nm = g.lines.map(l => clean(l)).filter(l => letters(l) >= 3);
+      out.push({n: niceName(nm[nm.length-1] || g.lines[g.lines.length-1]), a: best.rest, at: g.first, guess: true}); filled = true;
+    }
+  }
+  // Eine „Position“ mit genau der Summe ist meist die Summenzeile selbst
+  if (total > 0 && out.length > 1){ for (let i = out.length - 1; i >= 0; i--) if (out[i].a === total && !out[i].guess) out.splice(i, 1); }
+  const items = out.sort((x, y) => x.at - y.at).map(({n, a, guess}) => guess ? {n, a, g: 1} : {n, a}).slice(0, 60);
+  return {items, filled};
+}
+// Kategorie-Vorschlag für eine Position
+const KID_SHORT = {'Süßigkeiten & Snacks':'Süßes', 'Spielzeug & Spiele':'Spielzeug', 'Bücher & Hefte':'Bücher & Hefte', 'Ausflug & Freizeit':'Freizeit', 'Geschenke':'Geschenke', 'Sonstiges':'Sonstiges'};
+const ADULT_ITEM_CATS = ['Lebensmittel','Haushalt','Kinder','Gesundheit','Kleidung','Freizeit','Auto & Tanken','Geschenke','Sonstiges'];
+function guessCat(name, kid, shopCat){
+  const n = name.toLowerCase();
+  if (/pfand/.test(n)) return kid ? 'Süßigkeiten & Snacks' : (ADULT_ITEM_CATS.includes(shopCat) ? shopCat : 'Lebensmittel');
+  if (kid){
+    if (/(haribo|goldb|schoko|duplo|kinder|milka|ritter|chips|gummi|bonbon|lolli|\beis\b|keks|riegel|snack|capri|cola|fanta|sprite|limo|saft|drink|brezel|croissant|kaugummi|nutella|pringles|twix|mars|snickers|kitkat|bueno|smarties|m&m|lakritz|popcorn|waffel)/.test(n)) return 'Süßigkeiten & Snacks';
+    if (/(heft|block|collegeb|college|stift|füller|fueller|kuli|buch|comic|zeitschrift|lustiges|radier|kleber|schere|lineal|mappe|ordner|papier|marker|textm|tinte|patrone|zirkel)/.test(n)) return 'Bücher & Hefte';
+    if (/(lego|spiel|puzzle|pokemon|pokémon|\bball\b|figur|playmobil|panini|sticker|sammel|slime|knete)/.test(n)) return 'Spielzeug & Spiele';
+    if (/(geschenk|gutschein)/.test(n)) return 'Geschenke';
+    return 'Sonstiges';
+  }
+  if (/(windel|pampers|hipp|baby|schnuller|feuchtt)/.test(n)) return 'Kinder';
+  if (/(pflaster|ibu|paracet|vitamin|tablett|salbe|apothek)/.test(n)) return 'Gesundheit';
+  if (/(spül|spuel|reinig|wc|toilettenp|küchenr|kuechenr|müllb|muellb|waschm|weichsp|batterie|lampe|tüte|tuete|schwamm|zahnpasta|duschgel|shampoo|deo)/.test(n)) return 'Haushalt';
+  if (/(socke|shirt|hose|pulli|jacke|schuh)/.test(n)) return 'Kleidung';
+  if (/(benzin|diesel|super|e10|adblue|wäsche|waesche)/.test(n)) return 'Auto & Tanken';
+  return ADULT_ITEM_CATS.includes(shopCat) ? shopCat : (shopCat ? shopCat : 'Lebensmittel');
+}
+const itemsSum = items => items.reduce((s, x) => s + (x.a || 0), 0);
+function itemsDetails(items){
+  if (!items || !items.length) return '';
+  return `<details class="pos-det"><summary>🧾 ${items.length} ${items.length === 1 ? 'Position' : 'Positionen'} vom Bon</summary><div class="pos-list">${items.map(x => `<div><span>${esc(x.n)}</span><b class="num">${x.a < 0 ? '−' : ''}${euro(Math.abs(x.a))}</b></div>`).join('')}</div></details>`;
+}
+// Nach dem Scannen: mit Positionen erst prüfen, sonst wie bisher
+function afterScan(r){
+  if (r.items && r.items.length >= 2) return itemsDialog(r);
+  const p = scanPreset(r);
+  return isKid() ? kidAskAccount('ausgabe', p) : txDialog(null, p);
+}
+
+// Aus einem Buchungsdialog heraus: Positionen selbst eintragen bzw. erkannte bearbeiten
+function openSplitFrom(form, t){
+  const base = t.scan ? {...t.scan} : {};
+  const amt = parseAmt(form.amount.value);
+  const r = {...base, amount: amt > 0 ? amt : (base.amount || 0), date: (form.date && form.date.value) || base.date || today(),
+    shop: (form.text && form.text.value.trim()) || base.shop || '', cat: base.cat || '', photo: t.photo || base.photo || null};
+  r.items = (base.items && base.items.length) ? base.items : [{n:'', a:0}, {n:'', a:0}];
+  itemsDialog(r, 'split');
+}
+function itemsDialog(r, keepMode){
+  const items = r.items.map(x => ({...x}));
+  const total = r.amount || 0;
+  const form = openDlg(`
+    <h3>${r.shop ? 'Bon von ' + esc(r.shop) : 'Kassenbon'} · <span id="it-n">${items.length}</span> <span id="it-nl">${items.length === 1 ? 'Position' : 'Positionen'}</span></h3>
+    ${items.some(x => x.g) ? '<p class="hint warn" style="margin:0">Ein Preis war auf dem Foto nicht lesbar und wurde aus der Summe berechnet (markiert mit ≈). Bitte kurz prüfen.</p>' : ''}
+    <p class="hint" style="margin:0">Namen und Preise kannst du direkt ändern. Falsch erkannte Zeilen mit ✕ entfernen.</p>
+    <div class="it-list" id="it-list"></div>
+    <button type="button" class="btn sm" id="it-add" style="justify-self:start">+ Position</button>
+    <div class="it-sum" id="it-sum"></div>
+    ${ocrRaw(r)}
+    <div class="field"><span>Wie speichern?</span>
+      <div class="seg"><label><input type="radio" name="how" value="one" ${keepMode !== 'split' ? 'checked' : ''}><span>Ein Eintrag</span></label><label><input type="radio" name="how" value="split" ${keepMode === 'split' ? 'checked' : ''}><span>Nach Kategorien</span></label></div></div>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><span class="spacer"></span><button type="button" class="btn ghost" data-close>Abbrechen</button><button class="btn primary" type="submit">Weiter</button></div>`, f => {
+      const list = items.map(x => ({n: x.n.trim() || 'Position', a: x.a})).filter(x => x.a);
+      if (!list.length){ f.querySelector('#f-err').textContent = 'Es ist keine Position mit Preis übrig.'; return false; }
+      if (itemsSum(list) <= 0){ f.querySelector('#f-err').textContent = 'Die Positionen ergeben zusammen keinen Betrag über 0 €.'; return false; }
+      const how = f.querySelector('input[name=how]:checked').value;
+      const r2 = {...r, items: list};
+      setTimeout(() => {
+        if (how === 'split') return catSplitDialog(r2);
+        const p = scanPreset(r2); p.items = list;
+        if (!r.amount || Math.abs(itemsSum(list) - r.amount) > 0) p.amount = itemsSum(list);
+        isKid() ? kidAskAccount('ausgabe', p) : txDialog(null, p);
+      }, 0);
+    });
+  const listEl = form.querySelector('#it-list'), sumEl = form.querySelector('#it-sum');
+  const upd = () => {
+    const s = itemsSum(items.filter(x => x.a));
+    form.querySelector('#it-n').textContent = items.length; form.querySelector('#it-nl').textContent = items.length === 1 ? 'Position' : 'Positionen';
+    if (!total){ sumEl.className = 'it-sum'; sumEl.innerHTML = `Zusammen <b class="num">${euro(s)}</b>`; return; }
+    const d = total - s;
+    if (Math.abs(d) < 1){ sumEl.className = 'it-sum ok'; sumEl.innerHTML = `✓ Passt zur Summe vom Bon <b class="num">${euro(total)}</b>`; }
+    else { sumEl.className = 'it-sum warn'; sumEl.innerHTML = `${d > 0 ? 'Es fehlen ' + euro(d) : 'Das sind ' + euro(-d) + ' zu viel'} <b class="num">Bon: ${euro(total)}</b>`; }
+  };
+  const draw = () => {
+    listEl.innerHTML = items.map((x, i) => `<div class="it-row" data-i="${i}">
+      <input class="it-name" value="${esc(x.n)}" aria-label="Name der Position ${i+1}"${x.g ? ' style="font-style:italic"' : ''}>
+      <input class="it-amt" inputmode="decimal" value="${x.g ? '≈ ' : ''}${x.a < 0 ? '-' : ''}${amtInput(Math.abs(x.a))}" aria-label="Preis der Position ${i+1}">
+      <button type="button" class="it-x" aria-label="Position entfernen">✕</button></div>`).join('');
+    upd();
+  };
+  listEl.addEventListener('input', e => {
+    const row = e.target.closest('.it-row'); if (!row) return; const x = items[+row.dataset.i];
+    if (e.target.classList.contains('it-name')) x.n = e.target.value;
+    else { delete x.g; const v = e.target.value.replace(/≈/g, '').trim(), neg = v.startsWith('-'); const a = parseAmt(v.replace(/^-/, '')); x.a = isNaN(a) ? 0 : (neg ? -a : a); upd(); }
+  });
+  listEl.addEventListener('click', e => { const b = e.target.closest('.it-x'); if (!b) return; items.splice(+b.closest('.it-row').dataset.i, 1); draw(); });
+  form.querySelector('#it-add').addEventListener('click', () => { items.push({n:'', a:0}); draw(); const ins = listEl.querySelectorAll('.it-name'); ins[ins.length-1].focus(); });
+  draw();
+}
+function catSplitDialog(r){
+  const kid = isKid(), items = r.items, mode = kid ? kidAcc() : null, one = isCombined();
+  const cats = kid ? KID_CATS.ausgabe : ADULT_ITEM_CATS.concat(r.cat && !ADULT_ITEM_CATS.includes(r.cat) ? [r.cat] : []);
+  const sel = items.map(x => guessCat(x.n, kid, r.cat));
+  const short = c => kid ? (KID_SHORT[c] || c) : c;
+  const accSeg = kid ? (mode === 'both' ? `<div class="field"><span>Womit hast du bezahlt?</span><div class="seg"><label><input type="radio" name="account" value="cash" ${lsGet('kidLastAcc')!=='bank'?'checked':''}><span>💶 Bargeld</span></label><label><input type="radio" name="account" value="bank" ${lsGet('kidLastAcc')==='bank'?'checked':''}><span>💳 Bankkonto</span></label></div></div>` : '')
+    : (one ? '' : `<div class="field"><span>Konto</span><div class="seg"><label><input type="radio" name="account" value="bank" checked><span>Bankkonto</span></label><label><input type="radio" name="account" value="cash"><span>Bargeld</span></label></div></div>`);
+  const form = openDlg(`
+    <h3>Nach Kategorien aufteilen</h3>
+    <div class="it-cats">${items.map((x, i) => `<div class="it-cat">
+      <div class="top"><b>${esc(x.n)}</b><span class="num">${x.a < 0 ? '−' : ''}${euro(Math.abs(x.a))}</span></div>
+      ${kid ? `<div class="mini-chips">${cats.map(c => `<label><input type="radio" name="c${i}" value="${esc(c)}" ${sel[i]===c?'checked':''}><span>${esc(short(c))}</span></label>`).join('')}</div>`
+            : `<select name="c${i}" class="it-sel">${cats.map(c => `<option ${sel[i]===c?'selected':''}>${esc(c)}</option>`).join('')}</select>`}
+    </div>`).join('')}</div>
+    <div class="it-groups" id="it-groups"></div>
+    ${accSeg}
+    <label class="field"><span>${kid ? 'Wann?' : 'Datum'}</span><input type="date" name="date" value="${esc(r.date || today())}" id="sp-date"></label>
+    ${r.photo ? belegBlock({photo: r.photo}) : ''}
+    <p class="hint" id="sp-left" style="margin:0"></p>
+    <div class="err" id="f-err"></div>
+    <div class="dlg-actions"><button type="button" class="btn ghost" id="sp-back">Zurück</button><span class="spacer"></span><button class="btn primary" type="submit" id="sp-go">Speichern</button></div>`, f => {
+      const err = f.querySelector('#f-err');
+      const groups = collect();
+      if (groups.some(g => g.amount <= 0)){ err.textContent = 'Eine Kategorie ergibt 0 € oder weniger. Bitte die Pfand-Rückgabe einer anderen Kategorie zuordnen.'; return false; }
+      const acc = f.account ? f.querySelector('input[name=account]:checked').value : kid ? mode : 'bank';
+      const total = groups.reduce((s, g) => s + g.amount, 0);
+      if (kid){
+        const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc);
+        if (total > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} ${have > 0 ? 'sind nur ' + euro(have) : 'ist gerade kein Geld'}. Mehr kannst du nicht ausgeben.`; return false; }
+        if (mode === 'both') lsSet('kidLastAcc', acc);
+      }
+      const date = f.date.value || today(), now = Date.now();
+      const bel = {}; if (belSt) belegApply(f, {photo: r.photo}, belSt, bel);
+      groups.forEach((g, k) => { const x = {id: newId(), created: now + k, type:'ausgabe', amount: g.amount, date, text: r.shop || '', cat: g.cat, account: acc, items: g.items}; if (bel.beleg){ x.beleg = bel.beleg; if (bel.garantie) x.garantie = bel.garantie; } S.finance.tx.push(x); });
+      ui.month = date.slice(0,7);
+      save('finance'); toast(groups.length === 1 ? '1 Ausgabe gespeichert' : groups.length + ' Ausgaben gespeichert');
+    });
+  function collect(){
+    const map = new Map();
+    items.forEach((x, i) => {
+      const el = form.querySelector(kid ? `input[name=c${i}]:checked` : `select[name=c${i}]`);
+      const c = el ? el.value : 'Sonstiges';
+      if (!map.has(c)) map.set(c, {cat: c, amount: 0, items: []});
+      const g = map.get(c); g.amount += x.a; g.items.push(x);
+    });
+    return [...map.values()];
+  }
+  const upd = () => {
+    const groups = collect(), total = groups.reduce((s, g) => s + g.amount, 0);
+    form.querySelector('#it-groups').innerHTML = groups.map(g => `<div><span>${esc(g.cat)}</span><b class="num">${euro(g.amount)}</b></div>`).join('') + `<div class="tot"><span>Zusammen</span><b class="num">${euro(total)}</b></div>`;
+    form.querySelector('#sp-go').textContent = groups.length === 1 ? '1 Ausgabe speichern' : groups.length + ' Ausgaben speichern';
+    const left = form.querySelector('#sp-left');
+    if (kid){
+      const acc = form.account ? form.querySelector('input[name=account]:checked').value : mode;
+      const have = kidBalance(null, kidPlace(acc)), rest = have - total, where = (kidPlace(acc) || mode) === 'bank' ? ' auf dem Konto' : ' an Bargeld';
+      left.textContent = rest >= 0 ? `Danach hast du noch ${euro(rest)}${where}.` : `Geht nicht: Du hast nur ${euro(have)}${where}.`;
+      left.className = rest >= 0 ? 'hint' : 'hint warn';
+    } else left.hidden = true;
+  };
+  const belSt = r.photo ? belegWire(form, {photo: r.photo}) : null;
+  form.addEventListener('change', upd);
+  form.querySelector('#sp-back').addEventListener('click', () => itemsDialog(r, 'split'));
+  upd();
+}
+
 // Vorbelegung für die Buchungsdialoge
 function scanPreset(r){
   const p = {type:'ausgabe', scan:r};
+  if (r.photo) p.photo = r.photo;
   if (r.amount) p.amount = r.amount;
   if (r.date) p.date = r.date;
   if (r.shop) p.text = r.shop;
   if (r.cat) p.cat = r.cat;
   return p;
+}
+function ocrRaw(r){
+  if (!r || !r.text) return '';
+  return `<details class="pos-det ocr-det"><summary>Erkannten Text anzeigen</summary><pre class="ocr-raw">${esc(r.text)}</pre><button type="button" class="btn sm" style="margin:0 12px 10px" onclick="var t=this.previousElementSibling.textContent,b=this;(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(function(){b.textContent='Kopiert ✓'},function(){b.textContent='Kopieren nicht möglich'})">Text kopieren</button></details>`;
 }
 function scanHint(r){
   if (!r) return '';
@@ -2700,7 +3401,7 @@ function scanHint(r){
   if (r.amount) parts.push((r.sure ? 'Summe ' : 'Betrag ') + euro(r.amount));
   if (r.shop) parts.push(esc(r.shop));
   if (r.date) parts.push(new Date(r.date + 'T12:00:00').toLocaleDateString('de-DE'));
-  return `<p class="hint scan-hint" style="margin:0">${CAM_ICON}<span>${parts.length ? 'Vom Beleg erkannt: ' + parts.join(' · ') + '. Bitte kurz prüfen.' : 'Auf dem Beleg wurde nichts Eindeutiges erkannt. Bitte die Angaben selbst eintragen.'}</span></p>`;
+  return `<p class="hint scan-hint" style="margin:0">${CAM_ICON}<span>${parts.length ? 'Vom Beleg erkannt: ' + parts.join(' · ') + '. Bitte kurz prüfen.' : 'Auf dem Beleg wurde nichts Eindeutiges erkannt. Bitte die Angaben selbst eintragen.'}${r.items && r.items.length < 2 && r.text ? ' Einzelne Positionen wurden nicht erkannt.' : ''}</span></p>${ocrRaw(r)}`;
 }
 const scanButton = (id, label) => `<label class="btn scan-btn">${CAM_ICON}<span>${label}</span><input type="file" accept="image/*" capture="environment" class="file-hidden" id="${id}"></label>`;
 
@@ -3019,8 +3720,8 @@ $('#main').addEventListener('click', e => {
   else if (a==='newtx') txDialog();
   else if (a==='edittx'){ const t = S.finance.tx.find(x=>x.id===b.dataset.id); if (t) (isLoan(t) ? loanInfoDialog(t.id) : isSave(t) ? saveDialog(t) : (isKid() && (t.type==='einnahme'||t.type==='ausgabe')) ? kidTxDialog(t) : (isKid() && isTransfer(t)) ? kidMoveDialog(t) : txDialog(t)); }
   else if (a==='save') saveDialog();
-  else if (a==='start') requirePin('Der Startbetrag', startDialog);
-  else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); }
+  else if (a==='start') requirePin('Der Startbetrag', () => startDialog());
+  else if (a==='welcome-skip'){ lsSet('welcomed', 1); render(); firstSetupDialog(); }
   else if (a==='pend-review') requirePin('Das Bestätigen von Einnahmen', pendingDialog);
   else if (a==='kid-move') kidAtmAsk();
   else if (a==='lend-toggle'){ ui.lendOpen = !ui.lendOpen; render(); }
@@ -3077,7 +3778,7 @@ document.getElementById('updLater').addEventListener('click', () => { const v = 
 if (updatedFrom){ addLog('Update auf Version ' + APP_VERSION + (updatedFrom !== '0' ? ' (von ' + updatedFrom + ')' : '') + ' – Sicherungspunkt angelegt'); setTimeout(showWhatsNew, 500); }
 setTimeout(checkForUpdate, 3000);
 document.getElementById('bkLater').addEventListener('click', () => { lsSet('bkSnooze', Date.now() + (bkEvery()==='weekly' ? 2 : 1) * 864e5 * 0.9); updateBackupHint(); toast('Erinnerung verschoben'); });
-$('#main').addEventListener('change', e => { if (e.target.id === 'kid-main-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => kidAskAccount('ausgabe', scanPreset(r))); return; } if (e.target.id === 'fin-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, r => txDialog(null, scanPreset(r))); return; } if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
+$('#main').addEventListener('change', e => { if (e.target.id === 'kid-main-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, afterScan); return; } if (e.target.id === 'fin-scan' && e.target.files[0]){ const f = e.target.files[0]; e.target.value = ''; scanReceipt(f, afterScan); return; } if (e.target.id === 'welcome-file' && e.target.files[0]) importBackup(e.target.files[0]); if (e.target.dataset && e.target.dataset.kidUpdate && e.target.files[0]) readKidBackup(e.target.files[0], e.target.dataset.kidUpdate); });
 document.addEventListener('visibilitychange', () => { if (!document.hidden){ updateBackupHint(); checkForUpdate(); } });
 if ('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('sw.js').catch(()=>{});
 setInterval(() => { if (ui.tab==='stundenplan' && !dlg.open) render(); }, 60000);
