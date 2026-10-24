@@ -601,9 +601,12 @@ const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke
 
 /* ---------- Zustand ---------- */
 /* ---------- Version ---------- */
-const APP_VERSION = '2.12.1';
+const APP_VERSION = '2.14.0';
 const SECTIONS = [['finanzen','Finanzen'],['sparen','Sparen'],['stundenplan','Stundenplan'],['hausaufgaben','Hausaufgaben'],['aufgaben','Aufgaben']];
 const CHANGELOG = [
+  ['2.14.0', '24.10.2026, 18:57 Uhr', ['Der Organizer ist jetzt nur noch für Kinder: die Auswahl „Erwachsene“ entfällt (beim ersten Start und in den Einstellungen)', 'Eltern-Ansicht, Eltern-PIN, Taschengeld und „An Eltern senden“ bleiben wie gehabt', 'Für Erwachsene gibt es die eigene App „Finanzen“ – dort lassen sich auch die Finanzen der Kinder einlesen']],
+  ['2.13.0', '24.10.2026, 18:50 Uhr', ['Geliehen & verliehen: neues Feld „Wofür?“ – steht in der Übersicht, in der Monatsliste und im Verlauf', 'Geliehen & verliehen gibt es jetzt auch im Erwachsenenmodus (Bankkonto oder Bargeld)']],
+  ['2.12.2', '23.10.2026, 16:33 Uhr', ['Verträgt sich jetzt mit weiteren Apps unter derselben Internet-Adresse (z. B. der neuen App „Finanzen“ auf GitHub Pages): beim Update werden nur noch eigene alte Dateien aus dem Speicher gelöscht']],
   ['2.12.1', '20.10.2026, 07:33 Uhr', ['Kassenbon: gewölbte und schräg fotografierte Bons werden abschnittsweise gerade gezogen, damit Namen und Preise in einer Zeile landen', 'Ausschnitt nur noch um die Schrift herum (auch auf hellem Untergrund) – mehr Auflösung für die Preise', 'Artikelliste endet sicherer vor dem Zahlungsteil, auch wenn „Zu zahlen“ schlecht lesbar ist']],
   ['2.12.0', '20.10.2026, 06:40 Uhr', ['Kassenbon-Erkennung deutlich verbessert: der Bon wird automatisch aus dem Foto ausgeschnitten, vergrößert und in Schwarz/Weiß umgewandelt (gleicht Schatten aus)', 'Passen die Positionen nicht zur Summe, liest die App den Bon ein zweites Mal anders und nimmt das bessere Ergebnis', 'Falsch gelesene Kommas (z. B. „1769“ statt „1,69“) werden über die Summe korrigiert; fehlt genau ein Preis, wird er aus der Summe ergänzt', 'Fototipps im Scan-Fenster']],
   ['2.11.4', '19.10.2026, 13:37 Uhr', ['Neuer Knopf „🧾 Positionen / nach Kategorien aufteilen“ bei jeder neuen Ausgabe – auch wenn der Scan keine Positionen erkannt hat, lassen sich Positionen selbst eintragen und aufteilen']],
@@ -646,6 +649,8 @@ const CHANGELOG = [
   ['1.0.0', '07.10.2026, 07:52 Uhr', ['Erste nummerierte Version', 'Name der App in den Einstellungen änderbar', 'Bereiche: Finanzen (Bankkonto & Bargeld), Stundenplan, Hausaufgaben, Aufgaben']]
 ];
 const DEFAULT_NAME = 'Organizer';
+// Organizer: nur Kindermodus (Erwachsene nutzen die App „Finanzen“). In der App „Finanzen“ steht hier false.
+const KID_ONLY = true;
 const KEYS = ['finance','schedule','tasks','homework','settings','log','kids'];
 const DEF = {
   finance: { start:{bank:0,cash:0,save:0}, tx:[], recurring:[] },
@@ -661,7 +666,7 @@ function normalize(key, v){
   if (!v || typeof v !== 'object') return d;
   if (key==='finance'){ d.start = {bank:+(v.start?.bank)||0, cash:+(v.start?.cash)||0, save:+(v.start?.save)||0}; d.tx = Array.isArray(v.tx)?v.tx:[]; d.recurring = Array.isArray(v.recurring)?v.recurring:[]; d.goal = (v.goal && +v.goal.amount > 0) ? {name: String(v.goal.name||'').slice(0,60), amount: Math.round(+v.goal.amount)} : null; }
   if (key==='schedule'){ d.plans = Array.isArray(v.plans)?v.plans:[]; d.active = v.active ?? d.plans[0]?.id ?? null; }
-  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.savings = !!v.savings; d.kid = !!v.kid; d.kidAccounts = ['cash','bank','both'].includes(v.kidAccounts) ? v.kidAccounts : 'cash'; d.kidSave = v.kidSave === 'konto' ? 'konto' : 'schwein'; d.devId = typeof v.devId === 'string' ? v.devId : ''; d.pin = (v.pin && v.pin.h && v.pin.s) ? {s:String(v.pin.s), h:String(v.pin.h), r:String(v.pin.r||''), wk: (v.pin.wk && v.pin.wk.salt && v.pin.wk.wp) ? v.pin.wk : null} : null; d.confirmIncome = v.confirmIncome !== false; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
+  if (key==='settings'){ d.appName = typeof v.appName==='string' ? v.appName.slice(0,40) : ''; d.combined = !!v.combined; d.savings = !!v.savings; d.kid = KID_ONLY ? true : !!v.kid; d.kidAccounts = ['cash','bank','both'].includes(v.kidAccounts) ? v.kidAccounts : 'cash'; d.kidSave = v.kidSave === 'konto' ? 'konto' : 'schwein'; d.devId = typeof v.devId === 'string' ? v.devId : ''; d.pin = (v.pin && v.pin.h && v.pin.s) ? {s:String(v.pin.s), h:String(v.pin.h), r:String(v.pin.r||''), wk: (v.pin.wk && v.pin.wk.salt && v.pin.wk.wp) ? v.pin.wk : null} : null; d.confirmIncome = v.confirmIncome !== false; d.hidden = Array.isArray(v.hidden) ? v.hidden.filter(x => SECTIONS.some(s => s[0]===x)) : []; if (d.hidden.length >= SECTIONS.length) d.hidden = []; }
   if (key==='kids'){ d.items = Array.isArray(v.items) ? v.items.filter(k => k && k.id && k.finance).map(k => ({...k, name: String(k.name||'Kind').slice(0,30), finance: normalize('finance', k.finance)})) : []; }
   if (key==='log'){ d.items = Array.isArray(v.items) ? v.items.filter(e => e && e.ts && e.txt).slice(-500) : []; }
   if (key==='tasks' || key==='homework'){ d.items = Array.isArray(v.items)?v.items:[]; }
@@ -1246,7 +1251,7 @@ function applyName(){
 }
 /* ---------- Einstellungen: Übersicht mit Unterseiten ---------- */
 const SET_PAGES = ['main','profile','name','mode','sections','money','fixed','kids','pin','version','belege'];
-const SET_TITLES = {main:'Einstellungen', profile:'Name & Modus', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', belege:'Belege & Garantie', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Versionshistorie'};
+const SET_TITLES = {main:'Einstellungen', profile: KID_ONLY ? 'Name der App' : 'Name & Modus', sections:'Bereiche', money:'Geld & Sparen', fixed:'Taschengeld & feste Beträge', belege:'Belege & Garantie', kids:'Finanzen der Kinder', pin:'Eltern-PIN', version:'Versionshistorie'};
 const belegCountTxt = () => { const n = belegIds().length, g = S.finance.tx.filter(t => t.beleg && t.garantie && t.garantie >= today()).length; return n ? n + (n === 1 ? ' Beleg' : ' Belege') + (g ? ' · ' + g + ' mit Garantie' : '') : 'Fotos von Kassenbons und Rechnungen'; };
 const SET_ICONS = {
   grid:'<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
@@ -1336,9 +1341,9 @@ function settingsDialog(page){
       <input class="set-input" name="appName" value="${esc(S.settings.appName || '')}" maxlength="40" placeholder="${esc(DEFAULT_NAME)}" id="set-name" aria-label="Name der App">
       <button type="submit" class="btn primary" style="justify-content:center">Name übernehmen</button>
     </div><p class="set-note">Erscheint als Überschrift und im Browser-Tab. Leer lassen für „${esc(DEFAULT_NAME)}“.</p></div>
-    <div class="set-grp"><div class="set-gl">Für wen ist die App?</div><div class="set-card set-pad">
+    ${KID_ONLY ? '' : `<div class="set-grp"><div class="set-gl">Für wen ist die App?</div><div class="set-card set-pad">
       <div class="seg"><label><input type="radio" name="mode" value="adult" ${kid ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${kid ? 'checked' : ''}><span>Kinder (ab 10)</span></label></div>
-    </div><p class="set-note">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. In den Einstellungen gibt es dann Eltern-Ansicht, Taschengeld und das Senden an die Eltern. Alle Daten bleiben beim Umschalten erhalten.</p></div>`;
+    </div><p class="set-note">Im Kindermodus sind Finanzen und Sparen einfacher: ein Betrag „Mein Geld“, große Knöpfe und einfache Wörter. In den Einstellungen gibt es dann Eltern-Ansicht, Taschengeld und das Senden an die Eltern. Alle Daten bleiben beim Umschalten erhalten.</p></div>`}`;
   }
 
   if (page === 'sections'){
@@ -1563,6 +1568,7 @@ function renderFinance(){
     ${acctCard('cash','cash','Bargeld',bal.cash, ui.acct==='cash'?'Filter aktiv':'Antippen zum Filtern')}
     ${acctCard('all','total','Gesamt',total, sv ? (ui.acct==='all'?'inkl. '+euro(bal.save)+' Sparen':'Alle anzeigen') : (ui.acct==='all'?'Alle Konten':'Alle anzeigen'))}
   </section>`}
+  ${lendPanel()}
   <div class="sec-head">
     <div class="monthbar">
       <button class="icon-btn" data-act="month" data-d="-1" aria-label="Voriger Monat">‹</button>
@@ -1746,13 +1752,13 @@ function saveDialog(t, preset){
 function firstSetupDialog(){
   const form = openDlg(`
     <h3>Los geht's</h3>
-    <div class="field"><span>Für wen ist die App auf diesem Gerät?</span>
-      <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid() ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid() ? 'checked' : ''}><span>Kind (ab 10)</span></label></div></div>
-    <div class="field" id="fs-acc" ${isKid() ? '' : 'hidden'}><span>Wo hat das Kind sein Geld?</span>
+    <div class="field" ${KID_ONLY ? 'hidden' : ''}><span>Für wen ist die App auf diesem Gerät?</span>
+      <div class="seg"><label><input type="radio" name="mode" value="adult" ${isKid() || KID_ONLY ? '' : 'checked'}><span>Erwachsene</span></label><label><input type="radio" name="mode" value="kid" ${isKid() || KID_ONLY ? 'checked' : ''}><span>Kind (ab 10)</span></label></div></div>
+    <div class="field" id="fs-acc" ${isKid() || KID_ONLY ? '' : 'hidden'}><span>${KID_ONLY ? 'Wo hast du dein Geld?' : 'Wo hat das Kind sein Geld?'}</span>
       <div class="seg"><label><input type="radio" name="kacc" value="cash" ${kidAcc()==='cash'?'checked':''}><span>Bargeld</span></label><label><input type="radio" name="kacc" value="bank" ${kidAcc()==='bank'?'checked':''}><span>Bankkonto</span></label><label><input type="radio" name="kacc" value="both" ${kidAcc()==='both'?'checked':''}><span>Beides</span></label></div></div>
     <p class="hint" style="margin:0">Das lässt sich später in den Einstellungen ändern.</p>
     <div class="dlg-actions"><span class="spacer"></span><button class="btn primary" type="submit">Weiter</button></div>`, f => {
-      const kid = f.querySelector('input[name=mode]:checked').value === 'kid';
+      const kid = KID_ONLY || f.querySelector('input[name=mode]:checked').value === 'kid';
       S.settings.kid = kid;
       if (kid) S.settings.kidAccounts = f.querySelector('input[name=kacc]:checked').value;
       save('settings'); applyName(); render();
@@ -2290,7 +2296,8 @@ const isLoan = t => LOAN_TYPES.includes(t.type);
 const loanPlus = t => t.type==='geliehen' || t.type==='zurueckbekommen';
 function loanTitle(t){
   const w = t.who || '?';
-  return ({verliehen:'An ' + w + ' verliehen', geliehen:'Von ' + w + ' geliehen', zurueckbekommen:'Von ' + w + ' zurückbekommen', zurueckgezahlt:'An ' + w + ' zurückgezahlt'})[t.type] || 'Geliehen/verliehen';
+  const base = ({verliehen:'An ' + w + ' verliehen', geliehen:'Von ' + w + ' geliehen', zurueckbekommen:'Von ' + w + ' zurückbekommen', zurueckgezahlt:'An ' + w + ' zurückgezahlt'})[t.type] || 'Geliehen/verliehen';
+  return t.text ? base + ' · ' + t.text : base;
 }
 // Offene Posten aus einer Buchungsliste
 function loanList(txs){
@@ -2302,6 +2309,10 @@ function loanList(txs){
   });
 }
 const loanSums = items => items.reduce((s, x) => { if (x.open > 0){ if (x.l.type==='verliehen') s.out += x.open; else s.in += x.open; s.n++; } return s; }, {out:0, in:0, n:0});
+// Ort des Geldes: Kindermodus wie gehabt, Erwachsene: Bankkonto/Bargeld bzw. zusammen
+const loanPlace = acc => isKid() ? kidPlace(acc) : (isCombined() ? null : (acc === 'cash' ? 'cash' : 'bank'));
+const loanWhere = acc => isKid() ? ((kidAcc()==='both' ? acc : kidAcc()) === 'bank' ? ' auf dem Konto' : ' an Bargeld') : (isCombined() ? '' : (acc === 'cash' ? ' an Bargeld' : ' auf dem Bankkonto'));
+const loanAskAcc = () => isKid() ? kidAcc() === 'both' : !isCombined();
 function lendPanel(){
   const items = loanList(S.finance.tx), sum = loanSums(items);
   const open = !!ui.lendOpen;
@@ -2319,7 +2330,7 @@ function lendPanel(){
     </div>
     ${openItems.length ? openItems.map(({l, open: o}) => {
       const out = l.type==='verliehen', late = l.due && l.due < t0;
-      const info = [(out ? 'verliehen' : 'geliehen'), euro(o) + (o < l.amount ? ' von ' + euro(l.amount) : ''), 'seit ' + fmtShort(l.date), l.due ? (late ? '<b class="neg-t">war bis ' + fmtShort(l.due) + '</b>' : 'bis ' + fmtShort(l.due)) : ''].filter(Boolean).join(' · ');
+      const info = [(out ? 'verliehen' : 'geliehen') + (l.text ? ' für ' + esc(l.text) : ''), euro(o) + (o < l.amount ? ' von ' + euro(l.amount) : ''), 'seit ' + fmtShort(l.date), l.due ? (late ? '<b class="neg-t">war bis ' + fmtShort(l.due) + '</b>' : 'bis ' + fmtShort(l.due)) : ''].filter(Boolean).join(' · ');
       return `<div class="lend-row"><button type="button" class="lend-who" data-act="lend-open" data-id="${esc(l.id)}"><span class="i ${out ? 'out' : 'in'}" aria-hidden="true">${out ? '↗' : '↙'}</span><span><b>${esc(l.who)}</b><small>${info}</small></span></button><button type="button" class="btn sm" data-act="lend-back" data-id="${esc(l.id)}">${out ? 'Zurückbekommen' : 'Zurückgezahlt'}</button></div>`;
     }).join('') : '<p class="lend-empty">Gerade ist nichts geliehen oder verliehen.</p>'}
     <div class="lend-btns"><button type="button" class="btn" data-act="lend-new" data-dir="out">↗ Ich verleihe</button><button type="button" class="btn" data-act="lend-new" data-dir="in">↙ Ich leihe mir</button></div>
@@ -2328,12 +2339,14 @@ function lendPanel(){
 // Bargeld oder Bankkonto? (nur bei „Beides“)
 function loanAsk(dir){
   const out = dir === 'out';
-  if (kidAcc() !== 'both'){
+  if (!isKid()){
+    if (isCombined()) return loanDialog(dir, 'bank');
+  } else if (kidAcc() !== 'both'){
     if (out && kidBalance() <= 0){ toast(kidAcc()==='bank' ? 'Auf deinem Konto ist gerade kein Geld zum Verleihen.' : 'Du hast gerade kein Bargeld zum Verleihen.'); return; }
     return loanDialog(dir, kidAcc());
   }
   const cash = kidBalance(null,'cash'), bank = kidBalance(null,'bank');
-  const noC = out && cash <= 0, noB = out && bank <= 0;
+  const noC = isKid() && out && cash <= 0, noB = isKid() && out && bank <= 0;
   const form = openDlg(`
     <h3>${out ? 'Geld verleihen' : 'Geld leihen'}</h3>
     <p style="margin:0;font-weight:600">${out ? 'Woher nimmst du das Geld?' : 'Wohin kommt das Geld?'}</p>
@@ -2346,12 +2359,14 @@ function loanAsk(dir){
   form.querySelectorAll('.acc-pick').forEach(b => b.addEventListener('click', () => { if (!b.disabled) loanDialog(dir, b.dataset.acc); }));
 }
 function loanDialog(dir, acc){
-  const out = dir === 'out', mode = kidAcc();
-  const accTag = mode==='both' ? ` <span class="acc-tag">${acc==='bank' ? '💳 Bankkonto' : '💶 Bargeld'}</span>` : '';
+  const out = dir === 'out', mode = kidAcc(), kid = isKid();
+  const accTag = loanAskAcc() ? ` <span class="acc-tag">${acc==='bank' ? '💳 Bankkonto' : '💶 Bargeld'}</span>` : '';
+  const whats = [...new Set(S.finance.tx.filter(t => (t.type==='verliehen' || t.type==='geliehen') && t.text).map(t => t.text))];
   const whos = [...new Set(S.finance.tx.filter(t => t.who).map(t => t.who))];
   const form = openDlg(`
     <h3>${out ? 'Geld verleihen' : 'Geld leihen'}${accTag}</h3>
     <label class="field"><span>${out ? 'Wem leihst du Geld?' : 'Von wem leihst du dir Geld?'}</span><input name="who" list="lend-whos" placeholder="${out ? 'z. B. Ben' : 'z. B. Oma'}" autocomplete="off" autofocus id="lend-who"><datalist id="lend-whos">${whos.map(w => `<option value="${esc(w)}">`).join('')}</datalist></label>
+    <label class="field"><span>Wofür?</span><input name="text" list="lend-whats" placeholder="${out ? 'z. B. Kinokarte, Pausenbrot' : 'z. B. Geschenk für Mama'}" autocomplete="off" maxlength="60" id="lend-what"><datalist id="lend-whats">${whats.map(w => `<option value="${esc(w)}">`).join('')}</datalist></label>
     <label class="field"><span>Wie viel? (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" id="lend-amount"></label>
     <p class="hint" id="lend-left" style="margin:0"></p>
     <div class="row2">
@@ -2365,20 +2380,21 @@ function loanDialog(dir, acc){
       if (!(amount > 0)){ err.textContent = 'Bitte trag ein, wie viel Geld es ist, z. B. 3,00.'; f.amount.focus(); return false; }
       if (!f.date.value){ err.textContent = 'Bitte wähle ein Datum.'; return false; }
       if (f.due.value && f.due.value < f.date.value){ err.textContent = 'Das Rückgabedatum liegt vor dem Datum.'; return false; }
-      if (out){
+      if (out && kid){
         const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc);
         if (amount > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} ${have > 0 ? 'sind nur ' + euro(have) : 'ist gerade kein Geld'}. Mehr kannst du nicht verleihen.`; f.amount.focus(); return false; }
       }
-      const rec = {id: newId(), created: Date.now(), type: out ? 'verliehen' : 'geliehen', amount, date: f.date.value, who, text:'', cat:'', account: acc};
+      const rec = {id: newId(), created: Date.now(), type: out ? 'verliehen' : 'geliehen', amount, date: f.date.value, who, text: f.text.value.trim(), cat:'', account: acc};
       if (f.due.value) rec.due = f.due.value;
       S.finance.tx.push(rec); ui.month = rec.date.slice(0,7); ui.lendOpen = true;
       save('finance'); toast(out ? euro(amount) + ' an ' + who + ' verliehen' : euro(amount) + ' von ' + who + ' geliehen');
     });
   const left = form.querySelector('#lend-left');
   const upd = () => {
-    const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc), a = parseAmt(form.amount.value);
-    const where = mode==='both' ? (acc==='bank' ? ' auf dem Konto' : ' an Bargeld') : (mode==='bank' ? ' auf dem Konto' : ' an Bargeld');
+    const have = kidBalance(null, loanPlace(acc)), pn = kid ? kidPlaceName(acc) : null, a = parseAmt(form.amount.value);
+    const where = loanWhere(acc);
     if (!(a > 0)){ left.textContent = `Du hast gerade ${euro(have)}${where}.`; left.className = 'hint'; return; }
+    if (out && !kid){ left.textContent = `Danach: ${euro(have - a)}${where}. Die ${euro(a)} bekommst du zurück.`; left.className = 'hint'; return; }
     if (out){ const r = have - a; left.textContent = r >= 0 ? `Danach hast du noch ${euro(r)}${where}. Die ${euro(a)} bekommst du zurück.` : `Geht nicht: Du hast nur ${euro(have)}${where}. ${pn.name} darf nicht ins Minus.`; left.className = r >= 0 ? 'hint' : 'hint warn'; }
     else { left.textContent = `Danach hast du ${euro(have + a)}${where}. Die ${euro(a)} musst du zurückgeben.`; left.className = 'hint'; }
   };
@@ -2386,12 +2402,12 @@ function loanDialog(dir, acc){
 }
 function loanBackDialog(id){
   const item = loanList(S.finance.tx).find(x => x.l.id === id); if (!item) return;
-  const {l, open} = item, out = l.type==='verliehen', mode = kidAcc();
+  const {l, open} = item, out = l.type==='verliehen', kid = isKid(), mode = kid ? kidAcc() : (isCombined() ? 'bank' : 'both');
   if (open <= 0){ loanInfoDialog(id); return; }
   const defAcc = mode==='both' ? (l.account==='bank' ? 'bank' : 'cash') : mode;
   const form = openDlg(`
     <h3>${out ? 'Von ' + esc(l.who) + ' zurückbekommen' : 'An ' + esc(l.who) + ' zurückgezahlt'}</h3>
-    <div class="rs-list"><div><span>${out ? 'Verliehen' : 'Geliehen'} am ${fmtShort(l.date)}</span><b class="num">${euro(l.amount)}</b></div>${open < l.amount ? `<div><span>Davon noch offen</span><b class="num">${euro(open)}</b></div>` : ''}</div>
+    <div class="rs-list"><div><span>${out ? 'Verliehen' : 'Geliehen'} am ${fmtShort(l.date)}${l.text ? ' · ' + esc(l.text) : ''}</span><b class="num">${euro(l.amount)}</b></div>${open < l.amount ? `<div><span>Davon noch offen</span><b class="num">${euro(open)}</b></div>` : ''}</div>
     <div class="field"><span>${out ? 'Wie viel hat ' + esc(l.who) + ' zurückgegeben?' : 'Wie viel hast du zurückgegeben?'}</span>
       <div class="seg"><label><input type="radio" name="part" value="all" checked><span>Alles (${euro(open)})</span></label><label><input type="radio" name="part" value="some"><span>Einen Teil</span></label></div></div>
     <label class="field" id="lb-amtf" hidden><span>Betrag (€)</span><input class="amount-in kid-amount" name="amount" inputmode="decimal" placeholder="0,00" id="lb-amount"></label>
@@ -2406,11 +2422,11 @@ function loanBackDialog(id){
       if (!(amount > 0)){ err.textContent = 'Bitte trag ein, wie viel es war.'; f.amount.focus(); return false; }
       if (amount > open){ err.textContent = `Es sind nur noch ${euro(open)} offen.`; f.amount.focus(); return false; }
       const acc = mode==='both' ? f.account.value : mode;
-      if (!out){
+      if (!out && kid){
         const have = kidBalance(null, kidPlace(acc)), pn = kidPlaceName(acc);
         if (amount > have){ err.textContent = `${pn.in[0].toUpperCase() + pn.in.slice(1)} ${have > 0 ? 'sind nur ' + euro(have) : 'ist gerade kein Geld'}. ${pn.name} darf nicht ins Minus.`; return false; }
       }
-      const rec = {id: newId(), created: Date.now(), type: out ? 'zurueckbekommen' : 'zurueckgezahlt', amount, date: f.date.value || today(), who: l.who, text:'', cat:'', account: acc, loanId: l.id};
+      const rec = {id: newId(), created: Date.now(), type: out ? 'zurueckbekommen' : 'zurueckgezahlt', amount, date: f.date.value || today(), who: l.who, text: l.text || '', cat:'', account: acc, loanId: l.id};
       S.finance.tx.push(rec); ui.month = rec.date.slice(0,7);
       save('finance'); toast(amount >= open ? (out ? 'Alles zurückbekommen 👍' : 'Alles zurückgezahlt 👍') : euro(amount) + (out ? ' zurückbekommen' : ' zurückgezahlt') + ' – noch ' + euro(open - amount) + ' offen');
     });
@@ -2422,10 +2438,11 @@ function loanInfoDialog(id){
   const tx0 = S.finance.tx.find(t => t.id === id); if (!tx0) return;
   const lid = tx0.loanId || tx0.id;
   const item = loanList(S.finance.tx).find(x => x.l.id === lid); if (!item) return;
-  const {l, back, open} = item, out = l.type==='verliehen', mode = kidAcc();
-  const accN = t => mode==='both' ? (t.account==='bank' ? ' · Konto' : ' · Bargeld') : '';
+  const {l, back, open} = item, out = l.type==='verliehen', kid = isKid(), mode = kid ? kidAcc() : (isCombined() ? 'one' : 'both');
+  const accN = t => mode==='both' ? (t.account==='bank' ? (kid ? ' · Konto' : ' · Bankkonto') : ' · Bargeld') : '';
   const form = openDlg(`
     <h3>${out ? 'An ' + esc(l.who) + ' verliehen' : 'Von ' + esc(l.who) + ' geliehen'}</h3>
+    ${l.text ? `<p style="margin:-4px 0 0;color:var(--muted)">Wofür: <b style="color:var(--ink)">${esc(l.text)}</b></p>` : ''}
     <div class="rs-list">
       <div><span>${fmtShort(l.date)} ${out ? 'verliehen' : 'geliehen'}${accN(l)}</span><b class="num">${euro(l.amount)}</b></div>
       ${back.map(t => `<div><span>${fmtShort(t.date)} ${out ? 'zurückbekommen' : 'zurückgezahlt'}${accN(t)}</span><b class="num">−${euro(t.amount)}</b></div>`).join('')}
@@ -2442,7 +2459,7 @@ function loanInfoDialog(id){
     const ids = new Set([l.id, ...back.map(t => t.id)]);
     const rest = S.finance.tx.filter(t => !ids.has(t.id));
     const bal = acc => rest.reduce((s, t) => s + effect(t)[acc], S.finance.start[acc]);
-    const minus = mode==='both' ? (bal('cash') < 0 || bal('bank') < 0) : (bal('cash') + bal('bank') < 0);
+    const minus = !kid ? false : mode==='both' ? (bal('cash') < 0 || bal('bank') < 0) : (bal('cash') + bal('bank') < 0);
     if (minus){ form.querySelector('#f-err').textContent = 'Löschen geht nicht: Das Geld wurde schon ausgegeben, sonst würde etwas ins Minus rutschen.'; return; }
     if (!armed(del, 'Wirklich löschen?')) return;
     S.finance.tx = rest; save('finance'); closeDlg(); toast('Gelöscht');

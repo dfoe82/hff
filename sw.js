@@ -1,5 +1,5 @@
 // Organizer – macht die App offline verfügbar (nur wenn über http/https geöffnet)
-const CACHE = 'organizer-2.12.1'; // bei jeder neuen Version anpassen
+const CACHE = 'organizer-2.14.0'; // bei jeder neuen Version anpassen
 const FILES = ['./', './index.html', './apple-touch-icon.png?v=1.3.1'];
 const EXT = 'organizer-extern'; // Schriften und Texterkennung – bleibt bei Updates erhalten
 
@@ -9,7 +9,8 @@ self.addEventListener('install', e => {
 
 self.addEventListener('activate', e => {
   e.waitUntil(caches.keys()
-    .then(keys => Promise.all(keys.filter(k => k !== CACHE && k !== EXT).map(k => caches.delete(k))))
+    // nur eigene alte Versionen löschen – andere Apps auf derselben Adresse (z. B. GitHub Pages) nicht anfassen
+    .then(keys => Promise.all(keys.filter(k => k.startsWith('organizer-') && k !== CACHE && k !== EXT).map(k => caches.delete(k))))
     .then(() => self.clients.claim()));
 });
 
